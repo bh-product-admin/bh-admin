@@ -8,7 +8,6 @@
         <el-table
           :data="tableData"
           style="width: 100%"
-          :default-sort="{prop: 'date', order: 'descending'}"
           @sort-change="sortChange"
         >
           <el-table-column
@@ -25,12 +24,12 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作" width="200">
             <template slot-scope="scope">
               <el-button
                 size="mini"
                 @click="handleEdit(scope.$index, scope.row)"
-              >我有货</el-button>
+              >查看物流单详情</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -48,64 +47,76 @@
   </div>
 </template>
 <script>
-import Header from '@/components/chooseHeader/index'
-// import sortBotton from '@/components/sortButton'
-// import industryTable from '@/components/industry/industryTable'
+import Header from '@/views/propertyManage/propertyHeader'
 export default {
-  name: 'IndustryNew',
+  name: 'PropertyList',
   components: {
     Header
-    // sortBotton
-    // industryTable
   },
   data() {
     return {
-      sortColumns: ['date', 'seleNumThree', 'seleNumWeek', 'seleNumTotal', 'seleNum'],
+      sortColumns: ['totalNum', 'totalMoney'],
       currentPage: 1,
       tableData: [
         {
+          capitalFlow: 1,
+          totalNum: '111',
+          totalMoney: '2232',
           src:
             'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
           title: 'xxxxxxxxx',
           date: '2016-05-04',
           colName: '日用家居-音箱-无线音箱',
           price: '¥34',
+          stockNum: '333',
           seleNum: '2,000',
           seleNumThree: '5,424',
           seleNumWeek: '12,003',
           seleNumTotal: 4444
         },
         {
+          capitalFlow: 1,
+          totalNum: '111',
+          totalMoney: '2232',
           src:
             'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
           title: 'xxxxxxxxx',
           date: '2016-05-07',
           colName: '日用家居-音箱-无线音箱2',
           price: '¥34',
+          stockNum: '333',
           seleNum: '2,000',
           seleNumThree: 111,
           seleNumWeek: 444,
           seleNumTotal: 3333
         },
         {
+          capitalFlow: 1,
+          totalNum: '111',
+          totalMoney: '2232',
           src:
             'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
           title: 'xxxxxxxxx',
           date: '2016-05-04',
           colName: '日用家居-音箱-无线音箱3',
           price: '¥34',
+          stockNum: '333',
           seleNum: '2,000',
           seleNumThree: '5,424',
           seleNumWeek: '12,003',
           seleNumTotal: 1111
         },
         {
+          capitalFlow: 1,
+          totalNum: '111',
+          totalMoney: '2232',
           src:
             'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
           title: 'xxxxxxxxx',
           date: '2016-05-04',
           colName: '日用家居-音箱-无线音箱4',
           price: '¥34',
+          stockNum: '333',
           seleNum: '2,000',
           seleNumThree: '5,424',
           seleNumWeek: '12,003',
@@ -114,7 +125,17 @@ export default {
       ],
       columnData: [
         {
-          label: '商品图',
+          label: '流水类型',
+          type: 'text',
+          prop: 'capitalFlow'
+        },
+        {
+          label: '时间',
+          type: 'text',
+          prop: 'date'
+        },
+        {
+          label: '商品图片',
           type: 'img',
           prop: 'src'
         },
@@ -124,39 +145,14 @@ export default {
           prop: 'title'
         },
         {
-          label: '上架时间',
+          label: '商品数量',
           type: 'text',
-          prop: 'date'
+          prop: 'totalNum'
         },
         {
-          label: '类目',
+          label: '金额',
           type: 'text',
-          prop: 'colName'
-        },
-        {
-          label: '价格',
-          type: 'text',
-          prop: 'price'
-        },
-        {
-          label: '一日销量',
-          type: 'text',
-          prop: 'seleNum'
-        },
-        {
-          label: '三日销量',
-          type: 'text',
-          prop: 'seleNumThree'
-        },
-        {
-          label: '七日销量',
-          type: 'text',
-          prop: 'seleNumWeek'
-        },
-        {
-          label: '总销量',
-          type: 'text',
-          prop: 'seleNumTotal'
+          prop: 'totalMoney'
         }
       ]
     }

@@ -8,7 +8,6 @@
         <el-table
           :data="tableData"
           style="width: 100%"
-          :default-sort="{prop: 'date', order: 'descending'}"
           @sort-change="sortChange"
         >
           <el-table-column
@@ -25,12 +24,20 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作" width="200">
             <template slot-scope="scope">
               <el-button
                 size="mini"
                 @click="handleEdit(scope.$index, scope.row)"
-              >我有货</el-button>
+              >确认发货</el-button>
+              <el-button
+                size="mini"
+                @click="handleEdit(scope.$index, scope.row)"
+              >取消发货</el-button>
+              <el-button
+                size="mini"
+                @click="handleEdit(scope.$index, scope.row)"
+              >查看取消原因</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -48,73 +55,81 @@
   </div>
 </template>
 <script>
-import Header from '@/components/chooseHeader/index'
-// import sortBotton from '@/components/sortButton'
-// import industryTable from '@/components/industry/industryTable'
+import Header from '@/views/logisticsModule/logisticsHeader'
 export default {
-  name: 'IndustryNew',
+  name: 'LogisticsList',
   components: {
     Header
-    // sortBotton
-    // industryTable
   },
   data() {
     return {
-      sortColumns: ['date', 'seleNumThree', 'seleNumWeek', 'seleNumTotal', 'seleNum'],
+      sortColumns: ['price'],
       currentPage: 1,
       tableData: [
         {
+          userId: '211',
+          ids: '111',
           src:
             'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
           title: 'xxxxxxxxx',
+          logisticsStatus: 0,
+          logisticsAccount: 1,
           date: '2016-05-04',
-          colName: '日用家居-音箱-无线音箱',
           price: '¥34',
-          seleNum: '2,000',
-          seleNumThree: '5,424',
-          seleNumWeek: '12,003',
-          seleNumTotal: 4444
+          goodsNum: '2,000',
+          personInfo: '5,424',
+          status: 0,
+          address: 4444
         },
         {
+          userId: '212',
+          ids: '222',
           src:
             'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
           title: 'xxxxxxxxx',
+          logisticsStatus: 0,
+          logisticsAccount: 1,
           date: '2016-05-07',
-          colName: '日用家居-音箱-无线音箱2',
-          price: '¥34',
-          seleNum: '2,000',
-          seleNumThree: 111,
-          seleNumWeek: 444,
-          seleNumTotal: 3333
+          price: '¥33',
+          goodsNum: '2,000',
+          personInfo: 111,
+          status: 1,
+          address: 3333
         },
         {
+          userId: '213',
+          ids: '333',
           src:
             'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
           title: 'xxxxxxxxx',
+          logisticsStatus: 0,
+          logisticsAccount: 1,
           date: '2016-05-04',
-          colName: '日用家居-音箱-无线音箱3',
-          price: '¥34',
-          seleNum: '2,000',
-          seleNumThree: '5,424',
-          seleNumWeek: '12,003',
-          seleNumTotal: 1111
+          price: '¥31',
+          goodsNum: '2,000',
+          personInfo: '5,424',
+          status: 2,
+          address: 1111
         },
         {
+          userId: '214',
+          ids: '444',
           src:
             'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
           title: 'xxxxxxxxx',
+          logisticsStatus: 0,
+          logisticsAccount: 1,
           date: '2016-05-04',
-          colName: '日用家居-音箱-无线音箱4',
-          price: '¥34',
-          seleNum: '2,000',
-          seleNumThree: '5,424',
-          seleNumWeek: '12,003',
-          seleNumTotal: 5555
+          price: '¥1122',
+          goodsNum: '2,000',
+          personInfo: '5,424',
+          status: 2,
+          address: 5555
         }
       ],
       columnData: [
         {
-          label: '商品图',
+          label: '商品图片',
           type: 'img',
           prop: 'src'
         },
@@ -124,39 +139,29 @@ export default {
           prop: 'title'
         },
         {
-          label: '上架时间',
+          label: '物流状态',
           type: 'text',
-          prop: 'date'
+          prop: 'logisticsStatus'
         },
         {
-          label: '类目',
+          label: '物流账户',
           type: 'text',
-          prop: 'colName'
+          prop: 'logisticsAccount'
         },
         {
-          label: '价格',
+          label: '商品数量',
           type: 'text',
-          prop: 'price'
+          prop: 'goodsNum'
         },
         {
-          label: '一日销量',
+          label: '收件人信息',
           type: 'text',
-          prop: 'seleNum'
+          prop: 'personInfo'
         },
         {
-          label: '三日销量',
+          label: '寄送地址',
           type: 'text',
-          prop: 'seleNumThree'
-        },
-        {
-          label: '七日销量',
-          type: 'text',
-          prop: 'seleNumWeek'
-        },
-        {
-          label: '总销量',
-          type: 'text',
-          prop: 'seleNumTotal'
+          prop: 'address'
         }
       ]
     }

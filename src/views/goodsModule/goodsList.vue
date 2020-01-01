@@ -8,7 +8,6 @@
         <el-table
           :data="tableData"
           style="width: 100%"
-          :default-sort="{prop: 'date', order: 'descending'}"
           @sort-change="sortChange"
         >
           <el-table-column
@@ -25,12 +24,20 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作" width="200">
             <template slot-scope="scope">
               <el-button
                 size="mini"
                 @click="handleEdit(scope.$index, scope.row)"
-              >我有货</el-button>
+              >编辑</el-button>
+              <el-button
+                size="mini"
+                @click="handleEdit(scope.$index, scope.row)"
+              >下架</el-button>
+              <el-button
+                size="mini"
+                @click="handleEdit(scope.$index, scope.row)"
+              >删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -48,15 +55,11 @@
   </div>
 </template>
 <script>
-import Header from '@/components/chooseHeader/index'
-// import sortBotton from '@/components/sortButton'
-// import industryTable from '@/components/industry/industryTable'
+import Header from '@/views/goodsModule/goodsHeader'
 export default {
-  name: 'IndustryNew',
+  name: 'GoodsList',
   components: {
     Header
-    // sortBotton
-    // industryTable
   },
   data() {
     return {
@@ -70,6 +73,7 @@ export default {
           date: '2016-05-04',
           colName: '日用家居-音箱-无线音箱',
           price: '¥34',
+          stockNum: '333',
           seleNum: '2,000',
           seleNumThree: '5,424',
           seleNumWeek: '12,003',
@@ -82,6 +86,7 @@ export default {
           date: '2016-05-07',
           colName: '日用家居-音箱-无线音箱2',
           price: '¥34',
+          stockNum: '333',
           seleNum: '2,000',
           seleNumThree: 111,
           seleNumWeek: 444,
@@ -94,6 +99,7 @@ export default {
           date: '2016-05-04',
           colName: '日用家居-音箱-无线音箱3',
           price: '¥34',
+          stockNum: '333',
           seleNum: '2,000',
           seleNumThree: '5,424',
           seleNumWeek: '12,003',
@@ -106,6 +112,7 @@ export default {
           date: '2016-05-04',
           colName: '日用家居-音箱-无线音箱4',
           price: '¥34',
+          stockNum: '333',
           seleNum: '2,000',
           seleNumThree: '5,424',
           seleNumWeek: '12,003',
@@ -139,7 +146,12 @@ export default {
           prop: 'price'
         },
         {
-          label: '一日销量',
+          label: '库存',
+          type: 'text',
+          prop: 'stockNum'
+        },
+        {
+          label: '昨日销量',
           type: 'text',
           prop: 'seleNum'
         },
