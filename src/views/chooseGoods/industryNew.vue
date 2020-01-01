@@ -45,18 +45,18 @@
         @current-change="handleCurrentChange"
       />
     </el-card>
+    <div><hasGoodsDialog ref="hasGodsDialog" @handleEdit="handleEdit" /></div>
+    <!-- 我有货 -->
   </div>
 </template>
 <script>
 import Header from '@/components/chooseHeader/index'
-// import sortBotton from '@/components/sortButton'
-// import industryTable from '@/components/industry/industryTable'
+import hasGoodsDialog from '@/views/chooseGoods/hasGodsDialog'
 export default {
   name: 'IndustryNew',
   components: {
-    Header
-    // sortBotton
-    // industryTable
+    Header,
+    hasGoodsDialog
   },
   data() {
     return {
@@ -168,6 +168,7 @@ export default {
     },
     handleEdit(index, row) {
       console.log(index, row)
+      this.$refs.hasGodsDialog.showDialog(row, true)
     },
     handleDelete(index, row) {
       console.log(index, row)
