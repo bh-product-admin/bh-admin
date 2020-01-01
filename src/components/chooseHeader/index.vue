@@ -106,12 +106,7 @@ export default {
       }
     }
   },
-<<<<<<< HEAD
-  created() {
-  },
-=======
   created() {},
->>>>>>> e7272f719291844324c9c507429189061c8d206b
   methods: {
     onSubmit() {
       // alert('submit!')
@@ -127,9 +122,5 @@ export default {
       console.log(JSON.stringify(this.formInline), 'this.formInlinethis.formInline')
     }
   }
-<<<<<<< HEAD
-
-=======
->>>>>>> e7272f719291844324c9c507429189061c8d206b
 }
 </script>
