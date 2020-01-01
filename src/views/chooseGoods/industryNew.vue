@@ -1,23 +1,20 @@
 <template>
   <div class="index">
-    <Header />
-    <div class="content">
-      <div class="ptb10">
-        <sortBotton :buttonArr="buttonArr" />
-      </div>
-      <industryTable :tableData="tableData" :columnData="columnData" />
-    </div>
+    <el-card>
+      <Header />
+    </el-card>
+    <el-card>
+      <industryTable :table-data="tableData" :column-data="columnData" />
+    </el-card>
   </div>
 </template>
 <script>
 import Header from '@/components/chooseHeader/index'
-import sortBotton from '@/components/sortButton'
 import industryTable from '@/components/industry/industryTable'
 export default {
-  name: 'industryNew',
+  name: 'IndustryNew',
   components: {
     Header,
-    sortBotton,
     industryTable
   },
   data() {
@@ -49,9 +46,9 @@ export default {
         seleNum: '2,000',
         seleNumThree: '5,424',
         seleNumWeek: '12,003',
-        seleNumTotal: '242,531',
+        seleNumTotal: '242,531'
       }, {
-       src: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
+        src: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
         title: 'xxxxxxxxx',
         date: '2016-05-04',
         colName: '日用家居-音箱-无线音箱2',
@@ -59,9 +56,9 @@ export default {
         seleNum: '2,000',
         seleNumThree: '5,424',
         seleNumWeek: '12,003',
-        seleNumTotal: '242,531',
+        seleNumTotal: '242,531'
       }, {
-       src: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
+        src: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
         title: 'xxxxxxxxx',
         date: '2016-05-04',
         colName: '日用家居-音箱-无线音箱3',
@@ -69,7 +66,7 @@ export default {
         seleNum: '2,000',
         seleNumThree: '5,424',
         seleNumWeek: '12,003',
-        seleNumTotal: '242,531',
+        seleNumTotal: '242,531'
       }, {
         src: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
         title: 'xxxxxxxxx',
@@ -79,7 +76,7 @@ export default {
         seleNum: '2,000',
         seleNumThree: '5,424',
         seleNumWeek: '12,003',
-        seleNumTotal: '242,531',
+        seleNumTotal: '242,531'
       }],
       columnData: [
         {
@@ -119,8 +116,8 @@ export default {
           type: 'text',
           code: 'seleNumTotal'
         }
-      ],
-     
+      ]
+
     }
   },
   created() {
@@ -128,17 +125,17 @@ export default {
   },
   methods: {
     handleEdit(index, row) {
-      console.log(index, row);
+      console.log(index, row)
     },
     handleDelete(index, row) {
-      console.log(index, row);
+      console.log(index, row)
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      console.log(`每页 ${val} 条`)
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-    },
+      console.log(`当前页: ${val}`)
+    }
   }
 
 }

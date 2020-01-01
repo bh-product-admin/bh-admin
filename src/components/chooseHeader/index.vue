@@ -2,18 +2,18 @@
   <div class="index">
     <el-form :inline="true" :model="formInline" class="demo-form-inline">
       <el-form-item label="商品名称">
-        <el-input v-model="formInline.user" size="small" placeholder="审批人"></el-input>
+        <el-input v-model="formInline.user" size="small" placeholder="审批人" />
       </el-form-item>
       <el-form-item label="类目">
         <el-select v-model="formInline.region" placeholder="活动区域" size="small">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+          <el-option label="区域一" value="shanghai" />
+          <el-option label="区域二" value="beijing" />
         </el-select>
       </el-form-item>
       <el-form-item label="上架时间">
         <el-date-picker
-          size="small"
           v-model="value2"
+          size="small"
           type="daterange"
           align="right"
           unlink-panels
@@ -21,8 +21,7 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :picker-options="pickerOptions"
-        >
-        </el-date-picker>
+        />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" size="small" @click="onSubmit">查询</el-button>
@@ -32,10 +31,8 @@
 </template>
 <script>
 export default {
-  name: 'chooseHeader',
+  name: 'ChooseHeader',
   props: [],
-  created() {
-  },
   data() {
     return {
       formInline: {
@@ -44,39 +41,41 @@ export default {
       },
       value2: '',
       pickerOptions: {
-          shortcuts: [{
-            text: '最近一周',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近一个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近三个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit('pick', [start, end]);
-            }
-          }]
-        },
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      }
     }
+  },
+  created() {
   },
   methods: {
     onSubmit() {
-      alert('submit!');
+      alert('submit!')
     }
   }
-  
+
 }
 </script>

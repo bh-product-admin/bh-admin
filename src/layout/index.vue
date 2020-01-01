@@ -6,6 +6,8 @@
       <div :class="{'fixed-header':fixedHeader}">
         <navbar />
       </div>
+      <breadcrumb class="breadcrumb-container" />
+
       <app-main />
     </div>
   </div>
@@ -13,6 +15,8 @@
 
 <script>
 import { Navbar, Sidebar, AppMain } from './components'
+import Breadcrumb from '@/components/Breadcrumb'
+
 import ResizeMixin from './mixin/ResizeHandler'
 
 export default {
@@ -20,7 +24,8 @@ export default {
   components: {
     Navbar,
     Sidebar,
-    AppMain
+    AppMain,
+    Breadcrumb
   },
   mixins: [ResizeMixin],
   computed: {

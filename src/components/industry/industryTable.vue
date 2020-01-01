@@ -3,16 +3,18 @@
     <div>
       <el-table
         :data="tableData"
-        style="width: 100%">
-        <el-table-column v-for="(item, index) in columnData" :key="index" :label="item.label">
+        style="width: 100%"
+        border
+      >
+        <el-table-column v-for="(item, index) in columnData" :key="index" :label="item.label" align="center">
           <template slot-scope="scope">
-            <img v-if="item.type=='img'"  :src="scope.row.src" width="100" height="100" />
-            <span v-else >
-                {{scope.row[item.code]}}
+            <img v-if="item.type=='img'" :src="scope.row.src" width="100px" height="100px">
+            <span v-else>
+              {{ scope.row[item.code] }}
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -24,51 +26,47 @@
     </div>
     <div class="pagination-index">
       <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
         :current-page="currentPage"
         :page-sizes="[100, 200, 300, 400]"
         :page-size="100"
         layout="total, sizes, prev, pager, next, jumper"
         :total="400"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
       />
     </div>
   </div>
 </template>
 <script>
 export default {
-  name: 'industryTable',
-  props: [
-    'tableData',
-    'columnData'
-  ],
-  created() {
+  name: 'IndustryTable',
+  props: {
+    tableData: {
+      type: Object,
+      default: () => {}
+    },
+    columnData: {
+      type: Object,
+      default: () => {}
+    }
   },
   data() {
     return {
       currentPage: 4
     }
   },
+  created() {
+  },
   methods: {
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      console.log(`每页 ${val} 条`)
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-    },
+      console.log(`当前页: ${val}`)
+    }
   }
-  
+
 }
 </script>
 <style>
-  .table-box{
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
-  .pagination-index{
-    position: absolute;
-    left: 0;
-    bottom: 0;
-  }
 </style>

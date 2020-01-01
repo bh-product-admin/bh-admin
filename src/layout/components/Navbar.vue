@@ -2,8 +2,6 @@
   <div class="navbar">
     <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
-    <breadcrumb class="breadcrumb-container" />
-
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
@@ -23,7 +21,7 @@
             <el-dropdown-item>Docs</el-dropdown-item>
           </a>
           <el-dropdown-item divided>
-            <span style="display:block;" @click="logout">Log Out</span>
+            <span style="display:block;" @click="logout">退出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -33,12 +31,10 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 
 export default {
   components: {
-    Breadcrumb,
     Hamburger
   },
   computed: {

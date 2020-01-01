@@ -53,13 +53,13 @@ export const constantRoutes = [
       {
         path: 'table',
         name: 'Table',
-        component: () => import('@/views/table/index'),
+        component: () => import('@/views/chooseGoods/industryIndex'),
         meta: { title: '行业策略', icon: 'table' }
       },
       {
         path: 'tree',
         name: 'Tree',
-        component: () => import('@/views/tree/index'),
+        component: () => import('@/views/chooseGoods/industryNew'),
         meta: { title: '平台上新', icon: 'tree' }
       }
     ]
