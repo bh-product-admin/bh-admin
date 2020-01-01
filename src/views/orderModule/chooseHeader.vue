@@ -4,13 +4,13 @@
       <el-form-item label="商品名称">
         <el-input v-model="formInline.user" size="small" placeholder="审批人" />
       </el-form-item>
-      <el-form-item label="类目">
+      <el-form-item label="状态">
         <el-select v-model="formInline.region" placeholder="活动区域" size="small">
           <el-option label="区域一" value="shanghai" />
           <el-option label="区域二" value="beijing" />
         </el-select>
       </el-form-item>
-      <el-form-item label="上架时间">
+      <el-form-item label="申请时间">
         <el-date-picker
           v-model="value2"
           size="small"
@@ -69,20 +69,11 @@ export default {
       }
     }
   },
-<<<<<<< HEAD
-  created() {
-  },
-=======
   created() {},
->>>>>>> e7272f719291844324c9c507429189061c8d206b
   methods: {
     onSubmit() {
       alert('submit!')
     }
   }
-<<<<<<< HEAD
-
-=======
->>>>>>> e7272f719291844324c9c507429189061c8d206b
 }
 </script>

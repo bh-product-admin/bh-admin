@@ -8,7 +8,6 @@
         <el-table
           :data="tableData"
           style="width: 100%"
-          :default-sort="{prop: 'date', order: 'descending'}"
           @sort-change="sortChange"
         >
           <el-table-column
@@ -25,12 +24,20 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作" width="200">
             <template slot-scope="scope">
               <el-button
                 size="mini"
                 @click="handleEdit(scope.$index, scope.row)"
-              >我有货</el-button>
+              >确认订单</el-button>
+              <el-button
+                size="mini"
+                @click="handleEdit(scope.$index, scope.row)"
+              >取消订单</el-button>
+              <el-button
+                size="mini"
+                @click="handleEdit(scope.$index, scope.row)"
+              >催付款</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -48,71 +55,76 @@
   </div>
 </template>
 <script>
-import Header from '@/components/chooseHeader/index'
-// import sortBotton from '@/components/sortButton'
-// import industryTable from '@/components/industry/industryTable'
+import Header from '@/views/orderModule/chooseHeader'
 export default {
-  name: 'IndustryNew',
+  name: 'OrderList',
   components: {
     Header
-    // sortBotton
-    // industryTable
   },
   data() {
     return {
-      sortColumns: ['date', 'seleNumThree', 'seleNumWeek', 'seleNumTotal', 'seleNum'],
+      sortColumns: ['price'],
       currentPage: 1,
       tableData: [
         {
+          userId: '211',
+          ids: '111',
           src:
             'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
           title: 'xxxxxxxxx',
           date: '2016-05-04',
-          colName: '日用家居-音箱-无线音箱',
           price: '¥34',
           seleNum: '2,000',
-          seleNumThree: '5,424',
-          seleNumWeek: '12,003',
+          priceTotal: '5,424',
+          status: 0,
           seleNumTotal: 4444
         },
         {
+          userId: '212',
+          ids: '222',
           src:
             'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
           title: 'xxxxxxxxx',
           date: '2016-05-07',
-          colName: '日用家居-音箱-无线音箱2',
-          price: '¥34',
+          price: '¥33',
           seleNum: '2,000',
-          seleNumThree: 111,
-          seleNumWeek: 444,
+          priceTotal: 111,
+          status: 1,
           seleNumTotal: 3333
         },
         {
+          userId: '213',
+          ids: '333',
           src:
             'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
           title: 'xxxxxxxxx',
           date: '2016-05-04',
-          colName: '日用家居-音箱-无线音箱3',
-          price: '¥34',
+          price: '¥31',
           seleNum: '2,000',
-          seleNumThree: '5,424',
-          seleNumWeek: '12,003',
+          priceTotal: '5,424',
+          status: 2,
           seleNumTotal: 1111
         },
         {
+          userId: '214',
+          ids: '444',
           src:
             'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
           title: 'xxxxxxxxx',
           date: '2016-05-04',
-          colName: '日用家居-音箱-无线音箱4',
-          price: '¥34',
+          price: '¥1122',
           seleNum: '2,000',
-          seleNumThree: '5,424',
-          seleNumWeek: '12,003',
+          priceTotal: '5,424',
+          status: 2,
           seleNumTotal: 5555
         }
       ],
       columnData: [
+        {
+          label: '订单编号',
+          type: 'text',
+          prop: 'ids'
+        },
         {
           label: '商品图',
           type: 'img',
@@ -124,39 +136,34 @@ export default {
           prop: 'title'
         },
         {
-          label: '上架时间',
-          type: 'text',
-          prop: 'date'
-        },
-        {
-          label: '类目',
-          type: 'text',
-          prop: 'colName'
-        },
-        {
-          label: '价格',
+          label: '采购单价',
           type: 'text',
           prop: 'price'
         },
         {
-          label: '一日销量',
+          label: '采购数量',
           type: 'text',
           prop: 'seleNum'
         },
         {
-          label: '三日销量',
+          label: '采购总价',
           type: 'text',
-          prop: 'seleNumThree'
+          prop: 'priceTotal'
         },
         {
-          label: '七日销量',
+          label: '状态',
           type: 'text',
-          prop: 'seleNumWeek'
+          prop: 'status'
         },
         {
-          label: '总销量',
+          label: '买家ID',
           type: 'text',
-          prop: 'seleNumTotal'
+          prop: 'userId'
+        },
+        {
+          label: '申请时间',
+          type: 'text',
+          prop: 'date'
         }
       ]
     }

@@ -26,12 +26,15 @@
       <el-form-item>
         <el-button type="primary" size="small" @click="onSubmit">查询</el-button>
       </el-form-item>
+      <el-form-item>
+        <el-button type="primary" size="small" @click="onSubmit">新增</el-button>
+      </el-form-item>
     </el-form>
   </div>
 </template>
 <script>
 export default {
-  name: 'ChooseHeader',
+  name: 'GoodsHeader',
   props: [],
   data() {
     return {
@@ -69,20 +72,11 @@ export default {
       }
     }
   },
-<<<<<<< HEAD
-  created() {
-  },
-=======
   created() {},
->>>>>>> e7272f719291844324c9c507429189061c8d206b
   methods: {
     onSubmit() {
       alert('submit!')
     }
   }
-<<<<<<< HEAD
-
-=======
->>>>>>> e7272f719291844324c9c507429189061c8d206b
 }
 </script>
