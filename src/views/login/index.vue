@@ -5,7 +5,6 @@
         ref="loginForm"
         auto-complete="on"
         :model="loginForm"
-        :rules="loginRules"
         label-position="left"
       >
         <div style="text-align: center">
@@ -17,7 +16,7 @@
         <h2 class="login-title color-main">爆货后台管理系统</h2>
         <el-form-item prop="username">
           <el-input
-            v-model="loginForm.username"
+            v-model="loginForm.phone"
             name="username"
             type="text"
             auto-complete="on"
@@ -29,20 +28,11 @@
           </el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input
-            v-model="loginForm.password"
-            name="password"
-            auto-complete="on"
-            placeholder="请输入密码"
-            @keyup.enter.native="handleLogin"
-          >
-            <span slot="prefix">
-              <svg-icon icon-class="password" class="color-main" />
-            </span>
-            <span slot="suffix" @click="showPwd">
-              <svg-icon icon-class="eye" class="color-main" />
-            </span>
-          </el-input>
+          <el-input v-model="loginForm.code" placeholder="请输入验证码" />
+          <el-button v-if="disabled==false" type="primary" :disabled="disabled" @click="sendcode">发送验证码
+          </el-button>
+          <el-button v-if="disabled==true" type="button" :disabled="disabled" @click="sendcode">{{ btntxt }}
+          </el-button>
         </el-form-item>
         <el-form-item style="margin-bottom: 60px;text-align: center">
           <el-button
@@ -61,39 +51,20 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
 import login_center_bg from '@/assets/images/login_center_bg.png'
+import { sendCode } from '@/api/user'
 export default {
   name: 'Login',
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('密码格式不正确'))
-      } else {
-        callback()
-      }
-    }
     return {
+      disabled: false,
+      btntxt: '重新发送',
       loginForm: {
-        username: 'admin',
+        phone: '18667000223',
         password: '111111'
       },
       login_center_bg,
-      loginRules: {
-        username: [
-          { required: true, trigger: 'blur', validator: validateUsername }
-        ],
-        password: [
-          { required: true, trigger: 'blur', validator: validatePassword }
-        ]
-      },
+
       loading: false,
       passwordType: 'password',
       redirect: undefined
@@ -108,6 +79,46 @@ export default {
     }
   },
   methods: {
+    async sendcode() {
+      const reg = 11 && /^((13|14|15|17|18)[0-9]{1}\d{8})$/
+      if (this.loginForm.phone === '') {
+        this.$message({
+          message: '手机号不能为空',
+          center: true
+        })
+        return
+      }
+      if (!reg.test(this.loginForm.phone)) {
+        this.$message({
+          message: '请输入正确的手机号',
+          center: true
+        })
+        return
+      } else {
+        const res = await sendCode({ phone: this.loginForm.phone, type: 2 })
+        console.log(res)
+        this.$message({
+          message: '发送成功',
+          type: 'success',
+          center: true
+        })
+        this.time = 60
+        this.disabled = true
+        this.timer()
+      }
+    },
+    // 60S倒计时
+    timer() {
+      if (this.time > 0) {
+        this.time--
+        this.btntxt = this.time + 's后重新获取'
+        setTimeout(this.timer, 1000)
+      } else {
+        this.time = 0
+        this.btntxt = '获取验证码'
+        this.disabled = false
+      }
+    },
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -120,23 +131,17 @@ export default {
     },
     handleLogin() {
       // this.$router.push({ path: this.redirect || '/' })
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          this.$store
-            .dispatch('user/login', this.loginForm)
-            .then(() => {
-              this.$router.push({ path: this.redirect || '/' })
-              this.loading = false
-            })
-            .catch(() => {
-              this.loading = false
-            })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+      console.log(222)
+      this.loading = true
+      this.$store
+        .dispatch('user/login', this.loginForm)
+        .then(() => {
+          this.$router.push({ path: this.redirect || '/' })
+          this.loading = false
+        })
+        .catch(() => {
+          this.loading = false
+        })
     }
   }
 }

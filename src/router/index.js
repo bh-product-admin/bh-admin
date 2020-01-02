@@ -183,53 +183,54 @@ export const constantRoutes = [
     ]
   },
   {
-    path: 'external-link',
+    path: '/platformManage',
     component: Layout,
     meta: {
       title: '平台管理',
       icon: 'nested'
     },
+    redirect: '/platformManage/user',
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
+        path: 'user',
+        name: 'user',
+        component: () => import('@/views/platformManage/user/index'),
         meta: { title: '用户管理', icon: 'table' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
+        path: 'role',
+        name: 'role',
+        component: () => import('@/views/platformManage/role/index'),
         meta: { title: '角色管理', icon: 'tree' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
+        path: 'category',
+        name: 'category',
+        component: () => import('@/views/platformManage/category/index'),
         meta: { title: '类目管理', icon: 'tree' }
       },
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
+        path: 'authUser',
+        name: 'authUser',
+        component: () => import('@/views/platformManage/authUser/index'),
         meta: { title: '认证用户管理', icon: 'table' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
+        path: 'withdraw',
+        name: 'withdraw',
+        component: () => import('@/views/platformManage/withdraw/index'),
         meta: { title: '提现管理', icon: 'tree' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
+        path: 'refund',
+        name: 'refund',
+        component: () => import('@/views/platformManage/refund/index'),
         meta: { title: '退款管理', icon: 'tree' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
+        path: 'examine',
+        name: 'examine',
+        component: () => import('@/views/platformManage/examine/index'),
         meta: { title: '厂家审核', icon: 'tree' }
       }
     ]
