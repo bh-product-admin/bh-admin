@@ -28,19 +28,19 @@
             <template slot-scope="scope">
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="handleConfirm(scope.$index, scope.row, 'agree')"
               >同意退款</el-button>
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="handleConfirm(scope.$index, scope.row, 'refuse')"
               >拒绝退款</el-button>
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="handleConfirm(scope.$index, scope.row, 'remark')"
               >查看留言</el-button>
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="handleConfirm(scope.$index, scope.row, 'cause')"
               >拒绝原因</el-button>
             </template>
           </el-table-column>
@@ -186,7 +186,52 @@ export default {
     sortChange(column, prop, order) {
       console.log('sortChange--', column, prop, order)
     },
-    handleEdit(index, row) {
+    handleConfirm(index, row, codeKey) { // 操作
+      const handleObj = {
+        agree: {
+          text: '是否同意退款？',
+          type: 'warning'
+        },
+        refuse: {
+          text: '拒绝退款',
+          type: 'error',
+          isEditText: true
+        },
+        remark: {
+          text: '查看留言',
+          type: ''
+        },
+        cause: {
+          text: '拒绝原因',
+          type: ''
+        }
+      }
+      const handleItem = handleObj[codeKey]
+      if (handleItem && handleItem.isEditText) {
+        this.$prompt('拒绝退款', '请输入拒绝原因', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputErrorMessage: '请输入拒绝原因'
+        }).then(({ value }) => {
+          this.$message({
+            type: 'success',
+            message: '你的邮箱是: ' + value
+          })
+        }).catch(() => {
+        })
+      } else {
+        this.$confirm(`${handleItem.text}`, `${handleItem.text}`, {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          center: true,
+          showCancelButton: false,
+          type: `${handleItem.type}`
+        }).then(() => {
+          console.log('queding')
+        }).catch(() => {
+          console.log('quxiao')
+        })
+      }
       console.log(index, row)
     },
     handleDelete(index, row) {
