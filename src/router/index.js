@@ -337,6 +337,27 @@ export const constantRoutes = [
       }
     ]
   },
+  // 厂家版，论坛模块
+  {
+    path: '/bbs-module',
+    component: Layout,
+    redirect: 'bbs-module/bbsMain',
+    meta: {
+      title: '论坛模块',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'bbsMain',
+        component: () => import('@/views/bbsModule/bbsMain'),
+        meta: { title: '论坛主页' }
+      }, {
+        path: 'postDetail',
+        component: () => import('@/views/bbsModule/postDetail'),
+        meta: { title: '帖子详情' }
+      }
+    ]
+  },
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }

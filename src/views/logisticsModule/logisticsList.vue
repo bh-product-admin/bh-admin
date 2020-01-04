@@ -28,15 +28,15 @@
             <template slot-scope="scope">
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="handleConfirm(scope.$index, scope.row, 'confirm')"
               >确认发货</el-button>
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="handleConfirm(scope.$index, scope.row, 'cancel')"
               >取消发货</el-button>
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="handleConfirm(scope.$index, scope.row, 'reason')"
               >查看取消原因</el-button>
             </template>
           </el-table-column>
@@ -171,7 +171,48 @@ export default {
     sortChange(column, prop, order) {
       console.log('sortChange--', column, prop, order)
     },
-    handleEdit(index, row) {
+    handleConfirm(index, row, codeKey) { // 操作
+      const handleObj = {
+        confirm: {
+          text: '是否确认发货？',
+          type: 'warning'
+        },
+        cancel: {
+          text: '取消发货',
+          type: 'error',
+          isEditText: true
+        },
+        reason: {
+          text: '查看取消原因',
+          type: ''
+        }
+      }
+      const handleItem = handleObj[codeKey]
+      if (handleItem && handleItem.isEditText) {
+        this.$prompt('取消发货', '请输入取消发货', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputErrorMessage: '请输入取消发货'
+        }).then(({ value }) => {
+          this.$message({
+            type: 'success',
+            message: '你的邮箱是: ' + value
+          })
+        }).catch(() => {
+        })
+      } else {
+        this.$confirm(`${handleItem.text}`, `${handleItem.text}`, {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          center: true,
+          showCancelButton: false,
+          type: `${handleItem.type}`
+        }).then(() => {
+          console.log('queding')
+        }).catch(() => {
+          console.log('quxiao')
+        })
+      }
       console.log(index, row)
     },
     handleDelete(index, row) {

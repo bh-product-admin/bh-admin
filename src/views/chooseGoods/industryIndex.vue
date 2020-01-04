@@ -52,6 +52,8 @@
 <script>
 import Header from '@/components/chooseHeader/index'
 import hasGoodsDialog from '@/views/chooseGoods/hasGodsDialog'
+import {
+} from '@/api/user'
 export default {
   name: 'IndustryNew',
   components: {
@@ -169,6 +171,11 @@ export default {
     handleEdit(index, row) {
       console.log(index, row)
       this.$refs.hasGodsDialog.showDialog(row, true)
+      // loginByCode({ phone: 18668051021, code: '1111' }).then((res) => {
+      //   console.log(res, 'resssss2')
+      // }).then((err) => {
+      //   console.log(err, 'errr33')
+      // })
     },
     handleDelete(index, row) {
       console.log(index, row)

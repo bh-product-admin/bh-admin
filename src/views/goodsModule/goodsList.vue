@@ -28,15 +28,15 @@
             <template slot-scope="scope">
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="handleConfirm(scope.$index, scope.row, 'edit')"
               >编辑</el-button>
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="handleConfirm(scope.$index, scope.row, 'cancel')"
               >下架</el-button>
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="handleConfirm(scope.$index, scope.row, 'delete')"
               >删除</el-button>
             </template>
           </el-table-column>
@@ -52,14 +52,17 @@
         @current-change="handleCurrentChange"
       />
     </el-card>
+    <div><hasGoodsDialog ref="hasGodsDialog" @handleEdit="handleEdit" /></div>
   </div>
 </template>
 <script>
 import Header from '@/views/goodsModule/goodsHeader'
+import hasGoodsDialog from './hasGodsDialog'
 export default {
   name: 'GoodsList',
   components: {
-    Header
+    Header,
+    hasGoodsDialog
   },
   data() {
     return {
@@ -178,7 +181,38 @@ export default {
     sortChange(column, prop, order) {
       console.log('sortChange--', column, prop, order)
     },
-    handleEdit(index, row) {
+    handleConfirm(index, row, codeKey) { // 操作
+      const handleObj = {
+        edit: {
+          text: '是否确认发货？',
+          type: 'warning',
+          isEditText: true
+        },
+        cancel: {
+          text: '是否下架？',
+          type: 'warning'
+        },
+        delete: {
+          text: '是否删除？',
+          type: 'warning'
+        }
+      }
+      const handleItem = handleObj[codeKey]
+      if (handleItem && handleItem.isEditText) {
+        this.$refs.hasGodsDialog.showDialog(row, true)
+      } else {
+        this.$confirm(`${handleItem.text}`, `${handleItem.text}`, {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          center: true,
+          showCancelButton: false,
+          type: `${handleItem.type}`
+        }).then(() => {
+          console.log('queding')
+        }).catch(() => {
+          console.log('quxiao')
+        })
+      }
       console.log(index, row)
     },
     handleDelete(index, row) {

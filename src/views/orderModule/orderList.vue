@@ -28,15 +28,15 @@
             <template slot-scope="scope">
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="handleConfirm(scope.$index, scope.row, 'Confirm')"
               >确认订单</el-button>
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="handleConfirm(scope.$index, scope.row, 'Cancel')"
               >取消订单</el-button>
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="handleConfirm(scope.$index, scope.row, 'Remind')"
               >催付款</el-button>
             </template>
           </el-table-column>
@@ -170,19 +170,40 @@ export default {
   },
   created() {},
   methods: {
-    sortChange(column, prop, order) {
+    sortChange(column, prop, order) { // 排序
       console.log('sortChange--', column, prop, order)
     },
-    handleEdit(index, row) {
+    handleConfirm(index, row, codeIndex) { // 操作
+      const handleObj = {
+        Confirm: {
+          text: '确认订单',
+          type: 'warning'
+        },
+        Cancel: {
+          text: '取消订单',
+          type: 'error'
+        },
+        Remind: {
+          text: '催一下',
+          type: 'info'
+        }
+      }
+      const handleItem = handleObj[codeIndex]
+      this.$confirm(`是否${handleItem.text}？`, `${handleItem.text}`, {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: `${handleItem.type}`
+      }).then(() => {
+        console.log('queding')
+      }).catch(() => {
+        console.log('quxiao')
+      })
       console.log(index, row)
     },
-    handleDelete(index, row) {
-      console.log(index, row)
-    },
-    handleSizeChange(val) {
+    handleSizeChange(val) { // 每页条数改变
       console.log(`每页 ${val} 条`)
     },
-    handleCurrentChange(val) {
+    handleCurrentChange(val) { // 页码改变
       console.log(`当前页: ${val}`)
     }
   }
