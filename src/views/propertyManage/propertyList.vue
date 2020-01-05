@@ -28,7 +28,7 @@
             <template slot-scope="scope">
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="handleConfirm(scope.$index, scope.row)"
               >查看物流单详情</el-button>
             </template>
           </el-table-column>
@@ -44,14 +44,17 @@
         @current-change="handleCurrentChange"
       />
     </el-card>
+    <div><hasGoodsDialog ref="hasGodsDialog" @handleEdit="handleEdit" /></div>
   </div>
 </template>
 <script>
 import Header from '@/views/propertyManage/propertyHeader'
+import hasGoodsDialog from './hasGodsDialog'
 export default {
   name: 'PropertyList',
   components: {
-    Header
+    Header,
+    hasGoodsDialog
   },
   data() {
     return {
@@ -162,8 +165,9 @@ export default {
     sortChange(column, prop, order) {
       console.log('sortChange--', column, prop, order)
     },
-    handleEdit(index, row) {
+    handleConfirm(index, row) {
       console.log(index, row)
+      this.$refs.hasGodsDialog.showDialog(row, true)
     },
     handleDelete(index, row) {
       console.log(index, row)
