@@ -80,7 +80,7 @@ export default {
   },
   methods: {
     async sendcode() {
-      const reg = 11 && /^((13|14|15|17|18)[0-9]{1}\d{8})$/
+      const reg = 11 && /^((13|14|15|17|18|19)[0-9]{1}\d{8})$/
       if (this.loginForm.phone === '') {
         this.$message({
           message: '手机号不能为空',
@@ -95,16 +95,19 @@ export default {
         })
         return
       } else {
-        const res = await sendCode({ phone: this.loginForm.phone, type: 2 })
+        const res = await sendCode({ phone: this.loginForm.phone, type: 1 })
         console.log(res)
-        this.$message({
-          message: '发送成功',
-          type: 'success',
-          center: true
-        })
-        this.time = 60
-        this.disabled = true
-        this.timer()
+        if (res.success) {
+          this.$message.success({
+            message: '发送成功',
+            center: true
+          })
+          this.time = 60
+          this.disabled = true
+          this.timer()
+        } else {
+          this.$message.error(res.message)
+        }
       }
     },
     // 60S倒计时

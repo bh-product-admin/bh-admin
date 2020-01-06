@@ -2,17 +2,9 @@ import request from '@/utils/request'
 
 export function login(data) {
   return request({
-    url: 'login/login',
+    url: '/login/login',
     method: 'post',
     data
-  })
-}
-
-export function getInfo(token) {
-  return request({
-    url: '/user/info',
-    method: 'get',
-    params: { token }
   })
 }
 
@@ -25,6 +17,21 @@ export function logout() {
 export function sendCode(data) {
   return request({
     url: '/sms/sendCode',
+    method: 'post',
+    data
+  })
+}
+export function configRemove(data) {
+  return request({
+    url: '/config/remove',
+    method: 'post',
+    data
+  })
+}
+
+export function getByKeyword(data) {
+  return request({
+    url: '/config/getByKeyword',
     method: 'post',
     data
   })
