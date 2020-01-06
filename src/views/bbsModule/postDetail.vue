@@ -55,6 +55,9 @@
   </div>
 </template>
 <script>
+import {
+  getBlogDetail // 根据帖子ID，查询帖子详情
+} from '@/api/bbsModule'
 import PostOrReplyDialog from './postOrReplyDialog'
 export default {
   name: 'PostDetail',
@@ -93,7 +96,30 @@ export default {
       currentPage: 1
     }
   },
+  created() {
+    console.log(this.$route)
+    const { id = '' } = this.$route.query
+    this.blogId = id
+    if (!this.blogId) {
+      this.$router.push({
+        path: '/bbs-module/bbsMain'
+      })
+    } else this.fetchBlogDetail()
+  },
   methods: {
+    fetchBlogDetail() { // 查看博客详情
+      const params = {
+        id: this.blogId
+      }
+      getBlogDetail(params).then((res = {}) => {
+        console.log(res, 'res')
+      }).catch((err = {}) => {
+        console.log(err, 'err')
+      })
+    },
+    setAddReply() {
+      // blogAddReply()
+    },
     postReply() {
       this.$refs.PostOrReplyDialog.showDialog(true)
     },

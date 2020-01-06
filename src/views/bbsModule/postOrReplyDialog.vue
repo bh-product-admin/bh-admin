@@ -18,11 +18,15 @@
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      <el-button type="primary" @click="replyAddReply">确 定</el-button>
     </span>
   </el-dialog>
 </template>
 <script>
+import {
+  setAddReply, // 添加一条评论
+  blogAddReply // 帖子中的评论，添加回复内容
+} from '@/api/bbsModule'
 export default {
   name: 'PostOrReplyDialog',
   data() {
@@ -34,6 +38,37 @@ export default {
     }
   },
   methods: {
+    addAddReply() {
+      setAddReply()
+    },
+    replyAddReply() {
+      if (!this.formInline.cont) {
+        this.$message.error('请填写内容')
+      } else {
+        const isAddOrReply = true
+        const params = {
+          content: this.formInline.cont,
+          phone: '13677777777'
+        }
+        if (isAddOrReply) {
+          setAddReply(params).then((res = {}) => { // 添加评论
+            console.log(res, 'res')
+            this.dialogVisible = false
+            this.$message.success('操作成功')
+          }).catch((err = {}) => {
+            console.log(err, 'err')
+          })
+        } else {
+          blogAddReply(params).then((res = {}) => { // 回复评论
+            console.log(res, 'res')
+            this.dialogVisible = false
+            this.$message.success('操作成功')
+          }).catch((err = {}) => {
+            console.log(err, 'err')
+          })
+        }
+      }
+    },
     handleClose(done) {
       this.$confirm('确认关闭？')
         .then(_ => {

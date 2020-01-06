@@ -35,6 +35,9 @@
   </el-form>
 </template>
 <script>
+import {
+  getBlogType // 获取帖子类型
+} from '@/api/bbsModule'
 export default {
   name: 'BbsHeader',
   data() {
@@ -65,9 +68,24 @@ export default {
       }]
     }
   },
+  created() {
+    this.fetchBlogType()
+    this.fetchBlogList()
+  },
   methods: {
     search() {
       this.$emit('search', this.formInline)
+    },
+    fetchBlogType() { // 获取帖子类型
+      const params = {
+        keyword: 'blogType'
+      }
+      getBlogType(params).then((res = {}) => {
+        console.log(res, 'res')
+        this.options = res
+      }).catch((err = {}) => {
+        console.log(err, 'err')
+      })
     }
   }
 }
