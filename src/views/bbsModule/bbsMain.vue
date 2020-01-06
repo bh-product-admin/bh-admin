@@ -18,6 +18,7 @@
           style="width: 100%"
           :default-sort="{prop: 'time', order: 'descending'}"
           @sort-change="sortChange"
+          @row-click="handleView"
         >
           <el-table-column
             v-for="(item, index) in columnData"
@@ -48,6 +49,9 @@
   </div>
 </template>
 <script>
+import {
+  getBlogList
+} from '@/api/bbsModule'
 import bbsHeader from './bbsHeader'
 import PostingDialog from './postingDialog'
 export default {
@@ -123,7 +127,9 @@ export default {
       ]
     }
   },
-  created() {},
+  created() {
+    this.fetchBlogList()
+  },
   methods: {
     sortChange(column, prop, order) {
       console.log('sortChange--', column, prop, order)
@@ -142,6 +148,33 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
+    },
+    handleView(row) { // 跳转页面
+      console.log(row, 'row')
+      const { commentNums = '' } = row
+      console.log(commentNums, 'commentNums')
+      if (commentNums) {
+        this.$router.push({
+          path: '/bbs-module/postDetail',
+          query: {
+            id: commentNums
+          }
+        })
+      }
+    },
+    fetchBlogList() { // 获取帖子列表
+      const params = {
+        sortField: 'created',
+        orderBy: 'asc'
+      }
+      getBlogList(params).then((res = {}) => {
+        console.log(res, 'res')
+        const { data = [] } = res
+        this.tableData = data && data instanceof Array && data.length >= 0 ? data : []
+      }).catch((err) => {
+        this.tableData = []
+        console.log(err, 'err')
+      })
     }
   }
 }

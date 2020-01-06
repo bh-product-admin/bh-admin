@@ -8,7 +8,7 @@
     <el-form :inline="true" :model="formInline" class="demo-form-inline">
       <div>
         <el-form-item label="帖子类型">
-          <el-select v-model="formInline.type" size="small" placeholder="请选择">
+          <el-select v-model="formInline.typeId" size="small" placeholder="请选择">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -23,7 +23,7 @@
       </div>
       <el-form-item label="正文">
         <el-input
-          v-model="formInline.cont"
+          v-model="formInline.content"
           class="main-text"
           type="textarea"
           :rows="2"
@@ -33,20 +33,23 @@
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">发 布</el-button>
+      <el-button type="primary" @click="createAddReply">发 布</el-button>
     </span>
   </el-dialog>
 </template>
 <script>
+import {
+  aadBlogAdd // 添加一条帖子
+} from '@/api/bbsModule'
 export default {
   name: 'PostingDialog',
   data() {
     return {
       dialogVisible: false,
       formInline: {
-        type: '',
+        typeId: '',
         title: '',
-        cont: ''
+        content: ''
       },
       options: [{
         value: '',
@@ -76,6 +79,23 @@ export default {
           done()
         })
         .catch(_ => {})
+    },
+    createAddReply() {
+      if (!this.formInline.content) {
+        this.$message.error('请填写内容')
+      } else {
+        const params = {
+          ...this.formInline,
+          userId: '11'
+        }
+        aadBlogAdd(params).then((res = {}) => { // 添加一条帖子
+          console.log(res, 'res')
+          this.dialogVisible = false
+          this.$message.success('操作成功')
+        }).catch((err = {}) => {
+          console.log(err, 'err')
+        })
+      }
     },
     showDialog(isDialogVisible) {
       this.dialogVisible = isDialogVisible
