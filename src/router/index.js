@@ -72,20 +72,20 @@ export const constantRoutes = [
     meta: { title: '我的订单', icon: 'example' },
     children: [
       {
-        path: 'index',
-        name: 'Form',
+        path: 'purchase',
+        name: 'purchase',
         component: () => import('@/views/form/index'),
         meta: { title: '已采购订单', icon: 'form' }
       },
       {
-        path: 'index',
-        name: 'Form',
+        path: 'wait',
+        name: 'wait',
         component: () => import('@/views/form/index'),
         meta: { title: '等待上架确认', icon: 'form' }
       },
       {
-        path: 'index',
-        name: 'Form',
+        path: 'refund',
+        name: 'refund',
         component: () => import('@/views/form/index'),
         meta: { title: '退款订单管理', icon: 'form' }
       }
@@ -93,10 +93,10 @@ export const constantRoutes = [
   },
 
   {
-    path: '/nested',
+    path: '/logistics',
     component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
+    redirect: '/logistics/menu1',
+    name: 'logistics',
     meta: {
       title: '商品物流',
       icon: 'nested'
@@ -169,16 +169,16 @@ export const constantRoutes = [
         meta: { title: '资金管理', icon: 'table' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
+        path: 'profit',
+        name: 'profit',
         component: () => import('@/views/tree/index'),
-        meta: { title: '收益管理', icon: 'tree' }
+        meta: { title: '收益管理', icon: 'form' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
+        path: 'account',
+        name: 'account',
         component: () => import('@/views/tree/index'),
-        meta: { title: '我的账户', icon: 'tree' }
+        meta: { title: '我的账户', icon: 'form' }
       }
     ]
   },
@@ -201,7 +201,7 @@ export const constantRoutes = [
         path: 'role',
         name: 'role',
         component: () => import('@/views/platformManage/role/index'),
-        meta: { title: '角色管理', icon: 'tree' }
+        meta: { title: '角色管理', icon: 'form' }
       },
       {
         path: 'category',
@@ -219,19 +219,19 @@ export const constantRoutes = [
         path: 'withdraw',
         name: 'withdraw',
         component: () => import('@/views/platformManage/withdraw/index'),
-        meta: { title: '提现管理', icon: 'tree' }
+        meta: { title: '提现管理', icon: 'form' }
       },
       {
         path: 'refund',
         name: 'refund',
         component: () => import('@/views/platformManage/refund/index'),
-        meta: { title: '退款管理', icon: 'tree' }
+        meta: { title: '退款管理', icon: 'form' }
       },
       {
         path: 'examine',
         name: 'examine',
         component: () => import('@/views/platformManage/examine/index'),
-        meta: { title: '厂家审核', icon: 'tree' }
+        meta: { title: '厂家审核', icon: 'form' }
       }
     ]
   },

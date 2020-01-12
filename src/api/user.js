@@ -36,3 +36,11 @@ export function getByKeyword(data) {
     data
   })
 }
+
+export function getUserList(data) {
+  return request({
+    url: '/user/list',
+    method: 'post',
+    data
+  })
+}

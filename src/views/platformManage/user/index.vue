@@ -64,6 +64,7 @@
 </template>
 
 <script>
+import { getUserList } from '@/api/user'
 export default {
   data() {
     return {
@@ -127,22 +128,22 @@ export default {
         {
           label: '用户手机号',
           type: 'text',
-          prop: 'ids'
+          phone: 'ids'
         },
         {
           label: 'id',
           type: 'img',
-          prop: 'src'
+          prop: 'id'
         },
         {
           label: '类型',
           type: 'text',
-          prop: 'title'
+          prop: 'type'
         },
         {
           label: '注册时间',
           type: 'text',
-          prop: 'price'
+          prop: 'created'
         },
         {
           label: '最近一次登录',
@@ -152,7 +153,7 @@ export default {
         {
           label: '认证用户',
           type: 'text',
-          prop: 'priceTotal'
+          prop: 'certified'
         },
         {
           label: '总交易额',
@@ -184,6 +185,14 @@ export default {
           label: '卖家'
         }
       ]
+    }
+  },
+  async created() {
+    try {
+      const res = await getUserList()
+      this.tableData = res.data.list
+    } catch (error) {
+      console.log(error)
     }
   },
   methods: {
