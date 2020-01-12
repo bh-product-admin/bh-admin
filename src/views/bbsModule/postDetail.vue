@@ -2,21 +2,21 @@
   <div>
     <el-card>
       <div class="flex jsb aic">
-        <h4>抖音优质渠道，求服饰类靠谱供应厂家，详细要求里面看~</h4>
+        <h4>{{ PostDetail.blog.title }}</h4>
         <div class="flex jsb aic f12">
           <div class="flex aic">
             <img :src="img" class="head-img">
-            <span class="m10">188****6636</span>
+            <span class="m10">{{ PostDetail.phone }}</span>
           </div>
-          <span class="ml10">2019.11.11 18:00:00</span>
+          <span class="ml10">{{ PostDetail.blog.created | datetimeDot }}</span>
         </div>
       </div>
       <div class="divider" />
       <div>
         <div class="taj">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget.
+          {{ PostDetail.blog.content }}
         </div>
-        <span class="el-link" @click="postReply">评论（1）</span>
+        <span class="el-link" @click="postReply('comment')">评论（{{ PostDetail.blog.commentNum }}）</span>
       </div>
     </el-card>
     <el-card class="comment-box">
@@ -28,35 +28,36 @@
           <div class="flex jfs aic f12">
             <div class="flex aic">
               <img :src="item.headImg" class="head-img">
-              <span class="m10">{{ item.tel }}</span>
+              <span class="m10">{{ item.phone }}</span>
             </div>
-            <span class="ml10">{{ item.time }}</span>
+            <span class="ml10">{{ item.comments.created | datetimeDot }}</span>
           </div>
           <div>
             <div class="comment-item taj">
-              {{ item.comment }}
+              {{ item.comments.content }}
             </div>
-            <span class="el-link" @click="postReply">回复</span>
+            <span class="el-link" @click="postReply('reply')">回复</span>
           </div>
           <div class="divider" />
         </li>
         <el-pagination
-          :current-page="currentPage"
-          :page-sizes="[100, 200, 300, 400]"
-          :page-size="100"
+          :current-page="pagination.currentPage"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="pagination.pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="400"
+          :total="pagination.total"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
         />
       </ul>
-      <PostOrReplyDialog ref="PostOrReplyDialog" />
+      <PostOrReplyDialog ref="PostOrReplyDialog" @blogReplayAddSuccess="blogReplayAddSuccess" />
     </el-card>
   </div>
 </template>
 <script>
 import {
-  getBlogDetail // 根据帖子ID，查询帖子详情
+  getBlogDetail, // 根据帖子ID，查询帖子详情
+  getByBlogIdById
 } from '@/api/bbsModule'
 import PostOrReplyDialog from './postOrReplyDialog'
 export default {
@@ -93,7 +94,13 @@ export default {
           comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget.'
         }
       ],
-      currentPage: 1
+      currentPage: 1,
+      PostDetail: {},
+      pagination: {
+        total: 0,
+        pageSize: 10,
+        currentPage: 1
+      }
     }
   },
   created() {
@@ -107,21 +114,41 @@ export default {
     } else this.fetchBlogDetail()
   },
   methods: {
+    blogReplayAddSuccess() {
+      this.fetchBlogDetail()
+    },
     fetchBlogDetail() { // 查看博客详情
       const params = {
         id: this.blogId
       }
       getBlogDetail(params).then((res = {}) => {
         console.log(res, 'res')
+        const { data = {}} = res
+        this.PostDetail = data
+        this.pagination = {
+          total: (data && data.blog && data.blog.commentNum) || 0,
+          pageSize: (data && data.blog && data.blog.pageSize) || 10,
+          currentPage: (data && data.blog && data.blog.pageNum) || 1
+        }
+        this.setAddReply()
       }).catch((err = {}) => {
         console.log(err, 'err')
       })
     },
     setAddReply() {
-      // blogAddReply()
+      const params = {
+        id: this.blogId
+      }
+      getByBlogIdById(params).then((res) => {
+        console.log(res, 'ressetAddReply')
+        const { data = [] } = res
+        this.comments = data
+      }).catch((err) => {
+        console.log(err, 'errsetAddReply')
+      })
     },
-    postReply() {
-      this.$refs.PostOrReplyDialog.showDialog(true)
+    postReply(replyOrComment) {
+      this.$refs.PostOrReplyDialog.showDialog(true, replyOrComment, this.blogId)
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)

@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie'
 /**
  * Created by PanJiaChen on 16/11/18.
  */
@@ -104,4 +105,21 @@ export function param2Obj(url) {
         .replace(/\+/g, ' ') +
       '"}'
   )
+}
+
+/**
+ * @param {string} cookieCode
+ * @returns {string}
+ */
+export function getCookieByCode(cookieCode) {
+  return Cookies.get(cookieCode)
+}
+
+/**
+ * @param {string} phone
+ * @returns {string}
+ */
+export function filterPhone(phone = '') {
+  if (typeof (phone) !== 'string') return ''
+  return phone.replace(/(\d{3})\d*(\d{4})/, '$1****$2')
 }
