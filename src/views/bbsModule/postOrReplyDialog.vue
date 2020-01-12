@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="评论/回复弹窗"
+    :title="dialogTitle"
     :visible.sync="dialogVisible"
     width="800px"
     :before-close="handleClose"
@@ -24,9 +24,13 @@
 </template>
 <script>
 import {
-  setAddReply, // 添加一条评论
+  blogAddComment, // 添加一条评论
   blogAddReply // 帖子中的评论，添加回复内容
 } from '@/api/bbsModule'
+import {
+  getCookieByCode,
+  filterPhone
+} from '@/utils/index'
 export default {
   name: 'PostOrReplyDialog',
   data() {
@@ -34,40 +38,67 @@ export default {
       dialogVisible: false,
       formInline: {
         cont: ''
-      }
+      },
+      userId: getCookieByCode('id'),
+      phone: getCookieByCode('phone'),
+      blogId: undefined,
+      dialogTitle: '评论'
     }
   },
   methods: {
     addAddReply() {
-      setAddReply()
+      blogAddComment()
     },
     replyAddReply() {
       if (!this.formInline.cont) {
         this.$message.error('请填写内容')
       } else {
-        const isAddOrReply = true
+        const replyOrComment = this.replyOrComment === 'comment'
         const params = {
-          content: this.formInline.cont,
-          phone: '13677777777'
+          content: this.formInline.cont
         }
-        if (isAddOrReply) {
-          setAddReply(params).then((res = {}) => { // 添加评论
+        if (replyOrComment) {
+          const newParams = {
+            ...params,
+            blogId: this.blogId,
+            userId: this.userId
+          }
+          blogAddComment(newParams).then((res = {}) => { // 添加评论
             console.log(res, 'res')
             this.dialogVisible = false
             this.$message.success('操作成功')
+            this.formInline.cont = ''
+            this.$emit('blogReplayAddSuccess')
           }).catch((err = {}) => {
             console.log(err, 'err')
           })
         } else {
-          blogAddReply(params).then((res = {}) => { // 回复评论
+          const replyJson = {
+            phone: filterPhone(this.phone),
+            content: this.formInline.cont
+          }
+          const newParams = {
+            id: this.blogId,
+            replyJson: JSON.stringify(replyJson)
+          }
+          blogAddReply(newParams).then((res = {}) => { // 回复评论
             console.log(res, 'res')
             this.dialogVisible = false
             this.$message.success('操作成功')
+            this.formInline.cont = ''
+            this.$emit('blogReplayAddSuccess')
           }).catch((err = {}) => {
             console.log(err, 'err')
           })
         }
       }
+    },
+
+    //   aadBlogAdd, // 添加一条帖子
+    // blogAddComment, // 添加一条评论
+    // blogAddReply // 帖子中的评论，添加回复内容
+    createBlog() {
+
     },
     handleClose(done) {
       this.$confirm('确认关闭？')
@@ -76,8 +107,11 @@ export default {
         })
         .catch(_ => {})
     },
-    showDialog(isDialogVisible) {
+    showDialog(isDialogVisible, replyOrComment, blogId) {
       this.dialogVisible = isDialogVisible
+      this.replyOrComment = replyOrComment
+      this.blogId = blogId
+      this.dialogTitle = replyOrComment === 'comment' ? '评论' : '回复'
     }
   }
 }

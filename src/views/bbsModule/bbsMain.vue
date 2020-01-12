@@ -17,6 +17,7 @@
           :data="tableData"
           style="width: 100%"
           :default-sort="{prop: 'time', order: 'descending'}"
+          :highlight-current-row="true"
           @sort-change="sortChange"
           @row-click="handleView"
         >
@@ -29,7 +30,9 @@
             :sortable="sortColumns.includes(item.prop) ? true : false"
           >
             <template slot-scope="scope">
-              {{ scope.row[item.prop] }}
+              <span v-if="!item.filters">{{ scope.row[item.prop] }}</span>
+              <span v-if="item.filters === 'date'">{{ scope.row[item.prop] | datetimeDot }}</span>
+              <span v-if="item.filters === 'type'">{{ formatType(scope.row[item.prop]) }}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -52,8 +55,10 @@
 import {
   getBlogList
 } from '@/api/bbsModule'
+import { formatTime } from '@/utils/index.js'
 import bbsHeader from './bbsHeader'
 import PostingDialog from './postingDialog'
+// import { format } from ''
 export default {
   name: 'BbsMain',
   components: {
@@ -64,75 +69,50 @@ export default {
     return {
       sortColumns: ['time', 'commentNums'],
       currentPage: 1,
-      tableData: [
-        {
-          type: '找货源',
-          title: '抖音优质渠道，求服饰类靠谱供应厂家，详细要求里面看~',
-          time: '2016-05-04',
-          commentNums: 4444
-        },
-        {
-          type: '找货源',
-          title: '抖音优质渠道，求服饰类靠谱供应厂家，详细要求里面看~',
-          time: '2016-05-03',
-          commentNums: 4444
-        },
-        {
-          type: '找货源',
-          title: '抖音优质渠道，求服饰类靠谱供应厂家，详细要求里面看~',
-          time: '2016-05-07',
-          commentNums: 9993
-        },
-        {
-          type: '找货源',
-          title: '抖音优质渠道，求服饰类靠谱供应厂家，详细要求里面看~',
-          time: '2016-05-04',
-          commentNums: 666
-        },
-        {
-          type: '找货源',
-          title: '抖音优质渠道，求服饰类靠谱供应厂家，详细要求里面看~',
-          time: '2016-05-04',
-          commentNums: 123
-        },
-        {
-          type: '找货源',
-          title: '抖音优质渠道，求服饰类靠谱供应厂家，详细要求里面看~',
-          time: '2016-05-04',
-          commentNums: 4444
-        }
-      ],
-      columnData: [
-        {
-          label: '帖子类型',
-          type: 'text',
-          prop: 'type'
-        },
-        {
-          label: '帖子标题',
-          width: 600,
-          type: 'text',
-          prop: 'title'
-        },
-        {
-          label: '发布时间',
-          type: 'text',
-          prop: 'time'
-        },
-        {
-          label: '评论数',
-          type: 'text',
-          prop: 'commentNums'
-        }
-      ]
+      tableData: [],
+      pageData: {},
+      columnData: [{
+        label: '帖子类型',
+        type: 'text',
+        prop: 'typeId',
+        filters: 'type'
+      },
+      {
+        label: '帖子标题',
+        width: 600,
+        type: 'text',
+        prop: 'title'
+      },
+      {
+        label: '发布时间',
+        type: 'text',
+        prop: 'created',
+        filters: 'date'
+      },
+      {
+        label: '评论数',
+        type: 'text',
+        prop: 'commentNum'
+      }]
     }
   },
-  created() {
+  mounted() {
     this.fetchBlogList()
+    // console.log(this, 'thsi')
   },
   methods: {
     sortChange(column, prop, order) {
       console.log('sortChange--', column, prop, order)
+    },
+    formatDate(date) {
+      console.log('------------142--------------', this)
+      // const dateTime = new Date(date)
+      // console.log(this.utils(dateTime), 'this.utils(dateTime)')
+      return formatTime(new Date(date))
+    },
+    formatType(code) {
+      const arr = ['111', '222', '333']
+      return arr[code]
     },
     search(val) {
       console.log('search--', val)
@@ -151,13 +131,13 @@ export default {
     },
     handleView(row) { // 跳转页面
       console.log(row, 'row')
-      const { commentNums = '' } = row
-      console.log(commentNums, 'commentNums')
-      if (commentNums) {
+      const { id = '' } = row
+      console.log(id, 'commentNums')
+      if (id) {
         this.$router.push({
           path: '/bbs-module/postDetail',
           query: {
-            id: commentNums
+            id
           }
         })
       }
@@ -168,9 +148,10 @@ export default {
         orderBy: 'asc'
       }
       getBlogList(params).then((res = {}) => {
-        console.log(res, 'res')
-        const { data = [] } = res
-        this.tableData = data && data instanceof Array && data.length >= 0 ? data : []
+        console.log(res, 'resgetBlogList')
+        const { data = {}, data: { list = [] }} = res
+        this.pageData = data
+        this.tableData = list && list instanceof Array && list.length >= 0 ? list : []
       }).catch((err) => {
         this.tableData = []
         console.log(err, 'err')
@@ -189,6 +170,9 @@ export default {
 }
 ::v-deep .el-alert{
   margin: 10px auto
+}
+::v-deep .el-table__row:hover{
+  cursor: pointer;
 }
 
 </style>

@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="评论"
+    title="发帖"
     :visible.sync="dialogVisible"
     width="800px"
     :before-close="handleClose"

@@ -70,7 +70,7 @@ export default {
   },
   created() {
     this.fetchBlogType()
-    this.fetchBlogList()
+    // this.fetchBlogList()
   },
   methods: {
     search() {
@@ -81,8 +81,13 @@ export default {
         keyword: 'blogType'
       }
       getBlogType(params).then((res = {}) => {
-        console.log(res, 'res')
-        this.options = res
+        console.log(res, 'resgetBlogType')
+        const { data = '' } = res
+        const newData = data.replace(/\'/g, '"')
+        console.log(newData, 'newData', typeof (newData))
+
+        // console.log(JSON.parse(newData))
+        // this.options = newData
       }).catch((err = {}) => {
         console.log(err, 'err')
       })
