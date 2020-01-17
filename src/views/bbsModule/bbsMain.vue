@@ -48,7 +48,7 @@
       />
     </el-card>
     <!-- 发帖弹窗 -->
-    <PostingDialog ref="PostingDialog" />
+    <PostingDialog ref="PostingDialog" @blogCreateSuccess="blogCreateSuccess" />
   </div>
 </template>
 <script>
@@ -141,6 +141,9 @@ export default {
           }
         })
       }
+    },
+    blogCreateSuccess() {
+      this.fetchBlogList()
     },
     fetchBlogList() { // 获取帖子列表
       const params = {

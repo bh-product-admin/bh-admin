@@ -1,6 +1,7 @@
 import request from '@/utils/request'
 
 // 获取帖子列表 blog/list?sortField=created&orderBy=asc 排序字段 排序方式
+// title typeId startCreatedTime   endCreatedTime
 export function getBlogList(data) {
   return request({
     url: '/blog/list',
