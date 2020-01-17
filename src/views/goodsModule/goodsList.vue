@@ -1,7 +1,7 @@
 <template>
   <div class="index">
     <el-card>
-      <Header />
+      <Header @fetchGoodsList="fetchGoodsList" @handleAddGoods="handleAddGoods" />
     </el-card>
     <el-card>
       <div class="content">
@@ -20,7 +20,8 @@
             <template slot-scope="scope">
               <img v-if="item.type=='img'" :src="scope.row.src" width="100" height="100">
               <span v-else>
-                {{ scope.row[item.prop] }}
+                <font v-if="item.type=='date'">{{ scope.row[item.prop] | dateDot }}</font>
+                <font v-else>{{ scope.row[item.prop] }}</font>
               </span>
             </template>
           </el-table-column>
@@ -31,8 +32,9 @@
                 @click="handleConfirm(scope.$index, scope.row, 'edit')"
               >编辑</el-button>
               <el-button
+                v-if="scope.row['showStatus'] == 0"
                 size="mini"
-                @click="handleConfirm(scope.$index, scope.row, 'cancel')"
+                @click="handleConfirm(scope.$index, scope.row, 'showStatus')"
               >下架</el-button>
               <el-button
                 size="mini"
@@ -58,6 +60,10 @@
 <script>
 import Header from '@/views/goodsModule/goodsHeader'
 import hasGoodsDialog from './hasGodsDialog'
+import {
+  getWaresListByUser, // 我的商品列表 userId=2&orderBy=desc&sortField=threeSale
+  setWaresStatus // 我的商品。上下架功能 id=1&showStatus=1
+} from '@/api/goodsModule'
 export default {
   name: 'GoodsList',
   components: {
@@ -66,62 +72,10 @@ export default {
   },
   data() {
     return {
+      userId: '',
       sortColumns: ['date', 'seleNumThree', 'seleNumWeek', 'seleNumTotal', 'seleNum'],
       currentPage: 1,
-      tableData: [
-        {
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          date: '2016-05-04',
-          colName: '日用家居-音箱-无线音箱',
-          price: '¥34',
-          stockNum: '333',
-          seleNum: '2,000',
-          seleNumThree: '5,424',
-          seleNumWeek: '12,003',
-          seleNumTotal: 4444
-        },
-        {
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          date: '2016-05-07',
-          colName: '日用家居-音箱-无线音箱2',
-          price: '¥34',
-          stockNum: '333',
-          seleNum: '2,000',
-          seleNumThree: 111,
-          seleNumWeek: 444,
-          seleNumTotal: 3333
-        },
-        {
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          date: '2016-05-04',
-          colName: '日用家居-音箱-无线音箱3',
-          price: '¥34',
-          stockNum: '333',
-          seleNum: '2,000',
-          seleNumThree: '5,424',
-          seleNumWeek: '12,003',
-          seleNumTotal: 1111
-        },
-        {
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          date: '2016-05-04',
-          colName: '日用家居-音箱-无线音箱4',
-          price: '¥34',
-          stockNum: '333',
-          seleNum: '2,000',
-          seleNumThree: '5,424',
-          seleNumWeek: '12,003',
-          seleNumTotal: 5555
-        }
-      ],
+      tableData: [],
       columnData: [
         {
           label: '商品图',
@@ -135,13 +89,13 @@ export default {
         },
         {
           label: '上架时间',
-          type: 'text',
-          prop: 'date'
+          type: 'date',
+          prop: 'showTime'
         },
         {
           label: '类目',
           type: 'text',
-          prop: 'colName'
+          prop: 'skuType'
         },
         {
           label: '价格',
@@ -156,28 +110,37 @@ export default {
         {
           label: '昨日销量',
           type: 'text',
-          prop: 'seleNum'
+          prop: 'yesterdaySale'
         },
         {
           label: '三日销量',
           type: 'text',
-          prop: 'seleNumThree'
+          prop: 'threeSale'
         },
         {
           label: '七日销量',
           type: 'text',
-          prop: 'seleNumWeek'
+          prop: 'sevenSale'
         },
         {
           label: '总销量',
           type: 'text',
-          prop: 'seleNumTotal'
+          prop: 'totalSale'
         }
       ]
     }
   },
-  created() {},
+  created() {
+    this.fetchWaresList()
+  },
   methods: {
+    fetchGoodsList(formInline) {
+      this.fetchWaresList(formInline)
+    },
+    handleAddGoods() {
+      console.log('新增')
+      this.$refs.hasGodsDialog.showDialog({}, true, 'add')
+    },
     sortChange(column, prop, order) {
       console.log('sortChange--', column, prop, order)
     },
@@ -188,7 +151,7 @@ export default {
           type: 'warning',
           isEditText: true
         },
-        cancel: {
+        showStatus: {
           text: '是否下架？',
           type: 'warning'
         },
@@ -199,7 +162,7 @@ export default {
       }
       const handleItem = handleObj[codeKey]
       if (handleItem && handleItem.isEditText) {
-        this.$refs.hasGodsDialog.showDialog(row, true)
+        this.$refs.hasGodsDialog.showDialog(row, true, 'edit')
       } else {
         this.$confirm(`${handleItem.text}`, `${handleItem.text}`, {
           confirmButtonText: '确定',
@@ -208,12 +171,38 @@ export default {
           showCancelButton: false,
           type: `${handleItem.type}`
         }).then(() => {
-          console.log('queding')
+          if (codeKey === 'showStatus') { // 下架
+            const params = {
+              id: row.id,
+              showStatus: 1
+            }
+            setWaresStatus(params).then(res => {
+              this.$message.success('操作成功')
+              this.fetchWaresList()
+            })
+          }
         }).catch(() => {
           console.log('quxiao')
         })
       }
-      console.log(index, row)
+    },
+    fetchWaresList(formLine = {}) {
+      const params = {
+        ...formLine,
+        userId: this.userId,
+        orderBy: 'desc'
+        // sortField: 'threeSale'
+      }
+      getWaresListByUser(params).then((res = {}) => {
+        const { data = {}} = res
+        const { list = [] } = data
+        if (list && list instanceof Array) {
+          this.tableData = list
+        } else {
+          this.tableData = []
+        }
+        console.log(res, 'ressssgetWaresListByUser')
+      })
     },
     handleDelete(index, row) {
       console.log(index, row)
@@ -223,7 +212,8 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
-    }
+    },
+    handleEdit() {}
   }
 }
 </script>

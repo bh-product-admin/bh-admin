@@ -75,11 +75,12 @@ const actions = {
 
   // remove token
   resetToken({ commit }) {
-    return new Promise(resolve => {
-      commit('SET_TOKEN', '')
-      removeToken()
-      resolve()
-    })
+    console.log('resetTokenresetTokenresetTokenresetToken')
+    // return new Promise(resolve => {
+    //   commit('SET_TOKEN', '')
+    //   removeToken()
+    //   resolve()
+    // })
   }
 }
 

@@ -21,6 +21,12 @@ Vue.filter('datetimeDot', (data) => {
   }
 })
 
+Vue.filter('dateDot', (data) => {
+  if (data) {
+    return moment(data).format('YYYY.MM.DD')
+  }
+})
+
 Vue.filter('replyJsonContent', (data) => {
   if (data) {
     data = data.replace(/\'/g, '"')
