@@ -41,6 +41,9 @@
 import {
   aadBlogAdd // 添加一条帖子
 } from '@/api/bbsModule'
+import {
+  getCookieByCode
+} from '@/utils/index'
 export default {
   name: 'PostingDialog',
   data() {
@@ -51,26 +54,15 @@ export default {
         title: '',
         content: ''
       },
-      options: [{
-        value: '',
-        label: '全部'
-      }, {
-        value: '0',
-        label: '找货源'
-      }, {
-        value: '1',
-        label: '找渠道'
-      }, {
-        value: '2',
-        label: '找代运营'
-      }, {
-        value: '3',
-        label: '找培训'
-      }, {
-        value: '4',
-        label: '其他'
-      }]
+      userId: getCookieByCode('userId')
     }
+  },
+  computed: {
+    options() {
+      return this.$store.state.bbsModule.options || []
+    }
+  },
+  created() {
   },
   methods: {
     handleClose(done) {
@@ -86,12 +78,18 @@ export default {
       } else {
         const params = {
           ...this.formInline,
-          userId: '11'
+          userId: this.userId
         }
         aadBlogAdd(params).then((res = {}) => { // 添加一条帖子
           console.log(res, 'res')
           this.dialogVisible = false
           this.$message.success('操作成功')
+          this.formInline = {
+            typeId: '',
+            title: '',
+            content: ''
+          }
+          this.$emit('blogCreateSuccess')
         }).catch((err = {}) => {
           console.log(err, 'err')
         })

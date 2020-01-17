@@ -38,6 +38,7 @@
 import {
   getBlogType // 获取帖子类型
 } from '@/api/bbsModule'
+import { mapMutations, mapActions } from 'vuex'
 export default {
   name: 'BbsHeader',
   data() {
@@ -73,6 +74,13 @@ export default {
     // this.fetchBlogList()
   },
   methods: {
+    ...mapMutations({
+      setBlogOptions: 'SET_BLOG_OPTIONS'
+    }),
+    ...mapActions([
+      'setOptionsData',
+      'resetToken'
+    ]),
     search() {
       this.$emit('search', this.formInline)
     },
@@ -83,11 +91,20 @@ export default {
       getBlogType(params).then((res = {}) => {
         console.log(res, 'resgetBlogType')
         const { data = '' } = res
-        const newData = data.replace(/\'/g, '"')
-        console.log(newData, 'newData', typeof (newData))
-
-        // console.log(JSON.parse(newData))
-        // this.options = newData
+        var newData = eval(`(${data})`)
+        const options = [{
+          value: '',
+          label: '全部'
+        }]
+        for (const i in newData) {
+          options.push({
+            value: i,
+            label: newData[i]
+          })
+        }
+        this.options = options
+        this.$store.commit('bbsModule/SET_BLOG_OPTIONS', options)
+        // this.setOptionsData(options)
       }).catch((err = {}) => {
         console.log(err, 'err')
       })

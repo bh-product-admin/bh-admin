@@ -12,7 +12,7 @@
       </el-form-item>
       <el-form-item label="上架时间">
         <el-date-picker
-          v-model="value2"
+          v-model="searchTime"
           size="small"
           type="daterange"
           align="right"
@@ -24,7 +24,7 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" size="small" @click="onSubmit">查询</el-button>
+        <el-button type="primary" size="small" @click="fetchGoodsList">查询</el-button>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" size="small" @click="onSubmit">新增</el-button>
@@ -42,7 +42,7 @@ export default {
         user: '',
         region: ''
       },
-      value2: '',
+      searchTime: '',
       pickerOptions: {
         shortcuts: [{
           text: '最近一周',
@@ -75,7 +75,17 @@ export default {
   created() {},
   methods: {
     onSubmit() {
-      alert('submit!')
+      console.log('新增')
+      this.$emit('handleAddGoods')
+    },
+    fetchGoodsList() {
+      console.log('查询')
+      let formInline = this.formInline
+      formInline = {
+        ...formInline,
+        time: this.searchTime
+      }
+      this.$emit('fetchGoodsList', formInline)
     }
   }
 }
