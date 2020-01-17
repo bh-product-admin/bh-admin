@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2020-01-17 10:16:16
+ * @LastEditTime: 2020-01-17 13:55:55
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \bh-admin\src\permission.js
+ */
 import router from './router'
 import store from './store'
 import { Message } from 'element-ui'
@@ -8,7 +16,7 @@ import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/login'] // no redirect whitelist
+const whiteList = ['/login', '/register'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
   // start progress bar

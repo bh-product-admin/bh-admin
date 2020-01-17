@@ -43,6 +43,13 @@
           >
             登录
           </el-button>
+          <el-button
+            style="width: 100%;margin: 5px 0px;"
+            type="primary"
+            @click="$router.push({path:'/register'})"
+          >
+            厂家申请
+          </el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -278,5 +285,6 @@ $light_gray: #eee;
     cursor: pointer;
     user-select: none;
   }
+
 }
 </style>
