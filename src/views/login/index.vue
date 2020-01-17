@@ -27,8 +27,8 @@
             </span>
           </el-input>
         </el-form-item>
-        <el-form-item prop="password">
-          <el-input v-model="loginForm.code" placeholder="请输入验证码" />
+        <el-form-item prop="password" class="flex">
+          <el-input v-model="loginForm.code" placeholder="请输入验证码" style="width:62%;" />
           <el-button v-if="disabled==false" type="primary" :disabled="disabled" @click="sendcode">发送验证码
           </el-button>
           <el-button v-if="disabled==true" type="button" :disabled="disabled" @click="sendcode">{{ btntxt }}
@@ -172,7 +172,9 @@ export default {
 .login-title {
   text-align: center;
 }
-
+.flex{
+  display: flex
+}
 .login-center-layout {
   background: #409eff;
   width: auto;
