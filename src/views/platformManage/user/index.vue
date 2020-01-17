@@ -1,24 +1,41 @@
 <template>
   <div>
     <el-card>
-      <el-form :model="form" :inline="true">
+      <el-form
+        :model="form"
+        :inline="true"
+      >
         <el-form-item label="手机号:">
-          <el-input v-model="form.mobile" />
+          <el-input v-model="form.phone" />
         </el-form-item>
         <el-form-item label="用户类型:">
-          <el-select v-model="form.region" placeholder="请选择">
-            <el-option v-for="(item,index) in selectArr" :key="index" :value="item.type" :label="item.label" />
+          <el-select
+            v-model="form.type"
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="(item,index) in selectArr"
+              :key="index"
+              :value="item.type"
+              :label="item.label"
+            />
           </el-select>
         </el-form-item>
-        <el-button type="primary">黑名单用户</el-button>
-        <el-button type="primary">认证用户</el-button>
+        <el-button
+          v-model="form.status"
+          type="primary"
+        >黑名单用户</el-button>
+        <el-button
+          v-model="form.certified"
+          type="primary"
+        >认证用户</el-button>
         <el-button type="primary">查询</el-button>
       </el-form>
     </el-card>
     <el-card>
       <div class="content">
         <el-table
-          :data="tableData"
+          :data="dataList"
           border
           style="width: 100%"
           @sort-change="sortChange"
@@ -29,14 +46,13 @@
             :label="item.label"
             :prop="item.prop"
           >
-            <template slot-scope="scope">
-              <img v-if="item.type=='img'" :src="scope.row.src" width="100" height="100">
-              <span v-else>
-                {{ scope.row[item.prop] }}
-              </span>
+            <template slot-scope="scope">{{ scope.row[item.prop] }}
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="200">
+          <el-table-column
+            label="操作"
+            width="200"
+          >
             <template slot-scope="scope">
               <el-button
                 size="mini"
@@ -45,17 +61,17 @@
               <el-button
                 size="mini"
                 @click="handleEdit(scope.$index, scope.row)"
-              >删除</el-button>
+              >释放</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
       <el-pagination
-        :current-page="currentPage"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :current-page="pagination.currentPage"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="pagination.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        :total="pagination.total"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
@@ -65,90 +81,38 @@
 
 <script>
 import { getUserList } from '@/api/user'
+import moment from 'moment'
 export default {
   data() {
     return {
       sortColumns: ['price'],
       currentPage: 1,
-      tableData: [
-        {
-          userId: '211',
-          ids: '111',
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          date: '2016-05-04',
-          price: '¥34',
-          seleNum: '2,000',
-          priceTotal: '5,424',
-          status: 0,
-          seleNumTotal: 4444
-        },
-        {
-          userId: '212',
-          ids: '222',
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          date: '2016-05-07',
-          price: '¥33',
-          seleNum: '2,000',
-          priceTotal: 111,
-          status: 1,
-          seleNumTotal: 3333
-        },
-        {
-          userId: '213',
-          ids: '333',
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          date: '2016-05-04',
-          price: '¥31',
-          seleNum: '2,000',
-          priceTotal: '5,424',
-          status: 2,
-          seleNumTotal: 1111
-        },
-        {
-          userId: '214',
-          ids: '444',
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          date: '2016-05-04',
-          price: '¥1122',
-          seleNum: '2,000',
-          priceTotal: '5,424',
-          status: 2,
-          seleNumTotal: 5555
-        }
-      ],
+      tableData: [],
       columnData: [
         {
           label: '用户手机号',
           type: 'text',
-          phone: 'ids'
+          prop: 'phone'
         },
         {
           label: 'id',
-          type: 'img',
+          type: 'text',
           prop: 'id'
         },
         {
           label: '类型',
           type: 'text',
-          prop: 'type'
+          prop: 'typeName'
         },
         {
           label: '注册时间',
-          type: 'text',
+          type: 'time',
           prop: 'created'
         },
         {
           label: '最近一次登录',
           type: 'text',
-          prop: 'seleNum'
+          prop: 'updated'
         },
         {
           label: '认证用户',
@@ -158,17 +122,16 @@ export default {
         {
           label: '总交易额',
           type: 'text',
-          prop: 'status'
+          prop: 'totalMoney'
         },
         {
           label: '总收入',
           type: 'text',
-          prop: 'userId'
+          prop: 'totalTurnover'
         }
 
       ],
       form: {
-        mobile: 13511111111
 
       },
       selectArr: [
@@ -184,18 +147,53 @@ export default {
           type: 2,
           label: '卖家'
         }
-      ]
+      ],
+      pagination: {
+        total: 0,
+        pageSize: 10,
+        currentPage: 1
+      }
+    }
+  },
+  computed: {
+    dataList() {
+      this.tableData.forEach(item => {
+        switch (item.type) {
+          case 1:
+            item.typeName = '厂家'
+            break
+          case 2:
+            item.typeName = '买家'
+        }
+        item.created = moment(item.created).format('YYYY-MM-DD hh:mm:ss')
+        item.updated = moment(item.updated).format('YYYY-MM-DD hh:mm:ss')
+      })
+      return this.tableData
     }
   },
   async created() {
     try {
       const res = await getUserList()
-      this.tableData = res.data.list
+      const { data = {}} = res
+      this.tableData = data.list
+      this.pagination = {
+        total: (data && data.total) || 0,
+        pageSize: (data && data.pageSize) || 10,
+        currentPage: (data && data.pageNum) || 1
+      }
     } catch (error) {
       console.log(error)
     }
   },
   methods: {
+    async updatePageData() {
+      try {
+        const res = await getUserList()
+        this.tableData = res.data.list
+      } catch (error) {
+        console.log(error)
+      }
+    },
     sortChange(column, prop, order) {
       console.log('sortChange--', column, prop, order)
     },
@@ -216,5 +214,4 @@ export default {
 </script>
 
 <style>
-
 </style>
