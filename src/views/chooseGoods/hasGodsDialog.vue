@@ -69,7 +69,8 @@ export default {
       form: {
         skuType: '1',
         title: '',
-        img: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
+        // img: 'dsdad',
+        // img: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
         price: '',
         inventory: '',
         dayProductionNum: '',
@@ -77,7 +78,7 @@ export default {
         returnNum: '',
         maxSaleCycle: '',
         note: '',
-        id: ''
+        goodsId: ''
       },
       rules: {
         title: [
@@ -98,9 +99,9 @@ export default {
         returnNum: [
           { required: true, message: '请输入日发货', trigger: 'blur' }
         ],
-        img: [
-          { required: true, message: '请上传头像', trigger: 'blur' }
-        ],
+        // img: [
+        //   { required: true, message: '请上传头像', trigger: 'blur' }
+        // ],
         maxSaleCycle: [
           { required: true, message: '请输入日发货', trigger: 'blur' }
         ]
@@ -132,7 +133,7 @@ export default {
     showDialog(item, isDialogFormVisible) {
       console.log(item, 'indedsds')
       this.dialogFormVisible = isDialogFormVisible
-      this.form.id = item && item.id
+      this.form.goodsId = item && item.id
     }
   }
 }

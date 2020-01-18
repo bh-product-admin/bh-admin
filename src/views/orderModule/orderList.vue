@@ -43,11 +43,11 @@
         </el-table>
       </div>
       <el-pagination
-        :current-page="currentPage"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :current-page="pageData.pageNum"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="pageData.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        :total="pageData.total"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
@@ -55,6 +55,9 @@
   </div>
 </template>
 <script>
+import {
+  orderMerchantList // 商家订单列表
+} from '@/api/orderModule'
 import Header from '@/views/orderModule/chooseHeader'
 export default {
   name: 'OrderList',
@@ -65,6 +68,11 @@ export default {
     return {
       sortColumns: ['price'],
       currentPage: 1,
+      pageData: {
+        pageSize: 10,
+        total: 0,
+        pageNum: 1
+      },
       tableData: [
         {
           userId: '211',
@@ -168,8 +176,20 @@ export default {
       ]
     }
   },
-  created() {},
+  created() {
+    this.fetchOrderList()
+  },
   methods: {
+    fetchOrderList() {
+      orderMerchantList().then(res => {
+        const { data = {}, data: { list = [] }} = res
+        this.pageData = data
+        this.tableData = list && list instanceof Array && list.length >= 0 ? list : []
+        console.log(res, 'ressgetGoodsLists')
+      }).catch(err => {
+        console.log(err, 'errrrgetGoodsList')
+      })
+    },
     sortChange(column, prop, order) { // 排序
       console.log('sortChange--', column, prop, order)
     },
