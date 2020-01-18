@@ -206,21 +206,6 @@ export default {
       console.log('sortChange--', column, prop, order)
     },
     async handleEdit(index, row) {
-<<<<<<< HEAD
-      console.log(index, row)
-      try {
-        const res = await addBlack({ userId: row.id })
-        if (res.success) {
-          this.$message.success(res.msg)
-          this.updatePageData()
-        } else {
-          this.$message.error(res.msg)
-        }
-        console.log(res)
-      } catch (error) {
-        console.log(error)
-      }
-=======
       this.$confirm('确认拉黑？', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -267,7 +252,6 @@ export default {
           message: '已取消删除'
         })
       })
->>>>>>> 7ba98ad6d39131f221dee916d0b3240b920fb569
     },
     handleDelete(index, row) {
       console.log(index, row)
