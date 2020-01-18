@@ -33,16 +33,17 @@
               <span v-if="!item.filters">{{ scope.row[item.prop] }}</span>
               <span v-if="item.filters === 'date'">{{ scope.row[item.prop] | datetimeDot }}</span>
               <span v-if="item.filters === 'type'">{{ formatType(scope.row[item.prop]) }}</span>
+              <span v-if="item.filters === 'blogType'">{{ formatBlogType(scope.row[item.prop]) }}</span>
             </template>
           </el-table-column>
         </el-table>
       </div>
       <el-pagination
-        :current-page="currentPage"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :current-page="pageData.pageNum"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="pageData.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        :total="pageData.total"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
@@ -67,15 +68,25 @@ export default {
   },
   data() {
     return {
+      searchValue: {
+        keywords: '',
+        type: '',
+        startTime: '',
+        endTime: ''
+      },
       sortColumns: ['time', 'commentNums'],
       currentPage: 1,
       tableData: [],
-      pageData: {},
+      pageData: {
+        pageSize: 10,
+        total: 0,
+        pageNum: 1
+      },
       columnData: [{
         label: '帖子类型',
         type: 'text',
         prop: 'typeId',
-        filters: 'type'
+        filters: 'blogType'
       },
       {
         label: '帖子标题',
@@ -96,6 +107,11 @@ export default {
       }]
     }
   },
+  computed: {
+    options() {
+      return this.$store.state.bbsModule.options || []
+    }
+  },
   mounted() {
     this.fetchBlogList()
     // console.log(this, 'thsi')
@@ -105,17 +121,35 @@ export default {
       console.log('sortChange--', column, prop, order)
     },
     formatDate(date) {
-      console.log('------------142--------------', this)
-      // const dateTime = new Date(date)
-      // console.log(this.utils(dateTime), 'this.utils(dateTime)')
       return formatTime(new Date(date))
     },
     formatType(code) {
       const arr = ['111', '222', '333']
       return arr[code]
     },
-    search(val) {
+    formatBlogType(typeId) {
+      const options = this.options
+      const thisCheckedOption = options.filter(item => Number(item.value) === Number(typeId))
+      return (thisCheckedOption && thisCheckedOption[0] && thisCheckedOption[0].label) || '全部'
+    },
+    search(val = {}) {
       console.log('search--', val)
+      const { time, keywords, type } = val
+      let startTime = ''
+      let endTime = ''
+      if (time && time instanceof Array) {
+        startTime = this.$moment(new Date(time[0])).format('YYYY-MM-DD HH:mm:ss')
+        endTime = this.$moment(new Date(time[1])).format('YYYY-MM-DD HH:mm:ss')
+        console.log(startTime, endTime)
+      }
+      this.searchValue = {
+        keywords,
+        type,
+        startTime,
+        endTime
+      }
+      this.pageData['pageNum'] = 1
+      this.fetchBlogList()
     },
     handleEdit() {
       this.$refs.PostingDialog.showDialog(true)
@@ -124,10 +158,15 @@ export default {
       console.log(index, row)
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
+      console.log(`每页 ${val} 条`, this.pageData)
+      this.pageData['pageNum'] = 1
+      this.pageData['pageSize'] = val
+      this.fetchBlogList()
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
+      this.pageData['pageNum'] = val
+      this.fetchBlogList()
     },
     handleView(row) { // 跳转页面
       console.log(row, 'row')
@@ -143,12 +182,16 @@ export default {
       }
     },
     blogCreateSuccess() {
+      this.pageData['pageNum'] = 1
       this.fetchBlogList()
     },
     fetchBlogList() { // 获取帖子列表
       const params = {
         sortField: 'created',
-        orderBy: 'asc'
+        orderBy: 'asc',
+        pageSize: this.pageData.pageSize,
+        pageNum: this.pageData.pageNum,
+        ...this.searchValue
       }
       getBlogList(params).then((res = {}) => {
         console.log(res, 'resgetBlogList')

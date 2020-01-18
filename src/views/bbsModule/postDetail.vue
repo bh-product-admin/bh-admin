@@ -41,11 +41,11 @@
           <div class="divider" />
         </li>
         <el-pagination
-          :current-page="pagination.currentPage"
+          :current-page="pageData.pageNum"
           :page-sizes="[10, 20, 30, 40]"
-          :page-size="pagination.pageSize"
+          :page-size="pageData.pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="pagination.total"
+          :total="pageData.total"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
         />
@@ -69,14 +69,14 @@ export default {
     return {
       img: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
       comments: [],
-      currentPage: 1,
+      pageNum: 1,
       PostDetail: {
         blog: {}
       },
-      pagination: {
+      pageData: {
         total: 0,
         pageSize: 10,
-        currentPage: 1
+        pageNum: 1
       }
     }
   },
@@ -96,16 +96,18 @@ export default {
     },
     fetchBlogDetail() { // 查看博客详情
       const params = {
-        id: this.blogId
+        id: this.blogId,
+        pageSize: this.pageData.pageSize,
+        pageNum: this.pageData.pageNum
       }
       getBlogDetail(params).then((res = {}) => {
         console.log(res, 'res')
         const { data = {}} = res
         this.PostDetail = data
-        this.pagination = {
+        this.pageData = {
           total: (data && data.blog && data.blog.commentNum) || 0,
           pageSize: (data && data.blog && data.blog.pageSize) || 10,
-          currentPage: (data && data.blog && data.blog.pageNum) || 1
+          pageNum: (data && data.blog && data.blog.pageNum) || 1
         }
         this.setAddReply()
       }).catch((err = {}) => {
@@ -114,7 +116,9 @@ export default {
     },
     setAddReply() {
       const params = {
-        id: this.blogId
+        id: this.blogId,
+        pageSize: this.pageData.pageSize,
+        pageNum: this.pageData.pageNum
       }
       getByBlogIdById(params).then((res) => {
         console.log(res, 'ressetAddReply')
@@ -128,10 +132,15 @@ export default {
       this.$refs.PostOrReplyDialog.showDialog(true, replyOrComment, this.blogId)
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
+      console.log(`每页 ${val} 条`, this.pageData)
+      this.pageData['pageNum'] = 1
+      this.pageData['pageSize'] = val
+      this.fetchBlogDetail()
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
+      this.pageData['pageNum'] = val
+      this.fetchBlogDetail()
     }
   }
 }
