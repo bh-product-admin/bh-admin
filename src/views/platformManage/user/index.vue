@@ -55,10 +55,12 @@
           >
             <template slot-scope="scope">
               <el-button
+                v-if="scope.row.status===1"
                 size="mini"
                 @click="handleEdit(scope.$index, scope.row)"
               >拉黑</el-button>
               <el-button
+                v-if="scope.row.status===2"
                 size="mini"
                 @click="handleEdit(scope.$index, scope.row)"
               >释放</el-button>
@@ -80,7 +82,7 @@
 </template>
 
 <script>
-import { getUserList } from '@/api/user'
+import { getUserList, addBlack } from '@/api/user'
 import moment from 'moment'
 export default {
   data() {
@@ -197,8 +199,20 @@ export default {
     sortChange(column, prop, order) {
       console.log('sortChange--', column, prop, order)
     },
-    handleEdit(index, row) {
+    async handleEdit(index, row) {
       console.log(index, row)
+      try {
+        const res = await addBlack({ userId: row.id })
+        if (res.success) {
+          this.$message.success(res.msg)
+          this.updatePageData()
+        } else {
+          this.$message.error(res.msg)
+        }
+        console.log(res)
+      } catch (error) {
+        console.log(error)
+      }
     },
     handleDelete(index, row) {
       console.log(index, row)

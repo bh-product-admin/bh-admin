@@ -10,7 +10,7 @@ export function login(data) {
 
 export function logout() {
   return request({
-    url: '/user/logout',
+    url: '/login/loginOut',
     method: 'post'
   })
 }
@@ -44,3 +44,12 @@ export function getUserList(data) {
     data
   })
 }
+
+export function addBlack(data) {
+  return request({
+    url: '/user/addBlack',
+    method: 'post',
+    data
+  })
+}
+
