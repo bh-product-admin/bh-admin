@@ -10,7 +10,7 @@ export function login(data) {
 
 export function logout() {
   return request({
-    url: '/user/logout',
+    url: '/login/loginOut',
     method: 'post'
   })
 }
@@ -64,6 +64,34 @@ export function addBlack(data) {
 export function getCertificationIng(data) {
   return request({
     url: '/user/getCertificationIng',
+    method: 'post',
+    data
+  })
+}
+
+export function getActionByRoleId(data) {
+  return request({
+    url: '/role/getActionByRoleId',
+    method: 'post',
+    data
+  })
+}
+
+/** 图片上传 */
+
+export function upload(data) {
+  return request({
+    url: '/oss/upload',
+    method: 'post',
+    data
+  })
+}
+
+/** 申请成为厂家 */
+
+export function manufacturer(data) {
+  return request({
+    url: '/login/manufacturer',
     method: 'post',
     data
   })

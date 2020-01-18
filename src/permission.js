@@ -34,6 +34,9 @@ router.beforeEach(async(to, from, next) => {
       next({ path: '/' })
       NProgress.done()
     } else {
+      store.dispatch('user/getRoles').then(res => {
+        console.log(res)
+      })
       const hasGetUserInfo = store.getters.name
       if (hasGetUserInfo) {
         next()
