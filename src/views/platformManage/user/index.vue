@@ -214,7 +214,6 @@ export default {
         try {
           const res = await addBlack({ userId: row.id, status: 2 })
           if (res.success) {
-            debugger
             this.updatePageData()
             this.$message.success(res.msg)
           } else {

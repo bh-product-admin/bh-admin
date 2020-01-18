@@ -26,7 +26,7 @@
       </div>
       <el-form label-width="240px">
         <el-form-item label="是否申请为【认证厂家】：">
-          <el-radio v-model="form.certified" :label="5">是</el-radio>
+          <el-radio v-model="form.certified" :label="3">是</el-radio>
           <el-radio v-model="form.certified" :label="2">否</el-radio>
         </el-form-item>
       </el-form>
@@ -61,7 +61,10 @@ export default {
       disabled: false,
       btntxt: '重新发送',
       form: {
-        certified: 5
+        certified: 5,
+        licenseIcon: '123123',
+        idNumIcon: '222',
+        idNumReverseIcon: '333'
       }
     }
   },

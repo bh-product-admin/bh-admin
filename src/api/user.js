@@ -96,3 +96,13 @@ export function manufacturer(data) {
     data
   })
 }
+
+/** 修改用户认证状态 */
+
+export function certification(data) {
+  return request({
+    url: '/user/certification',
+    method: 'post',
+    data
+  })
+}

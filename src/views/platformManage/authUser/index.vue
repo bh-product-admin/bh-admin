@@ -24,11 +24,11 @@
             <template slot-scope="scope">
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="handleEdit(scope.row.id,10)"
               >驳回</el-button>
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="handleEdit(scope.row.id,10)"
               >通过</el-button>
             </template>
           </el-table-column>
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { getCertificationIng } from '@/api/user'
+import { getCertificationIng, certification } from '@/api/user'
 export default {
   data() {
     return {
@@ -109,8 +109,9 @@ export default {
     sortChange(column, prop, order) {
       console.log('sortChange--', column, prop, order)
     },
-    handleEdit(index, row) {
-      console.log(index, row)
+    async handleEdit(data, type) {
+      const res = await certification({ userId: data.id, certification: type })
+      console.log(res)
     },
     handleDelete(index, row) {
       console.log(index, row)
