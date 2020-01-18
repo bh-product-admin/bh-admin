@@ -19,7 +19,8 @@
             :sortable="sortColumns.includes(item.prop) ? true : false"
           >
             <template slot-scope="scope">
-              <img v-if="item.type=='img'" :src="scope.row.src" width="100" height="100">
+              <img v-if="item.type == 'img'" :src="scope.row.src" width="100" height="100">
+              <span v-if="item.type === 'date'">{{ scope.row[item.prop] | datetimeDot }}</span>
               <span v-else>
                 {{ scope.row[item.prop] }}
               </span>
@@ -51,7 +52,7 @@
 </template>
 <script>
 import {
-  getGoodsList // 行业策略列表数据 goods/list?type=2 类型：1.平台自营，2.鲁班 
+  getGoodsList // 行业策略列表数据 goods/list?type=2 类型：1.平台自营，2.鲁班
 } from '@/api/chooseGoods'
 import Header from '@/components/chooseHeader/index'
 import hasGoodsDialog from '@/views/chooseGoods/hasGodsDialog'
@@ -92,8 +93,8 @@ export default {
         },
         {
           label: '上架时间',
-          type: 'text',
-          prop: 'date'
+          type: 'date',
+          prop: 'showTime'
         },
         {
           label: '类目',
@@ -108,22 +109,22 @@ export default {
         {
           label: '一日销量',
           type: 'text',
-          prop: 'seleNum'
+          prop: 'daySendNum'
         },
         {
           label: '三日销量',
           type: 'text',
-          prop: 'seleNumThree'
+          prop: 'threeSale'
         },
         {
           label: '七日销量',
           type: 'text',
-          prop: 'seleNumWeek'
+          prop: 'sevenSale'
         },
         {
           label: '总销量',
           type: 'text',
-          prop: 'seleNumTotal'
+          prop: 'totalSale'
         }
       ]
     }
