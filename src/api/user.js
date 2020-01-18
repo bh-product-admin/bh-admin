@@ -45,8 +45,6 @@ export function getUserList(data) {
   })
 }
 
-<<<<<<< HEAD
-=======
 export function getManufacturerCertifiedIng(data) {
   return request({
     url: '/user/getManufacturerCertifiedIng',
@@ -55,7 +53,6 @@ export function getManufacturerCertifiedIng(data) {
   })
 }
 
->>>>>>> 7ba98ad6d39131f221dee916d0b3240b920fb569
 export function addBlack(data) {
   return request({
     url: '/user/addBlack',
@@ -64,8 +61,6 @@ export function addBlack(data) {
   })
 }
 
-<<<<<<< HEAD
-=======
 export function getCertificationIng(data) {
   return request({
     url: '/user/getCertificationIng',
@@ -111,4 +106,3 @@ export function certification(data) {
     data
   })
 }
->>>>>>> 7ba98ad6d39131f221dee916d0b3240b920fb569
