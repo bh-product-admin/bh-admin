@@ -63,3 +63,11 @@ export function getGoodsList2(data) {
   })
 }
 
+// 添加我的商品（非平台商品） goodsId=1&skuType=1&price=299&inventory=10&dayProductionNum=16&daySendNum=5&returnNum=80&maxSaleCycle=90"
+export function hasGoodAdd(data) {
+  return request({
+    url: '/wares/add',
+    method: 'post',
+    data
+  })
+}
