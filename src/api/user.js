@@ -44,3 +44,27 @@ export function getUserList(data) {
     data
   })
 }
+
+export function getManufacturerCertifiedIng(data) {
+  return request({
+    url: '/user/getManufacturerCertifiedIng',
+    method: 'post',
+    data
+  })
+}
+
+export function addBlack(data) {
+  return request({
+    url: '/user/addBlack',
+    method: 'post',
+    data
+  })
+}
+
+export function getCertificationIng(data) {
+  return request({
+    url: '/user/getCertificationIng',
+    method: 'post',
+    data
+  })
+}

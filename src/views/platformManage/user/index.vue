@@ -60,7 +60,7 @@
               >拉黑</el-button>
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="handleCancelShield(scope.row)"
               >释放</el-button>
             </template>
           </el-table-column>
@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import { getUserList } from '@/api/user'
+import { getUserList, addBlack } from '@/api/user'
 import moment from 'moment'
 export default {
   data() {
@@ -190,6 +190,12 @@ export default {
       try {
         const res = await getUserList()
         this.tableData = res.data.list
+        const { data = {}} = res
+        this.pagination = {
+          total: (data && data.total) || 0,
+          pageSize: (data && data.pageSize) || 10,
+          currentPage: (data && data.pageNum) || 1
+        }
       } catch (error) {
         console.log(error)
       }
@@ -197,8 +203,54 @@ export default {
     sortChange(column, prop, order) {
       console.log('sortChange--', column, prop, order)
     },
-    handleEdit(index, row) {
-      console.log(index, row)
+    async handleEdit(index, row) {
+      this.$confirm('确认释放？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        dangerouslyUseHTMLString: true
+      }).then(async() => {
+        try {
+          const res = await addBlack({ userId: row.id, status: 2 })
+          if (res.state) {
+            this.updatePageData()
+            this.$message.success(res.msg)
+          } else {
+            res.$message.error(res.msg)
+          }
+        } catch (error) {
+          console.log(error)
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    async handleCancelShield(data) {
+      this.$confirm('确认释放？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        dangerouslyUseHTMLString: true
+      }).then(async() => {
+        try {
+          const res = await addBlack({ userId: data.id, status: 1 })
+          if (res.state) {
+            this.updatePageData()
+            this.$message.success(res.msg)
+           
+          } else {
+            res.$message.error(res.msg)
+          }
+        } catch (error) {
+          console.log(error)
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     },
     handleDelete(index, row) {
       console.log(index, row)

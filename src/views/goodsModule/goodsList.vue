@@ -201,7 +201,6 @@ export default {
         } else {
           this.tableData = []
         }
-        console.log(res, 'ressssgetWaresListByUser')
       })
     },
     handleDelete(index, row) {
