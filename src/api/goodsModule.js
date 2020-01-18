@@ -9,10 +9,19 @@ export function getWaresListByUser(data) {
   })
 }
 
-// 我的商品。上下架功能 id=1&showStatus=1
+// 我的商品。上下架功能 id=1&showStatus=1 上架 2 下架
 export function setWaresStatus(data) {
   return request({
     url: '/wares/showStatus',
+    method: 'post',
+    data
+  })
+}
+
+// 我的商品。删除功能
+export function deleteWares(data) {
+  return request({
+    url: 'wares/remove',
     method: 'post',
     data
   })

@@ -25,17 +25,16 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="200">
+          <el-table-column label="操作" width="240">
             <template slot-scope="scope">
               <el-button
                 size="mini"
                 @click="handleConfirm(scope.$index, scope.row, 'edit')"
               >编辑</el-button>
               <el-button
-                v-if="scope.row['showStatus'] == 0"
                 size="mini"
                 @click="handleConfirm(scope.$index, scope.row, 'showStatus')"
-              >下架</el-button>
+              >{{ scope.row['showStatus'] === 1 ? '上架' : '下架' }}</el-button>
               <el-button
                 size="mini"
                 @click="handleConfirm(scope.$index, scope.row, 'delete')"
@@ -45,11 +44,11 @@
         </el-table>
       </div>
       <el-pagination
-        :current-page="currentPage"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :current-page="pageData.pageNum"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="pageData.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        :total="pageData.total"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
@@ -62,7 +61,8 @@ import Header from '@/views/goodsModule/goodsHeader'
 import hasGoodsDialog from './hasGodsDialog'
 import {
   getWaresListByUser, // 我的商品列表 userId=2&orderBy=desc&sortField=threeSale
-  setWaresStatus // 我的商品。上下架功能 id=1&showStatus=1
+  setWaresStatus, // 我的商品。上下架功能 id=1&showStatus=1
+  deleteWares // 我的商品。删除功能
 } from '@/api/goodsModule'
 export default {
   name: 'GoodsList',
@@ -76,6 +76,11 @@ export default {
       sortColumns: ['date', 'seleNumThree', 'seleNumWeek', 'seleNumTotal', 'seleNum'],
       currentPage: 1,
       tableData: [],
+      pageData: {
+        pageSize: 10,
+        total: 0,
+        pageNum: 1
+      },
       columnData: [
         {
           label: '商品图',
@@ -152,7 +157,7 @@ export default {
           isEditText: true
         },
         showStatus: {
-          text: '是否下架？',
+          text: `是否${row.showStatus === 1 ? '上架' : '下架'}？`,
           type: 'warning'
         },
         delete: {
@@ -171,18 +176,26 @@ export default {
           showCancelButton: false,
           type: `${handleItem.type}`
         }).then(() => {
-          if (codeKey === 'showStatus') { // 下架
+          if (codeKey === 'showStatus') { // 上、下架
             const params = {
               id: row.id,
-              showStatus: 1
+              showStatus: row.showStatus === 1 ? 1 : 2
             }
             setWaresStatus(params).then(res => {
               this.$message.success('操作成功')
               this.fetchWaresList()
             })
+          } else { // 删除
+            deleteWares({ id: row.id }).then(res => {
+              this.$message.success('操作成功')
+              this.fetchWaresList()
+            })
           }
         }).catch(() => {
-          console.log('quxiao')
+          this.$message({
+            type: 'info',
+            message: '已取消操作'
+          })
         })
       }
     },
@@ -203,14 +216,16 @@ export default {
         }
       })
     },
-    handleDelete(index, row) {
-      console.log(index, row)
-    },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
+      console.log(`每页 ${val} 条`, this.pageData)
+      this.pageData['pageNum'] = 1
+      this.pageData['pageSize'] = val
+      this.fetchBlogList()
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
+      this.pageData['pageNum'] = val
+      this.fetchBlogList()
     },
     handleEdit() {}
   }

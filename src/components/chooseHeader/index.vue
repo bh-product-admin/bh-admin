@@ -17,19 +17,19 @@
       </el-form-item>
       <el-form-item label="上架时间">
         <el-date-picker
-          v-model="upTime"
+          v-model="formInline.time"
           size="small"
           type="daterange"
           align="right"
           unlink-panels
-          range-separator="~"
+          range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :picker-options="pickerOptions"
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" size="small" @click="onSubmit">查询</el-button>
+        <el-button type="primary" size="small" @click="search">查询</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -44,7 +44,8 @@ export default {
         goodsName: '',
         firstGroup: '',
         secondGroup: '',
-        thirdGroup: ''
+        thirdGroup: '',
+        time: ''
       },
       firstOptionsArr: [{
         value: '1',
@@ -76,7 +77,6 @@ export default {
         value: '3',
         label: '33'
       }],
-      upTime: '',
       pickerOptions: {
         shortcuts: [{
           text: '最近一周',
@@ -108,9 +108,8 @@ export default {
   },
   created() {},
   methods: {
-    onSubmit() {
-      // alert('submit!')
-      console.log(this.upTime)
+    search() {
+      this.$emit('search', this.formInline)
     },
     shangeSelect(codeIndex) {
       console.log(codeIndex, 'codeIndex')

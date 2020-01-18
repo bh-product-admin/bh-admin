@@ -17,7 +17,7 @@
       <el-date-picker
         v-model="formInline.time"
         size="small"
-        type="datetimerange"
+        type="daterange"
         format="yyyy-MM-dd HH-mm-ss"
         align="right"
         unlink-panels
@@ -82,6 +82,7 @@ export default {
       'resetToken'
     ]),
     search() {
+      console.log(this.formInline)
       this.$emit('search', this.formInline)
     },
     fetchBlogType() { // 获取帖子类型
