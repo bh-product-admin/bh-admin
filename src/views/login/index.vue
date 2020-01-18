@@ -13,7 +13,7 @@
             style="width: 56px;height: 56px;color: #409EFF"
           />
         </div>
-        <h2 class="login-title color-main">爆货后台管理系统</h2>
+        <!-- <h2 class="login-title color-main">爆货后台管理系统</h2> -->
         <el-form-item prop="username">
           <el-input
             v-model="loginForm.phone"

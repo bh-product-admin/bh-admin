@@ -1,7 +1,7 @@
 <template>
   <div class="index">
     <el-card>
-      <Header />
+      <Header @search="search" />
     </el-card>
     <el-card>
       <div class="content">
@@ -19,7 +19,8 @@
             :sortable="sortColumns.includes(item.prop) ? true : false"
           >
             <template slot-scope="scope">
-              <img v-if="item.type=='img'" :src="scope.row.src" width="100" height="100">
+              <img v-if="item.type == 'img'" :src="scope.row.src" width="100" height="100">
+              <span v-if="item.type === 'date'">{{ scope.row[item.prop] | datetimeDot }}</span>
               <span v-else>
                 {{ scope.row[item.prop] }}
               </span>
@@ -36,11 +37,11 @@
         </el-table>
       </div>
       <el-pagination
-        :current-page="currentPage"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :current-page="pageData.pageNum"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="pageData.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        :total="pageData.total"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
@@ -50,6 +51,9 @@
   </div>
 </template>
 <script>
+import {
+  getGoodsList // 行业策略列表数据 goods/list?type=2 类型：1.平台自营，2.鲁班
+} from '@/api/chooseGoods'
 import Header from '@/components/chooseHeader/index'
 import hasGoodsDialog from '@/views/chooseGoods/hasGodsDialog'
 import {
@@ -64,56 +68,18 @@ export default {
     return {
       sortColumns: ['date', 'seleNumThree', 'seleNumWeek', 'seleNumTotal', 'seleNum'],
       currentPage: 1,
-      tableData: [
-        {
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          date: '2016-05-04',
-          colName: '日用家居-音箱-无线音箱',
-          price: '¥34',
-          seleNum: '2,000',
-          seleNumThree: '5,424',
-          seleNumWeek: '12,003',
-          seleNumTotal: 4444
-        },
-        {
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          date: '2016-05-07',
-          colName: '日用家居-音箱-无线音箱2',
-          price: '¥34',
-          seleNum: '2,000',
-          seleNumThree: 111,
-          seleNumWeek: 444,
-          seleNumTotal: 3333
-        },
-        {
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          date: '2016-05-04',
-          colName: '日用家居-音箱-无线音箱3',
-          price: '¥34',
-          seleNum: '2,000',
-          seleNumThree: '5,424',
-          seleNumWeek: '12,003',
-          seleNumTotal: 1111
-        },
-        {
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          date: '2016-05-04',
-          colName: '日用家居-音箱-无线音箱4',
-          price: '¥34',
-          seleNum: '2,000',
-          seleNumThree: '5,424',
-          seleNumWeek: '12,003',
-          seleNumTotal: 5555
-        }
-      ],
+      tableData: [],
+      searchValue: {
+        keywords: '',
+        type: '',
+        startTime: '',
+        endTime: ''
+      },
+      pageData: {
+        pageSize: 10,
+        total: 0,
+        pageNum: 1
+      },
       columnData: [
         {
           label: '商品图',
@@ -127,8 +93,8 @@ export default {
         },
         {
           label: '上架时间',
-          type: 'text',
-          prop: 'date'
+          type: 'date',
+          prop: 'showTime'
         },
         {
           label: '类目',
@@ -143,27 +109,29 @@ export default {
         {
           label: '一日销量',
           type: 'text',
-          prop: 'seleNum'
+          prop: 'daySendNum'
         },
         {
           label: '三日销量',
           type: 'text',
-          prop: 'seleNumThree'
+          prop: 'threeSale'
         },
         {
           label: '七日销量',
           type: 'text',
-          prop: 'seleNumWeek'
+          prop: 'sevenSale'
         },
         {
           label: '总销量',
           type: 'text',
-          prop: 'seleNumTotal'
+          prop: 'totalSale'
         }
       ]
     }
   },
-  created() {},
+  created() {
+    this.fetchGodList()
+  },
   methods: {
     sortChange(column, prop, order) {
       console.log('sortChange--', column, prop, order)
@@ -171,20 +139,52 @@ export default {
     handleEdit(index, row) {
       console.log(index, row)
       this.$refs.hasGodsDialog.showDialog(row, true)
-      // loginByCode({ phone: 18668051021, code: '1111' }).then((res) => {
-      //   console.log(res, 'resssss2')
-      // }).then((err) => {
-      //   console.log(err, 'errr33')
-      // })
-    },
-    handleDelete(index, row) {
-      console.log(index, row)
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
+      console.log(`每页 ${val} 条`, this.pageData)
+      this.pageData['pageNum'] = 1
+      this.pageData['pageSize'] = val
+      this.fetchGodList()
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
+      this.pageData['pageNum'] = val
+      this.fetchGodList()
+    },
+    fetchGodList() {
+      const params = {
+        type: 2,
+        pageSize: this.pageData.pageSize,
+        pageNum: this.pageData.pageNum,
+        ...this.searchValue
+      }
+      getGoodsList(params).then(res => {
+        const { data = {}, data: { list = [] }} = res
+        this.pageData = data
+        this.tableData = list && list instanceof Array && list.length >= 0 ? list : []
+        console.log(res, 'ressgetGoodsLists')
+      }).catch(err => {
+        console.log(err, 'errrrgetGoodsList')
+      })
+    },
+    search(val = {}) {
+      console.log('search--', val)
+      const { time, keywords, type } = val
+      let startTime = ''
+      let endTime = ''
+      if (time && time instanceof Array) {
+        startTime = this.$moment(new Date(time[0])).format('YYYY-MM-DD')
+        endTime = this.$moment(new Date(time[1])).format('YYYY-MM-DD')
+        console.log(startTime, endTime)
+      }
+      this.searchValue = {
+        keywords,
+        type,
+        startTime,
+        endTime
+      }
+      this.pageData['pageNum'] = 1
+      this.fetchGodList()
     }
   }
 }

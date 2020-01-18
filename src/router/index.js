@@ -159,34 +159,34 @@ export const constantRoutes = [
       // }
     ]
   },
-  {
-    path: 'external-link',
-    component: Layout,
-    meta: {
-      title: '资产管理',
-      icon: 'nested'
-    },
-    children: [
-      {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: '资金管理', icon: 'table' }
-      },
-      {
-        path: 'profit',
-        name: 'profit',
-        component: () => import('@/views/tree/index'),
-        meta: { title: '收益管理', icon: 'form' }
-      },
-      {
-        path: 'account',
-        name: 'account',
-        component: () => import('@/views/tree/index'),
-        meta: { title: '我的账户', icon: 'form' }
-      }
-    ]
-  },
+  // {
+  //   path: 'external-link',
+  //   component: Layout,
+  //   meta: {
+  //     title: '资产管理',
+  //     icon: 'nested'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'table',
+  //       name: 'Table',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: '资金管理', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'profit',
+  //       name: 'profit',
+  //       component: () => import('@/views/tree/index'),
+  //       meta: { title: '收益管理', icon: 'form' }
+  //     },
+  //     {
+  //       path: 'account',
+  //       name: 'account',
+  //       component: () => import('@/views/tree/index'),
+  //       meta: { title: '我的账户', icon: 'form' }
+  //     }
+  //   ]
+  // },
   {
     path: '/platformManage',
     component: Layout,

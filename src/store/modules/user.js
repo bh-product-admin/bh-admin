@@ -1,10 +1,10 @@
-import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { login, logout, getInfo, getActionByRoleId } from '@/api/user'
+import { getToken, setToken, removeToken, setId, getId, removeId } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
-  name: '',
+  name: getId(),
   avatar: ''
 }
 
@@ -30,14 +30,27 @@ const actions = {
         const { data } = response
         console.log(data)
         commit('SET_TOKEN', data.token)
+        commit('SET_NAME', data.id)
         setToken(data.token)
+        setId(data.id)
         resolve()
       }).catch(error => {
         reject(error)
       })
     })
   },
-
+  getRoles({ commit }, userInfo) {
+    console.log(123)
+    return new Promise((resolve, reject) => {
+      getActionByRoleId({ roleId: state.name }).then(response => {
+        const { data } = response
+        console.log(response)
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
@@ -65,6 +78,7 @@ const actions = {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
         removeToken()
+        removeId()
         resetRouter()
         resolve()
       }).catch(error => {

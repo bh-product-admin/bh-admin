@@ -45,6 +45,17 @@ export function getUserList(data) {
   })
 }
 
+<<<<<<< HEAD
+=======
+export function getManufacturerCertifiedIng(data) {
+  return request({
+    url: '/user/getManufacturerCertifiedIng',
+    method: 'post',
+    data
+  })
+}
+
+>>>>>>> 7ba98ad6d39131f221dee916d0b3240b920fb569
 export function addBlack(data) {
   return request({
     url: '/user/addBlack',
@@ -53,3 +64,51 @@ export function addBlack(data) {
   })
 }
 
+<<<<<<< HEAD
+=======
+export function getCertificationIng(data) {
+  return request({
+    url: '/user/getCertificationIng',
+    method: 'post',
+    data
+  })
+}
+
+export function getActionByRoleId(data) {
+  return request({
+    url: '/role/getActionByRoleId',
+    method: 'post',
+    data
+  })
+}
+
+/** 图片上传 */
+
+export function upload(data) {
+  return request({
+    url: '/oss/upload',
+    method: 'post',
+    data
+  })
+}
+
+/** 申请成为厂家 */
+
+export function manufacturer(data) {
+  return request({
+    url: '/login/manufacturer',
+    method: 'post',
+    data
+  })
+}
+
+/** 修改用户认证状态 */
+
+export function certification(data) {
+  return request({
+    url: '/user/certification',
+    method: 'post',
+    data
+  })
+}
+>>>>>>> 7ba98ad6d39131f221dee916d0b3240b920fb569
