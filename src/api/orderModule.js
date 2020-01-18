@@ -1,14 +1,5 @@
 import request from '@/utils/request'
 
-// 根据帖子ID，查询评论列表 comments/getByBlogId?id=1
-export function getByBlogIdById(data) {
-  return request({
-    url: '/comments/getByBlogId',
-    method: 'post',
-    data
-  })
-}
-
 // 订单确认 id=1
 export function handleOrderConfirm(data) {
   return request({
