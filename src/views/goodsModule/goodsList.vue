@@ -179,7 +179,7 @@ export default {
           if (codeKey === 'showStatus') { // 上、下架
             const params = {
               id: row.id,
-              showStatus: row.showStatus === 1 ? 1 : 2
+              showStatus: row.showStatus === 1 ? 2 : 1
             }
             setWaresStatus(params).then(res => {
               this.$message.success('操作成功')
