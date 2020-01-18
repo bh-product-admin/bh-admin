@@ -27,7 +27,7 @@
     <el-card>
       <div class="content">
         <el-table
-          :data="dataList"
+          :data="tableData"
           border
           style="width: 100%"
           @sort-change="sortChange"
@@ -126,20 +126,6 @@ export default {
     }
   },
   computed: {
-    dataList() {
-      this.tableData.forEach(item => {
-        switch (item.type) {
-          case 1:
-            item.typeName = '厂家'
-            break
-          case 2:
-            item.typeName = '买家'
-        }
-        item.created = moment(item.created).format('YYYY-MM-DD hh:mm:ss')
-        item.updated = moment(item.updated).format('YYYY-MM-DD hh:mm:ss')
-      })
-      return this.tableData
-    }
   },
   async created() {
     try {

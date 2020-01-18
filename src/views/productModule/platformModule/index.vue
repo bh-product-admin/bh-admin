@@ -33,7 +33,7 @@
             <template slot-scope="scope">
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="handleEdit(scope.row)"
               >我有货</el-button>
             </template>
           </el-table-column>
@@ -49,7 +49,6 @@
         @current-change="handleCurrentChange"
       />
     </el-card>
-    <div><hasGoodsDialog ref="hasGodsDialog" @handleEdit="handleEdit" /></div>
     <!-- 我有货 -->
   </div>
 </template>
@@ -58,12 +57,10 @@ import {
   getGoodsList // 行业策略列表数据 goods/list?type=2 类型：1.平台自营，2.鲁班
 } from '@/api/chooseGoods'
 import Header from '@/components/chooseHeader/index'
-import hasGoodsDialog from '@/views/chooseGoods/hasGodsDialog'
 export default {
   name: 'IndustryNew',
   components: {
-    Header,
-    hasGoodsDialog
+    Header
   },
   data() {
     return {
@@ -137,9 +134,13 @@ export default {
     sortChange(column, prop, order) {
       console.log('sortChange--', column, prop, order)
     },
-    handleEdit(index, row) {
-      console.log(index, row)
-      this.$refs.hasGodsDialog.showDialog(row, true)
+    handleEdit(data) {
+      this.$router.push({
+        path: '/example/supplier',
+        query: {
+          id: data.id
+        }
+      })
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`, this.pageData)

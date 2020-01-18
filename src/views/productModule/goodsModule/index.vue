@@ -1,16 +1,14 @@
 <template>
   <div class="index">
     <el-card>
-      <Header @search="search" />
+      <Header @fetchGoodsList="fetchGoodsList" @handleAddGoods="handleAddGoods" />
     </el-card>
     <el-card>
       <div class="content">
         <el-table
           :data="tableData"
           style="width: 100%"
-          :default-sort="{prop: 'date', order: 'descending'}"
           border
-
           @sort-change="sortChange"
         >
           <el-table-column
@@ -22,19 +20,19 @@
             :sortable="sortColumns.includes(item.prop) ? true : false"
           >
             <template slot-scope="scope">
-              <img v-if="item.type == 'img'" :src="scope.row.src" width="100" height="100">
-              <span v-if="item.type === 'date'">{{ scope.row[item.prop] | datetimeDot }}</span>
+              <img v-if="item.type=='img'" :src="scope.row.src" width="100" height="100">
               <span v-else>
-                {{ scope.row[item.prop] }}
+                <font v-if="item.type=='date'">{{ scope.row[item.prop] | dateDot }}</font>
+                <font v-else>{{ scope.row[item.prop] }}</font>
               </span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center">
+          <el-table-column label="操作" width="240" align="center">
             <template slot-scope="scope">
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
-              >我有货</el-button>
+                @click="handleConfirm(scope.row)"
+              >一件代发</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -49,33 +47,27 @@
         @current-change="handleCurrentChange"
       />
     </el-card>
-    <div><hasGoodsDialog ref="hasGodsDialog" @handleEdit="handleEdit" /></div>
-    <!-- 我有货 -->
+    <!-- <div><hasGoodsDialog ref="hasGodsDialog" @handleEdit="handleEdit" /></div> -->
   </div>
 </template>
 <script>
+import Header from '@/views/goodsModule/goodsHeader'
+// import hasGoodsDialog from './hasGodsDialog'
 import {
-  getGoodsList // 行业策略列表数据 goods/list?type=2 类型：1.平台自营，2.鲁班
+  getGoodsList // 我的商品列表 userId=2&orderBy=desc&sortField=threeSale
 } from '@/api/chooseGoods'
-import Header from '@/components/chooseHeader/index'
-import hasGoodsDialog from '@/views/chooseGoods/hasGodsDialog'
 export default {
-  name: 'IndustryNew',
+  name: 'GoodsList',
   components: {
-    Header,
-    hasGoodsDialog
+    Header
+    //  hasGoodsDialog
   },
   data() {
     return {
+      userId: '',
       sortColumns: ['date', 'seleNumThree', 'seleNumWeek', 'seleNumTotal', 'seleNum'],
       currentPage: 1,
       tableData: [],
-      searchValue: {
-        keywords: '',
-        type: '',
-        startTime: '',
-        endTime: ''
-      },
       pageData: {
         pageSize: 10,
         total: 0,
@@ -100,7 +92,7 @@ export default {
         {
           label: '类目',
           type: 'text',
-          prop: 'colName'
+          prop: 'skuType'
         },
         {
           label: '价格',
@@ -108,9 +100,14 @@ export default {
           prop: 'price'
         },
         {
-          label: '一日销量',
+          label: '库存',
           type: 'text',
-          prop: 'daySendNum'
+          prop: 'stockNum'
+        },
+        {
+          label: '昨日销量',
+          type: 'text',
+          prop: 'yesterdaySale'
         },
         {
           label: '三日销量',
@@ -131,62 +128,56 @@ export default {
     }
   },
   created() {
-    this.fetchGodList()
+    this.fetchWaresList()
   },
   methods: {
+    fetchGoodsList() {
+      this.fetchWaresList()
+    },
+    handleAddGoods() {
+      console.log('新增')
+      this.$refs.hasGodsDialog.showDialog({}, true, 'add')
+    },
     sortChange(column, prop, order) {
       console.log('sortChange--', column, prop, order)
     },
-    handleEdit(index, row) {
-      console.log(index, row)
-      this.$refs.hasGodsDialog.showDialog(row, true)
+    handleConfirm(data) { // 操作
+      this.$router.push({
+        path: '/example/supplier',
+        query: {
+          id: data.id
+        }
+      })
+    },
+    fetchWaresList(formLine = {}) {
+      // const params = {
+      //   ...formLine,
+      //   userId: this.userId,
+      //   orderBy: 'desc'
+      //   // sortField: 'threeSale'
+      // }
+      getGoodsList({ type: 2 }).then((res = {}) => {
+        const { data = {}} = res
+        const { list = [] } = data
+        if (list && list instanceof Array) {
+          this.tableData = list
+        } else {
+          this.tableData = []
+        }
+      })
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`, this.pageData)
       this.pageData['pageNum'] = 1
       this.pageData['pageSize'] = val
-      this.fetchGodList()
+      this.fetchBlogList()
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
       this.pageData['pageNum'] = val
-      this.fetchGodList()
+      this.fetchBlogList()
     },
-    fetchGodList() {
-      const params = {
-        type: 1,
-        pageSize: this.pageData.pageSize,
-        pageNum: this.pageData.pageNum,
-        ...this.searchValue
-      }
-      getGoodsList(params).then(res => {
-        const { data = {}, data: { list = [] }} = res
-        this.pageData = data
-        this.tableData = list && list instanceof Array && list.length >= 0 ? list : []
-        console.log(res, 'ressgetGoodsLists')
-      }).catch(err => {
-        console.log(err, 'errrrgetGoodsList')
-      })
-    },
-    search(val = {}) {
-      console.log('search--', val)
-      const { time, keywords, type } = val
-      let startTime = ''
-      let endTime = ''
-      if (time && time instanceof Array) {
-        startTime = this.$moment(new Date(time[0])).format('YYYY-MM-DD HH:mm:ss')
-        endTime = this.$moment(new Date(time[1])).format('YYYY-MM-DD HH:mm:ss')
-        console.log(startTime, endTime)
-      }
-      this.searchValue = {
-        keywords,
-        type,
-        startTime,
-        endTime
-      }
-      this.pageData['pageNum'] = 1
-      this.fetchGodList()
-    }
+    handleEdit() {}
   }
 }
 </script>

@@ -58,14 +58,21 @@ export const constantRoutes = [
       {
         path: 'table',
         name: 'Table',
-        component: () => import('@/views/chooseGoods/industryIndex'),
+        component: () => import('@/views/productModule/goodsModule/index'),
         meta: { title: '行业策略', icon: 'table' }
       },
       {
         path: 'tree',
         name: 'Tree',
-        component: () => import('@/views/chooseGoods/industryNew'),
+        component: () => import('@/views/productModule/platformModule/index'),
         meta: { title: '平台上新', icon: 'tree' }
+      },
+      {
+        path: 'supplier',
+        name: 'supplier',
+        component: () => import('@/views/productModule/SupplierModule/index'),
+        meta: { title: '平台上新', icon: 'tree' },
+        hidden: true
       }
     ]
   },
@@ -97,68 +104,68 @@ export const constantRoutes = [
     ]
   },
 
-  {
-    path: '/logistics',
-    component: Layout,
-    redirect: '/logistics/menu1',
-    name: 'logistics',
-    meta: {
-      title: '商品物流',
-      icon: 'nested'
-    },
-    children: [
-      {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: '' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: '物流信息', icon: 'form' }
-          }
-        ]
-      }
-      // {
-      //   path: 'menu2',
-      //   component: () => import('@/views/nested/menu2/index'),
-      //   meta: { title: 'menu2' }
-      // }
-    ]
-  },
-  {
-    path: '/nested',
-    component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
-    meta: {
-      title: '商品管理',
-      icon: 'nested'
-    },
-    children: [
-      {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: '' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: '我的商品', icon: 'form' }
-          }
-        ]
-      }
-      // {
-      //   path: 'menu2',
-      //   component: () => import('@/views/nested/menu2/index'),
-      //   meta: { title: 'menu2' }
-      // }
-    ]
-  },
+  // {
+  //   path: '/logistics',
+  //   component: Layout,
+  //   redirect: '/logistics/menu1',
+  //   name: 'logistics',
+  //   meta: {
+  //     title: '商品物流',
+  //     icon: 'nested'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'menu1',
+  //       component: () => import('@/views/nested/menu1/index'), // Parent router-view
+  //       name: 'Menu1',
+  //       meta: { title: '' },
+  //       children: [
+  //         {
+  //           path: 'menu1-1',
+  //           component: () => import('@/views/nested/menu1/menu1-1'),
+  //           name: 'Menu1-1',
+  //           meta: { title: '物流信息', icon: 'form' }
+  //         }
+  //       ]
+  //     }
+  //     // {
+  //     //   path: 'menu2',
+  //     //   component: () => import('@/views/nested/menu2/index'),
+  //     //   meta: { title: 'menu2' }
+  //     // }
+  //   ]
+  // },
+  // {
+  //   path: '/nested',
+  //   component: Layout,
+  //   redirect: '/nested/menu1',
+  //   name: 'Nested',
+  //   meta: {
+  //     title: '商品管理',
+  //     icon: 'nested'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'menu1',
+  //       component: () => import('@/views/nested/menu1/index'), // Parent router-view
+  //       name: 'Menu1',
+  //       meta: { title: '' },
+  //       children: [
+  //         {
+  //           path: 'menu1-1',
+  //           component: () => import('@/views/nested/menu1/menu1-1'),
+  //           name: 'Menu1-1',
+  //           meta: { title: '我的商品', icon: 'form' }
+  //         }
+  //       ]
+  //     }
+  //     // {
+  //     //   path: 'menu2',
+  //     //   component: () => import('@/views/nested/menu2/index'),
+  //     //   meta: { title: 'menu2' }
+  //     // }
+  //   ]
+  // },
   // {
   //   path: 'external-link',
   //   component: Layout,

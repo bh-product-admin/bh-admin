@@ -106,3 +106,13 @@ export function certification(data) {
     data
   })
 }
+
+/** 一件代发 */
+
+export function waresList(data) {
+  return request({
+    url: '/wares/list',
+    method: 'post',
+    data
+  })
+}

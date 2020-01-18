@@ -45,6 +45,7 @@
             :key="index"
             :label="item.label"
             :prop="item.prop"
+            align="center"
           >
             <template slot-scope="scope">{{ scope.row[item.prop] }}
             </template>
@@ -52,6 +53,7 @@
           <el-table-column
             label="操作"
             width="200"
+            align="center"
           >
             <template slot-scope="scope">
               <el-button
