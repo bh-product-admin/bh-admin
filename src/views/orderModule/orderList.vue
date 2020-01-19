@@ -8,6 +8,7 @@
         <el-table
           :data="tableData"
           style="width: 100%"
+          border
           @sort-change="sortChange"
         >
           <el-table-column
@@ -15,6 +16,7 @@
             :key="index"
             :label="item.label"
             :prop="item.prop"
+            align="center"
             :sortable="sortColumns.includes(item.prop) ? true : false"
           >
             <template slot-scope="scope">
@@ -24,7 +26,7 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="200">
+          <el-table-column label="操作" width="200" align="center">
             <template slot-scope="scope">
               <el-button
                 size="mini"
@@ -56,7 +58,8 @@
 </template>
 <script>
 import {
-  orderMerchantList // 商家订单列表
+  orderMerchantList, // 商家订单列表
+  bbsOrderList
 } from '@/api/orderModule'
 import Header from '@/views/orderModule/chooseHeader'
 export default {
@@ -73,60 +76,7 @@ export default {
         total: 0,
         pageNum: 1
       },
-      tableData: [
-        {
-          userId: '211',
-          ids: '111',
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          date: '2016-05-04',
-          price: '¥34',
-          seleNum: '2,000',
-          priceTotal: '5,424',
-          status: 0,
-          seleNumTotal: 4444
-        },
-        {
-          userId: '212',
-          ids: '222',
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          date: '2016-05-07',
-          price: '¥33',
-          seleNum: '2,000',
-          priceTotal: 111,
-          status: 1,
-          seleNumTotal: 3333
-        },
-        {
-          userId: '213',
-          ids: '333',
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          date: '2016-05-04',
-          price: '¥31',
-          seleNum: '2,000',
-          priceTotal: '5,424',
-          status: 2,
-          seleNumTotal: 1111
-        },
-        {
-          userId: '214',
-          ids: '444',
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          date: '2016-05-04',
-          price: '¥1122',
-          seleNum: '2,000',
-          priceTotal: '5,424',
-          status: 2,
-          seleNumTotal: 5555
-        }
-      ],
+      tableData: [{}],
       columnData: [
         {
           label: '订单编号',
@@ -181,7 +131,8 @@ export default {
   },
   methods: {
     fetchOrderList() {
-      orderMerchantList().then(res => {
+      // orderMerchantList().then(res => {
+      bbsOrderList().then(res => {
         const { data = {}, data: { list = [] }} = res
         this.pageData = data
         this.tableData = list && list instanceof Array && list.length >= 0 ? list : []

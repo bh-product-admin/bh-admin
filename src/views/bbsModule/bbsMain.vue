@@ -16,6 +16,7 @@
         <el-table
           :data="tableData"
           style="width: 100%"
+          border
           :default-sort="{prop: 'time', order: 'descending'}"
           :highlight-current-row="true"
           @sort-change="sortChange"
@@ -27,6 +28,7 @@
             :label="item.label"
             :prop="item.prop"
             :width="item.width"
+            align="center"
             :sortable="sortColumns.includes(item.prop) ? true : false"
           >
             <template slot-scope="scope">
@@ -187,11 +189,11 @@ export default {
     },
     fetchBlogList() { // 获取帖子列表
       const params = {
+        // ...this.searchValue,
         sortField: 'created',
         orderBy: 'asc',
         pageSize: this.pageData.pageSize,
-        pageNum: this.pageData.pageNum,
-        ...this.searchValue
+        pageNum: this.pageData.pageNum
       }
       getBlogList(params).then((res = {}) => {
         console.log(res, 'resgetBlogList')

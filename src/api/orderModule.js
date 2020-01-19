@@ -27,3 +27,12 @@ export function bbsOrderList(data) {
   })
 }
 
+// order/add?waresId=1&number=1&note=我要最好的袜子，发货速度要快
+export function bbsOrderAdd(data) {
+  return request({
+    url: '/order/add',
+    method: 'post',
+    data
+  })
+}
+

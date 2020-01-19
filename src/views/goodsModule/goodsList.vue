@@ -8,6 +8,7 @@
         <el-table
           :data="tableData"
           style="width: 100%"
+          align="center"
           @sort-change="sortChange"
         >
           <el-table-column
@@ -15,6 +16,7 @@
             :key="index"
             :label="item.label"
             :prop="item.prop"
+            align="center"
             :sortable="sortColumns.includes(item.prop) ? true : false"
           >
             <template slot-scope="scope">
@@ -25,7 +27,7 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="240">
+          <el-table-column label="操作" width="240" align="center">
             <template slot-scope="scope">
               <el-button
                 size="mini"
@@ -53,7 +55,7 @@
         @current-change="handleCurrentChange"
       />
     </el-card>
-    <div><hasGoodsDialog ref="hasGodsDialog" @handleEdit="handleEdit" /></div>
+    <div><hasGoodsDialog ref="hasGodsDialog" @handleEdit="handleEdit" @fetchWaresList="fetchWaresList" /></div>
   </div>
 </template>
 <script>
@@ -64,6 +66,9 @@ import {
   setWaresStatus, // 我的商品。上下架功能 id=1&showStatus=1
   deleteWares // 我的商品。删除功能
 } from '@/api/goodsModule'
+import {
+  getCookieByCode
+} from '@/utils/index'
 export default {
   name: 'GoodsList',
   components: {
@@ -72,7 +77,7 @@ export default {
   },
   data() {
     return {
-      userId: '',
+      userId: getCookieByCode('id'),
       sortColumns: ['date', 'seleNumThree', 'seleNumWeek', 'seleNumTotal', 'seleNum'],
       currentPage: 1,
       tableData: [],
@@ -203,17 +208,21 @@ export default {
       const params = {
         ...formLine,
         userId: this.userId,
-        orderBy: 'desc'
+        orderBy: 'desc',
+        pageSize: this.pageData.pageSize,
+        pageNum: this.pageData.pageNum
         // sortField: 'threeSale'
       }
       getWaresListByUser(params).then((res = {}) => {
         const { data = {}} = res
         const { list = [] } = data
+        this.pageData = data
         if (list && list instanceof Array) {
           this.tableData = list
         } else {
           this.tableData = []
         }
+        console.log(res, 'ressssgetWaresListByUser')
       })
     },
     handleSizeChange(val) {
