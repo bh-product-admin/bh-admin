@@ -8,6 +8,7 @@
         <el-table
           :data="tableData"
           style="width: 100%"
+          border
           :default-sort="{prop: 'date', order: 'descending'}"
           @sort-change="sortChange"
         >
@@ -16,6 +17,7 @@
             :key="index"
             :label="item.label"
             :prop="item.prop"
+            align="center"
             :sortable="sortColumns.includes(item.prop) ? true : false"
           >
             <template slot-scope="scope">
@@ -26,7 +28,7 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作" width="240" align="center">
             <template slot-scope="scope">
               <el-button
                 size="mini"
@@ -153,10 +155,10 @@ export default {
     },
     fetchGodList() {
       const params = {
-        type: 2,
+        // ...this.searchValue,
+        type: '2',
         pageSize: this.pageData.pageSize,
-        pageNum: this.pageData.pageNum,
-        ...this.searchValue
+        pageNum: this.pageData.pageNum
       }
       getGoodsList(params).then(res => {
         const { data = {}, data: { list = [] }} = res

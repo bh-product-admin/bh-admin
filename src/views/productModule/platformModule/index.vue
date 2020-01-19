@@ -155,10 +155,10 @@ export default {
     },
     fetchGodList() {
       const params = {
+        // ...this.searchValue,
         type: 1,
         pageSize: this.pageData.pageSize,
-        pageNum: this.pageData.pageNum,
-        ...this.searchValue
+        pageNum: this.pageData.pageNum
       }
       getGoodsList(params).then(res => {
         const { data = {}, data: { list = [] }} = res

@@ -54,7 +54,7 @@ export default {
         title: '',
         content: ''
       },
-      userId: getCookieByCode('userId')
+      userId: getCookieByCode('id')
     }
   },
   computed: {

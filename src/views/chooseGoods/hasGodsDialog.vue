@@ -1,6 +1,6 @@
 <template>
   <div class="index">
-    <el-dialog title="我有货" :visible.sync="dialogFormVisible">
+    <el-dialog title="我有货" :visible.sync="dialogFormVisible" :before-close="handleClose">
       <el-form ref="ruleForm" :model="form" label-width="120px" :rules="rules">
         <el-form-item label="">
           <el-radio-group v-model="form.skuType" class="sku-box">
@@ -8,11 +8,11 @@
             <el-radio label="2">我有相似相同sku</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="商品标题：" prop="title">
-          <el-input v-model="form.title" placeholder="商品标题" />
+        <el-form-item label="商品标题：">
+          <span>{{ title }}</span>
         </el-form-item>
         <el-form-item label="商品图：">
-          <img :src="form.img" width="100" height="100" alt="">
+          <img :src="img" width="100" height="100" alt="">
         </el-form-item>
         <el-form-item label="采购单价：" prop="price">
           <el-input v-model="form.price" placeholder="元/件" />
@@ -51,7 +51,7 @@
 
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="handleClose">取 消</el-button>
         <el-button type="primary" @click="onSubmit">确 定</el-button>
       </div>
     </el-dialog>
@@ -68,7 +68,7 @@ export default {
     return {
       form: {
         skuType: '1',
-        title: '',
+        // title: '',
         // img: 'dsdad',
         // img: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
         price: '',
@@ -80,10 +80,9 @@ export default {
         note: '',
         goodsId: ''
       },
+      title: '',
+      img: '',
       rules: {
-        title: [
-          { required: true, message: '请输入商品标题', trigger: 'blur' }
-        ],
         price: [
           { required: true, message: '请输入采购单价', trigger: 'blur' }
         ],
@@ -116,11 +115,18 @@ export default {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
           console.log('验证通过！')
-          this.dialogFormVisible = false
           const params = this.form
           console.log(params)
           hasGoodAdd(this.form).then(res => {
             console.log(res, 'resdsdsd-has')
+            const { data = false, msg = '操作成功' } = res
+            if (data) {
+              this.$message.success(msg)
+              this.initForm()
+              this.dialogFormVisible = false
+            } else {
+              this.$message.error(msg)
+            }
           }).catch(err => {
             console.log(err, 'errhas')
           })
@@ -130,10 +136,32 @@ export default {
         }
       })
     },
-    showDialog(item, isDialogFormVisible) {
+    showDialog(item = {}, isDialogFormVisible) {
       console.log(item, 'indedsds')
+      const { title = '', img = '' } = item
+      this.title = title
+      this.img = img
       this.dialogFormVisible = isDialogFormVisible
       this.form.goodsId = item && item.id
+    },
+    initForm() {
+      this.form = {
+        skuType: '1',
+        price: '',
+        inventory: '',
+        dayProductionNum: '',
+        daySendNum: '',
+        returnNum: '',
+        maxSaleCycle: '',
+        note: '',
+        goodsId: ''
+      }
+      this.title = ''
+      this.img = ''
+    },
+    handleClose() {
+      this.initForm()
+      this.dialogFormVisible = false
     }
   }
 }

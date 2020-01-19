@@ -30,6 +30,9 @@
   </div>
 </template>
 <script>
+import {  
+  bbsOrderAdd
+} from '@/api/orderModule'
 export default {
   name: 'ChooseHeader',
   props: [],
@@ -73,6 +76,12 @@ export default {
   methods: {
     onSubmit() {
       alert('submit!')
+      const params = {
+        waresId: 1,
+        number: 1,
+        note: '我要最好的袜子，发货速度要快'
+      }
+      bbsOrderAdd(params)
     }
   }
 }
