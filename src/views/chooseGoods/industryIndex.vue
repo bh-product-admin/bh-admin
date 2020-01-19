@@ -21,10 +21,10 @@
             :sortable="sortColumns.includes(item.prop) ? true : false"
           >
             <template slot-scope="scope">
-              <img v-if="item.type == 'img'" :src="scope.row.src" width="100" height="100">
-              <span v-if="item.type === 'date'">{{ scope.row[item.prop] | datetimeDot }}</span>
+              <img v-if="item.type=='img'" :src="scope.row.img" width="100" height="100">
               <span v-else>
-                {{ scope.row[item.prop] }}
+                <font v-if="item.type=='date'">{{ scope.row[item.prop] | dateDot }}</font>
+                <font v-else>{{ scope.row[item.prop] }}</font>
               </span>
             </template>
           </el-table-column>
@@ -86,7 +86,7 @@ export default {
         {
           label: '商品图',
           type: 'img',
-          prop: 'src'
+          prop: 'img'
         },
         {
           label: '商品标题',

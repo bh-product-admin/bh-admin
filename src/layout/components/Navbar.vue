@@ -1,25 +1,14 @@
 <template>
   <div class="navbar">
     <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
-
     <div class="right-menu">
+      <el-button v-show="auth!=='3'" @click="handleUpdate">{{ authStr }}</el-button>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <router-link to="/">
-            <el-dropdown-item>
-              Home
-            </el-dropdown-item>
-          </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">
-            <el-dropdown-item>Github</el-dropdown-item>
-          </a>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
-          </a>
           <el-dropdown-item divided>
             <span style="display:block;" @click="logout">退出</span>
           </el-dropdown-item>
@@ -32,8 +21,15 @@
 <script>
 import { mapGetters } from 'vuex'
 import Hamburger from '@/components/Hamburger'
+import { getAuth, setAuth } from '@/utils/auth' // get token from cookie
 
 export default {
+  data() {
+    return {
+      auth: '',
+      authStr: ''
+    }
+  },
   components: {
     Hamburger
   },
@@ -43,7 +39,40 @@ export default {
       'avatar'
     ])
   },
+  created() {
+    switch (getAuth()) {
+      case '4':
+        this.authStr = '切换为买家'
+        this.auth = '4'
+        break
+      case '2':
+        this.authStr = '切换为厂家'
+        this.auth = '2'
+        break
+    }
+  },
   methods: {
+    handleUpdate() {
+      switch (getAuth()) {
+        case '4':
+          this.authStr = '切换为买家'
+          setAuth('2')
+          this.$router.replace({
+            path: '/'
+          })
+          location.reload()
+          break
+        case '2':
+          this.authStr = '切换为厂家'
+          setAuth('4')
+          // location.reload()
+          this.$router.replace({
+            path: '/'
+          })
+          location.reload()
+          break
+      }
+    },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },

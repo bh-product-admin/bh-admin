@@ -11,8 +11,9 @@ import store from './store'
 import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-import { getToken } from '@/utils/auth' // get token from cookie
+import { getToken, setRouter } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
+import { asyncUserRoutes, asyncFactoryRoutes, asyncBuyRoutes } from './router'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
@@ -39,7 +40,32 @@ router.beforeEach(async(to, from, next) => {
       // })
       const hasGetUserInfo = store.getters.name
       if (hasGetUserInfo) {
-        next()
+        // debugger
+        if (store.state.user.router.length > 0) {
+          next()
+        } else {
+          if (store.state.user.auth && store.state.user.auth === '3') {
+            router.options.routes.splice(4, router.options.routes.length - 5)
+            router.options.routes.push(...asyncUserRoutes)
+            store.dispatch('user/setRouter', router.options.routes)
+            router.addRoutes(asyncUserRoutes)
+            next(to.redirectedFrom)
+          }
+          if (store.state.user.auth && store.state.user.auth === '4') {
+            router.options.routes.splice(4, router.options.routes.length - 5)
+            router.options.routes.push(...asyncFactoryRoutes)
+            store.dispatch('user/setRouter', router.options.routes)
+            router.addRoutes(router.options.routes)
+            next(to.redirectedFrom)
+          }
+          if (store.state.user.auth && (store.state.user.auth !== '4' && store.state.user.auth !== '3')) {
+            router.options.routes.splice(4, router.options.routes.length - 5)
+            router.options.routes.push(...asyncBuyRoutes)
+            store.dispatch('user/setRouter', router.options.routes)
+            router.addRoutes(router.options.routes)
+            next(to.redirectedFrom)
+          }
+        }
       } else {
         try {
           // get user info

@@ -35,7 +35,66 @@
       <div slot="header" class="clearfix">
         <span>相关资质上传</span>
       </div>
-
+      <el-row>
+        <el-col :span="12">
+          <el-form inline="true">
+            <el-form-item label="企业执照">
+              <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png" height="200px;">
+            </el-form-item>
+            <el-form-item>
+              <el-upload
+                class="upload-demo"
+                :action="action"
+                :on-preview="handlePreview"
+                :on-remove="handleRemove"
+                :before-remove="beforeRemove"
+                multiple
+                >
+                <el-button size="small" type="primary">点击上传</el-button>
+              </el-upload>
+            </el-form-item>
+          </el-form>
+        </el-col>
+        <el-col :span="12">
+          <el-row :gutter="20">
+            <el-col :span="6"><div class="grid-content bg-purple">法人代表身份证</div></el-col>
+            <el-col :span="9">
+              <div class="grid-content bg-purple">
+                <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"/>
+              </div>
+              <div style="padding-left:30px">
+                <el-upload
+                class="upload-demo"
+                :action="action"
+                :on-preview="handlePreview"
+                :on-remove="handleRemove"
+                :before-remove="beforeRemove"
+                multiple
+                >
+                <el-button size="small" type="primary">正面</el-button>
+              </el-upload>
+              </div>
+              </el-col>
+              <el-col :span="9">
+              <div class="grid-content bg-purple">
+                <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"/>
+              </div>
+              <div style="padding-left:30px">
+                <el-upload
+                class="upload-demo"
+                :action="action"
+                :on-preview="handlePreview"
+                :on-remove="handleRemove"
+                :before-remove="beforeRemove"
+                multiple
+                >
+                <el-button size="small" type="primary">背面</el-button>
+              </el-upload>
+              </div>
+              </el-col>
+          </el-row>
+        </el-col>
+      </el-row>
     </el-card>
     <el-card>
       <div slot="header" class="clearfix">
@@ -60,8 +119,9 @@ export default {
     return {
       disabled: false,
       btntxt: '重新发送',
+      action: process.env.VUE_APP_BASE_API+'/oss/upload',
       form: {
-        certified: 5,
+        certified: 2,
         licenseIcon: '123123',
         idNumIcon: '222',
         idNumReverseIcon: '333'
@@ -144,7 +204,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   .register-box{
     padding: 30px;
   }

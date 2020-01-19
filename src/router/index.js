@@ -30,28 +30,122 @@ import Layout from '@/layout'
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
-export const constantRoutes = [
-  {
-    path: '/login',
-    component: () => import('@/views/login/index'),
-    hidden: true
-  },
+/** 厂家router */
+export const asyncFactoryRoutes = [
+// 厂家版，选品策略模块
 
   {
-    path: '/404',
-    component: () => import('@/views/404'),
-    hidden: true
-  },
-  {
-    path: '/register',
-    component: () => import('@/views/register/index'),
-    hidden: true
-  },
-
-  {
-    path: '/example',
+    path: '/chooseGoods',
     component: Layout,
-    redirect: '/example/table',
+    redirect: '/chooseGoods/industry',
+    meta: {
+      title: '选品策略',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'industry',
+        component: () => import('@/views/chooseGoods/industryIndex'),
+        meta: { title: '行业策略' }
+      }, {
+        path: 'industryNew',
+        component: () => import('@/views/chooseGoods/industryNew'),
+        meta: { title: '平台上新' }
+      }
+    ]
+  },
+  // 厂家版，订单模块
+  {
+    path: '/order-module',
+    component: Layout,
+    redirect: '/order-module/orderList',
+    meta: {
+      title: '订单模块',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'orderList',
+        component: () => import('@/views/orderModule/orderList'),
+        meta: { title: '订单页面' }
+      }, {
+        path: 'quitManage',
+        component: () => import('@/views/orderModule/quitManage'),
+        meta: { title: '退款单管理' }
+      }
+    ]
+  },
+  // 厂家版，物流模块
+  {
+    path: '/logistics-module',
+    component: Layout,
+    redirect: '/logistics-module/logisticsList',
+    meta: {
+      title: '物流模块',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'logisticsList',
+        component: () => import('@/views/logisticsModule/logisticsList'),
+        meta: { title: '物流信息' }
+      }
+    ]
+  },
+  // 厂家版，商品管理
+  {
+    path: '/goods-module',
+    component: Layout,
+    redirect: '/goods-module/goodsList',
+    meta: {
+      title: '商品管理',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'goodsList',
+        component: () => import('@/views/goodsModule/goodsList'),
+        meta: { title: '我的商品' }
+      }
+    ]
+  },
+  // 厂家版，资产模块
+  {
+    path: '/property-manage',
+    component: Layout,
+    redirect: '/property-manage/propertyList',
+    meta: {
+      title: '资产模块',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'propertyList',
+        component: () => import('@/views/propertyManage/propertyList'),
+        meta: { title: '资金流水' }
+      }, {
+        path: 'incomeManage',
+        component: () => import('@/views/propertyManage/incomeManage'),
+        meta: { title: '收益管理' }
+      }, {
+        path: 'myAccount',
+        component: () => import('@/views/propertyManage/myAccount'),
+        meta: { title: '我的账户' }
+      }
+    ]
+  }
+  // 厂家版，论坛模块
+
+  // 404 page must be placed at the end !!!
+
+]
+/** 买家router */
+export const asyncBuyRoutes = [
+
+  {
+    path: '/productModule',
+    component: Layout,
+    redirect: '/productModule/table',
     name: 'Example',
     meta: { title: '选品策略', icon: 'example' },
     children: [
@@ -103,97 +197,145 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/property-manage',
+    component: Layout,
+    redirect: '/property-manage/propertyList',
+    meta: {
+      title: '资产模块',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'propertyList',
+        component: () => import('@/views/propertyManage/propertyList'),
+        meta: { title: '资金流水' }
+      }, {
+        path: 'incomeManage',
+        component: () => import('@/views/propertyManage/incomeManage'),
+        meta: { title: '收益管理' }
+      }, {
+        path: 'myAccount',
+        component: () => import('@/views/propertyManage/myAccount'),
+        meta: { title: '我的账户' }
+      }
+    ]
+  },
+  {
+    path: '/logistics-module',
+    component: Layout,
+    redirect: '/logistics-module/logisticsList',
+    meta: {
+      title: '物流模块',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'logisticsList',
+        component: () => import('@/views/logisticsModule/logisticsList'),
+        meta: { title: '物流信息' }
+      }
+    ]
+  }
 
-  // {
-  //   path: '/logistics',
-  //   component: Layout,
-  //   redirect: '/logistics/menu1',
-  //   name: 'logistics',
-  //   meta: {
-  //     title: '商品物流',
-  //     icon: 'nested'
-  //   },
-  //   children: [
-  //     {
-  //       path: 'menu1',
-  //       component: () => import('@/views/nested/menu1/index'), // Parent router-view
-  //       name: 'Menu1',
-  //       meta: { title: '' },
-  //       children: [
-  //         {
-  //           path: 'menu1-1',
-  //           component: () => import('@/views/nested/menu1/menu1-1'),
-  //           name: 'Menu1-1',
-  //           meta: { title: '物流信息', icon: 'form' }
-  //         }
-  //       ]
-  //     }
-  //     // {
-  //     //   path: 'menu2',
-  //     //   component: () => import('@/views/nested/menu2/index'),
-  //     //   meta: { title: 'menu2' }
-  //     // }
-  //   ]
-  // },
-  // {
-  //   path: '/nested',
-  //   component: Layout,
-  //   redirect: '/nested/menu1',
-  //   name: 'Nested',
-  //   meta: {
-  //     title: '商品管理',
-  //     icon: 'nested'
-  //   },
-  //   children: [
-  //     {
-  //       path: 'menu1',
-  //       component: () => import('@/views/nested/menu1/index'), // Parent router-view
-  //       name: 'Menu1',
-  //       meta: { title: '' },
-  //       children: [
-  //         {
-  //           path: 'menu1-1',
-  //           component: () => import('@/views/nested/menu1/menu1-1'),
-  //           name: 'Menu1-1',
-  //           meta: { title: '我的商品', icon: 'form' }
-  //         }
-  //       ]
-  //     }
-  //     // {
-  //     //   path: 'menu2',
-  //     //   component: () => import('@/views/nested/menu2/index'),
-  //     //   meta: { title: 'menu2' }
-  //     // }
-  //   ]
-  // },
-  // {
-  //   path: 'external-link',
-  //   component: Layout,
-  //   meta: {
-  //     title: '资产管理',
-  //     icon: 'nested'
-  //   },
-  //   children: [
-  //     {
-  //       path: 'table',
-  //       name: 'Table',
-  //       component: () => import('@/views/table/index'),
-  //       meta: { title: '资金管理', icon: 'table' }
-  //     },
-  //     {
-  //       path: 'profit',
-  //       name: 'profit',
-  //       component: () => import('@/views/tree/index'),
-  //       meta: { title: '收益管理', icon: 'form' }
-  //     },
-  //     {
-  //       path: 'account',
-  //       name: 'account',
-  //       component: () => import('@/views/tree/index'),
-  //       meta: { title: '我的账户', icon: 'form' }
-  //     }
-  //   ]
-  // },
+]
+export const asyncUserRoutes = [
+
+  {
+    path: '/productModule',
+    component: Layout,
+    redirect: '/productModule/table',
+    name: 'Example',
+    meta: { title: '选品策略', icon: 'example' },
+    children: [
+      {
+        path: 'table',
+        name: 'Table',
+        component: () => import('@/views/productModule/goodsModule/index'),
+        meta: { title: '行业策略', icon: 'table' }
+      },
+      {
+        path: 'tree',
+        name: 'Tree',
+        component: () => import('@/views/productModule/platformModule/index'),
+        meta: { title: '平台上新', icon: 'tree' }
+      },
+      {
+        path: 'supplier',
+        name: 'supplier',
+        component: () => import('@/views/productModule/SupplierModule/index'),
+        meta: { title: '平台上新', icon: 'tree' },
+        hidden: true
+      }
+    ]
+  },
+
+  {
+    path: '/form',
+    component: Layout,
+    name: 'form',
+    meta: { title: '我的订单', icon: 'form' },
+    children: [
+      {
+        path: 'purchase',
+        name: 'purchase',
+        component: () => import('@/views/form/index'),
+        meta: { title: '已采购订单', icon: 'form' }
+      },
+      {
+        path: 'wait',
+        name: 'wait',
+        component: () => import('@/views/form/index'),
+        meta: { title: '等待上架确认', icon: 'form' }
+      },
+      {
+        path: 'refund',
+        name: 'refund',
+        component: () => import('@/views/form/index'),
+        meta: { title: '退款订单管理', icon: 'form' }
+      }
+    ]
+  },
+  {
+    path: '/property-manage',
+    component: Layout,
+    redirect: '/property-manage/propertyList',
+    meta: {
+      title: '资产模块',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'propertyList',
+        component: () => import('@/views/propertyManage/propertyList'),
+        meta: { title: '资金流水' }
+      }, {
+        path: 'incomeManage',
+        component: () => import('@/views/propertyManage/incomeManage'),
+        meta: { title: '收益管理' }
+      }, {
+        path: 'myAccount',
+        component: () => import('@/views/propertyManage/myAccount'),
+        meta: { title: '我的账户' }
+      }
+    ]
+  },
+  {
+    path: '/logistics-module',
+    component: Layout,
+    redirect: '/logistics-module/logisticsList',
+    meta: {
+      title: '物流模块',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'logisticsList',
+        component: () => import('@/views/logisticsModule/logisticsList'),
+        meta: { title: '物流信息' }
+      }
+    ]
+  },
   {
     path: '/platformManage',
     component: Layout,
@@ -247,8 +389,6 @@ export const constantRoutes = [
       }
     ]
   },
-
-  // 厂家版，选品策略模块
   {
     path: '/choose-goods',
     component: Layout,
@@ -348,12 +488,32 @@ export const constantRoutes = [
         meta: { title: '我的账户' }
       }
     ]
-  },
-  // 厂家版，论坛模块
+  }
+
+  // 404 page must be placed at the end !!!
+
+]
+export const constantRoutes = [
   {
-    path: '/bbs-module',
+    path: '/login',
+    component: () => import('@/views/login/index'),
+    hidden: true
+  },
+
+  {
+    path: '/404',
+    component: () => import('@/views/404'),
+    hidden: true
+  },
+  {
+    path: '/register',
+    component: () => import('@/views/register/index'),
+    hidden: true
+  },
+  {
+    path: '/',
     component: Layout,
-    redirect: 'bbs-module/bbsMain',
+    redirect: '/bbsMain',
     meta: {
       title: '论坛模块',
       icon: 'nested'

@@ -1,11 +1,13 @@
 import { login, logout, getInfo, getActionByRoleId } from '@/api/user'
-import { getToken, setToken, removeToken, setId, getId, removeId } from '@/utils/auth'
+import { getToken, setToken, removeToken, setId, getId, removeId, setAuth, removeAuth, getAuth, getRouter } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
   name: getId(),
-  avatar: ''
+  avatar: '',
+  router: [],
+  auth: getAuth()
 }
 
 const mutations = {
@@ -17,11 +19,17 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_ROUTER: (state, router) => {
+    state.router = router
   }
 }
 
 const actions = {
   // user login
+  setRouter({ commit }, router) {
+    commit('SET_ROUTER', router)
+  },
   login({ commit }, userInfo) {
     const { phone, code } = userInfo
     console.log(123)
@@ -33,6 +41,7 @@ const actions = {
         commit('SET_NAME', data.id)
         setToken(data.token)
         setId(data.id)
+        setAuth(data.type)
         resolve()
       }).catch(error => {
         reject(error)
@@ -79,6 +88,7 @@ const actions = {
         commit('SET_TOKEN', '')
         removeToken()
         removeId()
+        removeAuth()
         resetRouter()
         resolve()
       }).catch(error => {

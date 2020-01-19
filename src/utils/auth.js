@@ -10,6 +10,18 @@ import Cookies from 'js-cookie'
 removeId
 const TokenKey = 'bh_template_token'
 
+export function setRouter(route) {
+  return Cookies.set('router', JSON.stringify(route))
+}
+
+export function getRouter() {
+  return Cookies.get('router')
+}
+
+export function removeRouter() {
+  return Cookies.remove('router')
+}
+
 export function getToken() {
   return Cookies.get(TokenKey)
 }
@@ -20,6 +32,12 @@ export function getId() {
 
 export function setToken(token) {
   return Cookies.set(TokenKey, token)
+}
+export function setAuth(auth) {
+  return Cookies.set('auth', auth)
+}
+export function getAuth() {
+  return Cookies.get('auth')
 }
 
 export function setId(id) {
@@ -32,4 +50,7 @@ export function removeToken() {
 
 export function removeId() {
   return Cookies.remove('id')
+}
+export function removeAuth() {
+  return Cookies.remove('auth')
 }

@@ -1,7 +1,38 @@
 <template>
   <div class="index">
     <el-card>
-      <Header @fetchGoodsList="fetchGoodsList" @handleAddGoods="handleAddGoods" />
+      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+      <el-form-item label="商品名称">
+        <el-input v-model="formInline.goodsName" size="small" placeholder="请输入商品名称" style="width: 150px" />
+      </el-form-item>
+      <el-form-item label="类目">
+        <el-select v-model="formInline.firstGroup" placeholder="类目一" size="small" style="width: 100px" @change="shangeOneSelect(formInline.firstGroup)">
+          <el-option v-for="item in firstOptionsArr" :key="item.id" :label="item.name" :value="item.id" />
+        </el-select>
+        <el-select v-model="formInline.secondGroup" placeholder="类目二" size="small" style="width: 100px" @change="shangeTwoSelect(formInline.secondGroup)">
+          <el-option v-for="item in secondOptionsArr" :key="item.id" :label="item.name" :value="item.id" />
+        </el-select>
+        <el-select v-model="formInline.thirdGroup" placeholder="类目三" size="small" style="width: 100px">
+          <el-option v-for="item in thirdOptionsArr" :key="item.id" :label="item.name" :value="item.id" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="上架时间">
+        <el-date-picker
+          v-model="formInline.time"
+          size="small"
+          type="daterange"
+          align="right"
+          unlink-panels
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :picker-options="pickerOptions"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" size="small" @click="search">查询</el-button>
+      </el-form-item>
+      </el-form>
     </el-card>
     <el-card>
       <div class="content">
@@ -51,19 +82,56 @@
   </div>
 </template>
 <script>
-import Header from '@/views/goodsModule/goodsHeader'
+// import Header from '@/components/chooseHeader/index'
 // import hasGoodsDialog from './hasGodsDialog'
 import {
   getGoodsList // 我的商品列表 userId=2&orderBy=desc&sortField=threeSale
 } from '@/api/chooseGoods'
+import { classify,certification } from '@/api/user'
 export default {
   name: 'GoodsList',
   components: {
-    Header
     //  hasGoodsDialog
   },
   data() {
     return {
+      formInline: {
+        goodsName: '',
+        firstGroup: '',
+        secondGroup: '',
+        thirdGroup: '',
+        time: ''
+      },
+      firstOptionsArr: [],
+      secondOptionsArr: [],
+      thirdOptionsArr: [],
+      pickerOptions: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
       userId: '',
       sortColumns: ['date', 'seleNumThree', 'seleNumWeek', 'seleNumTotal', 'seleNum'],
       currentPage: 1,
@@ -127,12 +195,35 @@ export default {
       ]
     }
   },
-  created() {
-    this.fetchWaresList()
+  async created() {
+    this.fetchGodList()
+    const res = await classify({ level: 1 })
+    if (res.success) {
+      this.firstOptionsArr = res.data.list
+    }
+    console.log(res)
   },
   methods: {
+    async shangeOneSelect(id) {
+      this.secondOptionsArr = []
+      this.thirdOptionsArr = []
+      this.formInline.secondGroup = ''
+      this.formInline.thirdGroup = ''
+      const res = await classify({ level: 2, parent_id: id })
+      if (res.success) {
+        this.secondOptionsArr = res.data.list
+      }
+    },
+    async shangeTwoSelect(id) {
+      this.thirdOptionsArr = []
+      this.formInline.thirdGroup = ''
+      const res = await classify({ level: 3, parent_id: id })
+      if (res.success) { 
+        this.thirdOptionsArr = res.data.list
+      }
+    },
     fetchGoodsList() {
-      this.fetchWaresList()
+      this.fetchGodList()
     },
     handleAddGoods() {
       console.log('新增')
@@ -143,39 +234,38 @@ export default {
     },
     handleConfirm(data) { // 操作
       this.$router.push({
-        path: '/example/supplier',
+        path: '/productModule/supplier',
         query: {
           id: data.id
         }
       })
     },
-    fetchWaresList(formLine = {}) {
-      // const params = {
-      //   ...formLine,
-      //   userId: this.userId,
-      //   orderBy: 'desc'
-      //   // sortField: 'threeSale'
-      // }
-      getGoodsList({ type: 2 }).then((res = {}) => {
-        const { data = {}} = res
-        const { list = [] } = data
-        if (list && list instanceof Array) {
-          this.tableData = list
-        } else {
-          this.tableData = []
-        }
+    fetchGodList() {
+      const params = {
+        // ...this.searchValue,
+        type: '2',
+        pageSize: this.pageData.pageSize,
+        pageNum: this.pageData.pageNum
+      }
+      getGoodsList(params).then(res => {
+        const { data = {}, data: { list = [] }} = res
+        this.pageData = data
+        this.tableData = list && list instanceof Array && list.length >= 0 ? list : []
+        console.log(res, 'ressgetGoodsLists')
+      }).catch(err => {
+        console.log(err, 'errrrgetGoodsList')
       })
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`, this.pageData)
       this.pageData['pageNum'] = 1
       this.pageData['pageSize'] = val
-      this.fetchBlogList()
+      this.fetchGodList()
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
       this.pageData['pageNum'] = val
-      this.fetchBlogList()
+      this.fetchGodList()
     },
     handleEdit() {}
   }

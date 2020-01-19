@@ -176,7 +176,7 @@ export default {
       console.log(id, 'commentNums')
       if (id) {
         this.$router.push({
-          path: '/bbs-module/postDetail',
+          path: '/postDetail',
           query: {
             id
           }

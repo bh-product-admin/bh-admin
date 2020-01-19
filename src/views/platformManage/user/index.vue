@@ -47,7 +47,14 @@
             :prop="item.prop"
             align="center"
           >
-            <template slot-scope="scope">{{ scope.row[item.prop] }}
+          <template slot-scope="scope">
+              <div v-if="item.type=='rodio'">
+                <el-radio-group v-model="scope.row[item.prop]" @change="handleChange($event,scope.row)">
+                  <el-radio :label="1">认证成功</el-radio>
+                  <el-radio :label="2">未认证</el-radio>
+                </el-radio-group>
+                </div>
+              <span v-else>{{ scope.row[item.prop] }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -84,11 +91,12 @@
 </template>
 
 <script>
-import { getUserList, addBlack } from '@/api/user'
+import { getUserList, addBlack, certification } from '@/api/user'
 import moment from 'moment'
 export default {
   data() {
     return {
+      radio: '1',
       sortColumns: ['price'],
       currentPage: 1,
       tableData: [],
@@ -120,7 +128,7 @@ export default {
         },
         {
           label: '认证用户',
-          type: 'text',
+          type: 'rodio',
           prop: 'certified'
         },
         {
@@ -190,6 +198,16 @@ export default {
     }
   },
   methods: {
+    async handleChange(e, data) {
+      console.log(data)
+      const res = await certification({ userId: data.id, certification: e })
+      if (res.success) {
+        this.$message.success(res.msg)
+      } else {
+        this.$message.error(res.msg)
+      }
+      console.log(res)
+    },
     async updatePageData() {
       try {
         const res = await getUserList()

@@ -116,3 +116,13 @@ export function waresList(data) {
     data
   })
 }
+
+/** 类目 */
+
+export function classify(data) {
+  return request({
+    url: '/classify/list',
+    method: 'post',
+    data
+  })
+}
