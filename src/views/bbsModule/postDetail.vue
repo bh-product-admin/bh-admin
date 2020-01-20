@@ -86,7 +86,7 @@ export default {
     this.blogId = id
     if (!this.blogId) {
       this.$router.push({
-        path: '/bbs-module/bbsMain'
+        path: '/bbsMain'
       })
     } else this.fetchBlogDetail()
   },
