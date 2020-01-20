@@ -25,11 +25,11 @@
             <template slot-scope="scope">
               <el-button
                 size="mini"
-                @click="handleEdit(scope.row.id,10)"
+                @click="handleEdit(scope.row.id,2)"
               >驳回</el-button>
               <el-button
                 size="mini"
-                @click="handleEdit(scope.row.id,10)"
+                @click="handleEdit(scope.row.id,1)"
               >通过</el-button>
             </template>
           </el-table-column>
@@ -111,7 +111,13 @@ export default {
       console.log('sortChange--', column, prop, order)
     },
     async handleEdit(data, type) {
-      const res = await certification({ userId: data.id, certification: type })
+      const res = await certification({ userId: data, certification: type })
+      if (res.success) {
+        this.$message.success(res.msg)
+        this.updatePageData()
+      } else {
+        this.$message.error(res.msg)
+      }
       console.log(res)
     },
     handleDelete(index, row) {

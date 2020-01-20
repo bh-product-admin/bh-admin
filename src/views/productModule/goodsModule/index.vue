@@ -2,7 +2,7 @@
   <div class="index">
     <el-card>
       <Header @search="search" />
-      
+
     </el-card>
     <el-card>
       <div class="content">
@@ -104,7 +104,7 @@ export default {
         }]
       },
       userId: '',
-      sortColumns: ['date', 'seleNumThree', 'seleNumWeek', 'seleNumTotal', 'seleNum'],
+      sortColumns: ['showTime', 'yesterdaySale', 'threeSale', 'sevenSale', 'totalSale'],
       currentPage: 1,
       tableData: [],
       pageData: {
@@ -131,7 +131,7 @@ export default {
         {
           label: '类目',
           type: 'text',
-          prop: 'skuType'
+          prop: 'category'
         },
         {
           label: '价格',
@@ -139,12 +139,7 @@ export default {
           prop: 'price'
         },
         {
-          label: '库存',
-          type: 'text',
-          prop: 'stockNum'
-        },
-        {
-          label: '昨日销量',
+          label: '一日销量',
           type: 'text',
           prop: 'yesterdaySale'
         },

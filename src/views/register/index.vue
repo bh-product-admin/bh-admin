@@ -40,7 +40,7 @@
         <el-col :span="12">
           <el-form :inline="true">
             <el-form-item label="企业执照">
-              <img :src="form.licenseIcon">
+              <img :src="form.licenseIcon" width="200px" height="200px">
             </el-form-item>
             <el-form-item>
               <el-upload
@@ -52,7 +52,7 @@
                 :on-success="handlelicenseSuccess"
                 :show-file-list="false"
                 multiple
-                >
+              >
                 <el-button size="small" type="primary">点击上传</el-button>
               </el-upload>
             </el-form-item>
@@ -63,42 +63,42 @@
             <el-col :span="6"><div class="grid-content bg-purple">法人代表身份证</div></el-col>
             <el-col :span="9">
               <div class="grid-content bg-purple">
-                <img :src="form.idNumIcon" width="150px" height="150px"/>
+                <img :src="form.idNumIcon" width="115px" height="115px">
               </div>
               <div style="padding-left:30px">
                 <el-upload
-                class="upload-demo"
-                :action="action"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                :before-remove="beforeRemove"
-                :on-success="handleidNumSuccess"
-                :show-file-list="false"
-                multiple
+                  class="upload-demo"
+                  :action="action"
+                  :on-preview="handlePreview"
+                  :on-remove="handleRemove"
+                  :before-remove="beforeRemove"
+                  :on-success="handleidNumSuccess"
+                  :show-file-list="false"
+                  multiple
                 >
-                <el-button size="small" type="primary">正面</el-button>
-              </el-upload>
+                  <el-button size="small" type="primary">正面</el-button>
+                </el-upload>
               </div>
-              </el-col>
-              <el-col :span="9">
+            </el-col>
+            <el-col :span="9">
               <div class="grid-content bg-purple">
-                <img :src="form.idNumReverseIcon"/>
+                <img :src="form.idNumReverseIcon" width="115px" height="115px">
               </div>
               <div style="padding-left:30px">
                 <el-upload
-                class="upload-demo"
-                :action="action"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                :before-remove="beforeRemove"
-                :on-success="handleidNumReverseSuccess"
-                :show-file-list="false"
-                multiple
+                  class="upload-demo"
+                  :action="action"
+                  :on-preview="handlePreview"
+                  :on-remove="handleRemove"
+                  :before-remove="beforeRemove"
+                  :on-success="handleidNumReverseSuccess"
+                  :show-file-list="false"
+                  multiple
                 >
-                <el-button size="small" type="primary">背面</el-button>
-              </el-upload>
+                  <el-button size="small" type="primary">背面</el-button>
+                </el-upload>
               </div>
-              </el-col>
+            </el-col>
           </el-row>
         </el-col>
       </el-row>
@@ -137,13 +137,14 @@ export default {
   },
   methods: {
     handlelicenseSuccess(res, file) {
-      this.form.licenseIcon = URL.createObjectURL(file.raw)
+      console.log(res)
+      this.form.licenseIcon = "https://zm-hot.oss-cn-hangzhou.aliyuncs.com/" + res.data
     },
     handleidNumSuccess(res, file) {
-      this.form.idNumIcon = URL.createObjectURL(file.raw)
+      this.form.idNumIcon = "https://zm-hot.oss-cn-hangzhou.aliyuncs.com/" + res.data
     },
     handleidNumReverseSuccess(res, file) {
-      this.form.idNumReverseIcon = URL.createObjectURL(file.raw)
+      this.form.idNumReverseIcon = "https://zm-hot.oss-cn-hangzhou.aliyuncs.com/" + res.data
     },
     handlePreview() {},
     handleRemove() {},

@@ -22,14 +22,14 @@
           </el-select>
         </el-form-item>
         <el-button
-          v-model="form.status"
           type="primary"
+          @click="handleBlack"
         >黑名单用户</el-button>
         <el-button
-          v-model="form.certified"
           type="primary"
+          @click="handleSuccess"
         >认证用户</el-button>
-        <el-button type="primary">查询</el-button>
+        <el-button type="primary" @click="updatePageData">查询</el-button>
       </el-form>
     </el-card>
     <el-card>
@@ -45,6 +45,7 @@
             :key="index"
             :label="item.label"
             :prop="item.prop"
+            :width="item.width"
             align="center"
           >
           <template slot-scope="scope">
@@ -129,6 +130,7 @@ export default {
         {
           label: '认证用户',
           type: 'rodio',
+          width: '220',
           prop: 'certified'
         },
         {
@@ -148,7 +150,7 @@ export default {
       },
       selectArr: [
         {
-          type: 0,
+          type: "",
           label: '全部'
         },
         {
@@ -184,20 +186,37 @@ export default {
     }
   },
   async created() {
-    try {
-      const res = await getUserList()
-      const { data = {}} = res
-      this.tableData = data.list
-      this.pagination = {
-        total: (data && data.total) || 0,
-        pageSize: (data && data.pageSize) || 10,
-        currentPage: (data && data.pageNum) || 1
-      }
-    } catch (error) {
-      console.log(error)
-    }
+    this.updatePageData()
   },
   methods: {
+    async handleSuccess() {
+      try {
+        const res = await getUserList({ certified: 1 })
+        this.tableData = res.data.list
+        const { data = {}} = res
+        this.pagination = {
+          total: (data && data.total) || 0,
+          pageSize: (data && data.pageSize) || 10,
+          currentPage: (data && data.pageNum) || 1
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async handleBlack() {
+      try {
+        const res = await getUserList({ status: 2 })
+        this.tableData = res.data.list
+        const { data = {}} = res
+        this.pagination = {
+          total: (data && data.total) || 0,
+          pageSize: (data && data.pageSize) || 10,
+          currentPage: (data && data.pageNum) || 1
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
     async handleChange(e, data) {
       console.log(data)
       const res = await certification({ userId: data.id, certification: e })
@@ -210,7 +229,7 @@ export default {
     },
     async updatePageData() {
       try {
-        const res = await getUserList()
+        const res = await getUserList(this.form)
         this.tableData = res.data.list
         const { data = {}} = res
         this.pagination = {

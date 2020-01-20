@@ -10,7 +10,7 @@
         </el-form-item>
         <el-form-item label="状态:">
           <el-select
-            v-model="form.type"
+            v-model="form.manufacturerCertified"
             placeholder="请选择"
           >
             <el-option
@@ -21,7 +21,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-button type="primary">查询</el-button>
+        <el-button type="primary" @click="search">查询</el-button>
       </el-form>
     </el-card>
     <el-card>
@@ -67,17 +67,17 @@
               >释放</el-button> -->
               <el-button
                 size="mini"
-                v-if="!scope.row.status == 0"
-                @click="handleLookDetail(scope.$index, scope.row)"
-              >查看</el-button>
-              <el-button
-                size="mini"
-                v-if="!scope.row.status == 1"
+                v-if="scope.row.manufacturerCertified == 2||scope.row.manufacturerCertified == 3"
                 @click="handleLookDetail(scope.$index, scope.row)"
               >查看资料</el-button>
               <el-button
                 size="mini"
-                v-if="!scope.row.status == 2"
+                v-if="scope.row.manufacturerCertified == 1"
+                @click="handleLookDetail(scope.$index, scope.row)"
+              >查看资料</el-button>
+              <el-button
+                size="mini"
+                v-if="scope.row.manufacturerCertified == 4"
                 @click="handleLookDetail(scope.$index, scope.row)"
               >拒绝理由</el-button>
             </template>
@@ -101,7 +101,6 @@
 <script>
 import { getManufacturerCertifiedIng } from '@/api/user'
 import examineDialog from './examineDialog'
-import moment from 'moment'
 export default {
   components: {
     examineDialog
@@ -121,7 +120,7 @@ export default {
         {
           label: '状态',
           type: 'status',
-          prop: 'id'
+          prop: 'manufacturerCertified'
         },
         {
           label: '申请时间',
@@ -134,20 +133,20 @@ export default {
       },
       selectArr: [
         {
-          type: 0,
-          label: '全部'
-        },
-        {
           type: 1,
-          label: '待审核'
+          label: '已认证'
         },
         {
           type: 2,
-          label: '已通过'
+          label: '未认证'
         },
         {
           type: 3,
-          label: '已拒绝'
+          label: '待审核'
+        },
+        {
+          type: 4,
+          label: '认证失败'
         }
       ],
       pagination: {
@@ -174,6 +173,9 @@ export default {
     }
   },
   methods: {
+    search(){
+      this.updatePageData()
+    },
     handleLookDetail(index, row) {
       console.log(index, row, 'index, row')
       this.$refs.examineDialog.showDialog(row, true)
@@ -184,7 +186,7 @@ export default {
     },
     async updatePageData() {
       try {
-        const res = await getUserList()
+        const res = await getManufacturerCertifiedIng(this.form)
         this.tableData = res.data.list
       } catch (error) {
         console.log(error)
