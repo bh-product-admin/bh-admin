@@ -145,6 +145,7 @@ export default {
       this.$store
         .dispatch('user/login', this.loginForm)
         .then(() => {
+          location.reload()
           this.$router.push({ path: '/' || this.redirect })
           this.loading = false
         })
