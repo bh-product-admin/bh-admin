@@ -76,7 +76,7 @@ export default {
         startShowTime: '',
         endShowTime: ''
       },
-      sortColumns: ['time', 'commentNums'],
+      sortColumns: ['created', 'commentNum'],
       currentPage: 1,
       tableData: [],
       pageData: {

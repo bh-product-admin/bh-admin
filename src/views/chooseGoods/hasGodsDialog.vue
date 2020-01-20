@@ -46,7 +46,7 @@
         </el-form-item>
         <el-form-item label="备注：">
           <el-input v-model="form.note" type="textarea" />
-          <p class="cred p0">您还不是认证厂家，点击前往认证，买家购买更放心！</p>
+          <p v-if="showNoAuth" class="cred p0 cur" @click="toRegist">您还不是认证厂家，点击前往认证，买家购买更放心！</p>
         </el-form-item>
 
       </el-form>
@@ -61,6 +61,12 @@
 import {
   hasGoodAdd
 } from '@/api/chooseGoods'
+import {
+  getManufacturerCertifiedIng
+} from '@/api/user'
+import {
+  getCookieByCode
+} from '@/utils/index'
 export default {
   name: 'HasGoodsDialog',
   props: [],
@@ -80,6 +86,8 @@ export default {
         note: '',
         goodsId: ''
       },
+      showNoAuth: false,
+      phone: getCookieByCode('phone'),
       title: '',
       img: '',
       rules: {
@@ -109,8 +117,27 @@ export default {
       dialogFormVisible: false
     }
   },
-  created() {},
+  created() {
+    this.fetchManufacturerCertifiedIng()
+  },
   methods: {
+    toRegist() {
+      this.$router.push({
+        path: '/register'
+      })
+    },
+    fetchManufacturerCertifiedIng() {
+      getManufacturerCertifiedIng({ phone: this.phone }).then((res = {}) => {
+        console.log(res, 'ressssfetchManufacturerCertifiedIng')
+        const { data = [] } = res
+        // if ((!data || !data.length) || (data && data[0] && data[0].manufacturerCertified != 1)) {
+        if (!data || !data.length) {
+          this.showNoAuth = true
+        } else {
+          this.showNoAuth = false
+        }
+      })
+    },
     onSubmit() {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
@@ -181,5 +208,8 @@ export default {
   display: flex;
   justify-content: center;
   flex-direction:row;
+}
+.cur{
+  cursor: pointer;
 }
 </style>
