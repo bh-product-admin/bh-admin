@@ -1,5 +1,5 @@
 import { login, logout, getInfo, getActionByRoleId } from '@/api/user'
-import { getToken, setToken, removeToken, setId, getId, removeId, setAuth, removeAuth, getAuth, getRouter } from '@/utils/auth'
+import { getToken, setToken, removeToken, setId, getId, removeId, setAuth, removeAuth, getAuth, getRouter, setPhone, removePhone } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
 const state = {
@@ -41,6 +41,7 @@ const actions = {
         commit('SET_NAME', data.id)
         setToken(data.token)
         setId(data.id)
+        setPhone(data.phone)
         setAuth(data.type)
         resolve()
       }).catch(error => {
@@ -90,6 +91,7 @@ const actions = {
         removeId()
         removeAuth()
         resetRouter()
+        removePhone()
         resolve()
       }).catch(error => {
         reject(error)

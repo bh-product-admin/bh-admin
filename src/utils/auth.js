@@ -30,8 +30,15 @@ export function getId() {
   return Cookies.get('id')
 }
 
+export function getPhone() {
+  return Cookies.get('phone')
+}
+
 export function setToken(token) {
   return Cookies.set(TokenKey, token)
+}
+export function setPhone(phone) {
+  return Cookies.set('phone', phone)
 }
 export function setAuth(auth) {
   return Cookies.set('auth', auth)
@@ -53,4 +60,7 @@ export function removeId() {
 }
 export function removeAuth() {
   return Cookies.remove('auth')
+}
+export function removePhone() {
+  return Cookies.remove('phone')
 }
