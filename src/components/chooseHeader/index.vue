@@ -5,13 +5,13 @@
         <el-input v-model="formInline.goodsName" size="small" placeholder="请输入商品名称" style="width: 150px" />
       </el-form-item>
       <el-form-item label="类目">
-        <el-select v-model="formInline.firstGroup" placeholder="类目一" size="small" style="width: 100px" @change="shangeSelect(1)">
+        <el-select v-model="formInline.firstId" placeholder="类目一" size="small" style="width: 100px" @change="shangeSelect(1)">
           <el-option v-for="item in firstOptionsArr" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
-        <el-select v-model="formInline.secondGroup" placeholder="类目二" size="small" style="width: 100px" @change="shangeSelect(2)">
+        <el-select v-model="formInline.secondId" placeholder="类目二" size="small" style="width: 100px" @change="shangeSelect(2)">
           <el-option v-for="item in secondOptionsArr" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
-        <el-select v-model="formInline.thirdGroup" placeholder="类目三" size="small" style="width: 100px" @change="shangeSelect(3)">
+        <el-select v-model="formInline.thirdId" placeholder="类目三" size="small" style="width: 100px" @change="shangeSelect(3)">
           <el-option v-for="item in thirdOptionsArr" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
       </el-form-item>
@@ -45,41 +45,14 @@ export default {
     return {
       formInline: {
         goodsName: '',
-        firstGroup: '',
-        secondGroup: '',
-        thirdGroup: '',
+        firstId: '',
+        secondId: '',
+        thirdId: '',
         time: ''
       },
-      firstOptionsArr: [{
-        id: '1',
-        name: '11'
-      }, {
-        id: '2',
-        name: '12'
-      }, {
-        id: '3',
-        name: '13'
-      }],
-      secondOptionsArr: [{
-        id: '1',
-        name: '21'
-      }, {
-        id: '2',
-        name: '22'
-      }, {
-        id: '3',
-        name: '23'
-      }],
-      thirdOptionsArr: [{
-        id: '1',
-        name: '31'
-      }, {
-        id: '2',
-        name: '32'
-      }, {
-        id: '3',
-        name: '33'
-      }],
+      firstOptionsArr: [],
+      secondOptionsArr: [],
+      thirdOptionsArr: [],
       pickerOptions: {
         shortcuts: [{
           text: '最近一周',
@@ -125,7 +98,7 @@ export default {
         level
       }
       if (level && level > 1) {
-        parent_id = this.formInline[`${labelArr[level - 1]}Group`]
+        parent_id = this.formInline[`${labelArr[level - 1]}Id`]
         params['parent_id'] = parent_id
       }
       classify(params).then((res = {}) => {
@@ -133,7 +106,7 @@ export default {
         const { data: { list = [] }} = res
         console.log(list, 'listressssclassify')
         if (list && list instanceof Array) this.$data[`${labelArr[level]}OptionsArr`] = list
-        this.shangeSelect(level, true)
+        // this.shangeSelect(level, true)
       })
     },
     shangeSelect(codeIndex, isAuto) {
@@ -141,7 +114,7 @@ export default {
       const labelArr = ['', 'first', 'second', 'third']
       const startIndex = isAuto ? codeIndex : codeIndex + 1
       for (let i = startIndex; i < labelArr.length; i++) {
-        this.formInline[`${labelArr[i]}Group`] = (this.$data[`${labelArr[i]}OptionsArr`][0] && this.$data[`${labelArr[i]}OptionsArr`][0].id) || ''
+        this.formInline[`${labelArr[i]}Id`] = (this.$data[`${labelArr[i]}OptionsArr`][0] && this.$data[`${labelArr[i]}OptionsArr`][0].id) || ''
       }
       if (codeIndex < 3) {
         this.fetchOptions(codeIndex + 1)

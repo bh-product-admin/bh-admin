@@ -155,7 +155,7 @@ export default {
     },
     fetchGodList() {
       const params = {
-        // ...this.searchValue,
+        ...this.searchValue,
         type: '2',
         pageSize: this.pageData.pageSize,
         pageNum: this.pageData.pageNum
@@ -171,7 +171,7 @@ export default {
     },
     search(val = {}) {
       console.log('search--', val)
-      const { time, keywords, type } = val
+      const { time, keywords, type, firstId, secondId, thirdId } = val
       let startTime = ''
       let endTime = ''
       if (time && time instanceof Array) {
@@ -183,7 +183,7 @@ export default {
         keywords,
         type,
         startTime,
-        endTime
+        endTime, firstId, secondId, thirdId
       }
       this.pageData['pageNum'] = 1
       this.fetchGodList()
