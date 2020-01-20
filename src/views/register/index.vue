@@ -3,6 +3,7 @@
     <el-card>
       <div slot="header" class="clearfix">
         <span>基本信息</span>
+        <el-button type="warning" style="float:right" @click="$router.back(-1)">返回</el-button>
       </div>
       <el-form label-width="100px">
         <el-form-item label="手机号码">
@@ -37,9 +38,9 @@
       </div>
       <el-row>
         <el-col :span="12">
-          <el-form inline="true">
+          <el-form :inline="true">
             <el-form-item label="企业执照">
-              <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png" height="200px;">
+              <img :src="form.licenseIcon">
             </el-form-item>
             <el-form-item>
               <el-upload
@@ -48,6 +49,8 @@
                 :on-preview="handlePreview"
                 :on-remove="handleRemove"
                 :before-remove="beforeRemove"
+                :on-success="handlelicenseSuccess"
+                :show-file-list="false"
                 multiple
                 >
                 <el-button size="small" type="primary">点击上传</el-button>
@@ -60,7 +63,7 @@
             <el-col :span="6"><div class="grid-content bg-purple">法人代表身份证</div></el-col>
             <el-col :span="9">
               <div class="grid-content bg-purple">
-                <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"/>
+                <img :src="form.idNumIcon" />
               </div>
               <div style="padding-left:30px">
                 <el-upload
@@ -69,6 +72,8 @@
                 :on-preview="handlePreview"
                 :on-remove="handleRemove"
                 :before-remove="beforeRemove"
+                :on-success="handleidNumSuccess"
+                :show-file-list="false"
                 multiple
                 >
                 <el-button size="small" type="primary">正面</el-button>
@@ -77,7 +82,7 @@
               </el-col>
               <el-col :span="9">
               <div class="grid-content bg-purple">
-                <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"/>
+                <img :src="form.idNumReverseIcon"/>
               </div>
               <div style="padding-left:30px">
                 <el-upload
@@ -86,6 +91,8 @@
                 :on-preview="handlePreview"
                 :on-remove="handleRemove"
                 :before-remove="beforeRemove"
+                :on-success="handleidNumReverseSuccess"
+                :show-file-list="false"
                 multiple
                 >
                 <el-button size="small" type="primary">背面</el-button>
@@ -102,7 +109,7 @@
       </div>
       <el-form label-width="130px">
         <el-form-item label="备注（可不填）">
-          <el-input v-model="form.content" type="textarea" :autosize="{ minRows: 2, maxRows: 15}" style="width:50%;" />
+          <el-input v-model="form.note" type="textarea" :autosize="{ minRows: 2, maxRows: 15}" style="width:50%;" />
         </el-form-item>
       </el-form>
     </el-card>
@@ -113,22 +120,26 @@
 </template>
 
 <script>
-import { sendCode, upload, manufacturer } from '@/api/user'
+import { sendCode, manufacturer } from '@/api/user'
 export default {
   data() {
     return {
       disabled: false,
       btntxt: '重新发送',
-      action: process.env.VUE_APP_BASE_API+'/oss/upload',
+      action: process.env.VUE_APP_BASE_API + '/oss/upload',
       form: {
         certified: 2,
-        licenseIcon: '123123',
-        idNumIcon: '222',
-        idNumReverseIcon: '333'
+        licenseIcon: 'https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png',
+        idNumIcon: 'https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png',
+        idNumReverseIcon: 'https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png'
       }
     }
   },
   methods: {
+    handlelicenseSuccess() {},
+    handlePreview() {},
+    handleRemove() {},
+    beforeRemove() {},
     async submit() {
       const res = await manufacturer(this.form)
       console.log(res)

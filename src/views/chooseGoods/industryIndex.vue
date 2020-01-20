@@ -101,7 +101,7 @@ export default {
         {
           label: '类目',
           type: 'text',
-          prop: 'colName'
+          prop: 'category'
         },
         {
           label: '价格',
@@ -111,7 +111,7 @@ export default {
         {
           label: '一日销量',
           type: 'text',
-          prop: 'daySendNum'
+          prop: 'yesterdaySale'
         },
         {
           label: '三日销量',
