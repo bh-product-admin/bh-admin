@@ -6,13 +6,13 @@
       </el-form-item>
       <el-form-item label="类目">
         <el-select v-model="formInline.firstGroup" placeholder="类目一" size="small" style="width: 100px" @change="shangeSelect(1)">
-          <el-option v-for="item in firstOptionsArr" :key="item.value" :label="item.label" :value="item.value" />
+          <el-option v-for="item in firstOptionsArr" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
         <el-select v-model="formInline.secondGroup" placeholder="类目二" size="small" style="width: 100px" @change="shangeSelect(2)">
-          <el-option v-for="item in secondOptionsArr" :key="item.value" :label="item.label" :value="item.value" />
+          <el-option v-for="item in secondOptionsArr" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
         <el-select v-model="formInline.thirdGroup" placeholder="类目三" size="small" style="width: 100px" @change="shangeSelect(3)">
-          <el-option v-for="item in thirdOptionsArr" :key="item.value" :label="item.label" :value="item.value" />
+          <el-option v-for="item in thirdOptionsArr" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
       </el-form-item>
       <el-form-item label="上架时间">
@@ -35,6 +35,9 @@
   </div>
 </template>
 <script>
+import {
+  classify
+} from '@/api/user'
 export default {
   name: 'ChooseHeader',
   props: [],
@@ -48,34 +51,34 @@ export default {
         time: ''
       },
       firstOptionsArr: [{
-        value: '1',
-        label: '11'
+        id: '1',
+        name: '11'
       }, {
-        value: '2',
-        label: '12'
+        id: '2',
+        name: '12'
       }, {
-        value: '3',
-        label: '13'
+        id: '3',
+        name: '13'
       }],
       secondOptionsArr: [{
-        value: '1',
-        label: '21'
+        id: '1',
+        name: '21'
       }, {
-        value: '2',
-        label: '22'
+        id: '2',
+        name: '22'
       }, {
-        value: '3',
-        label: '23'
+        id: '3',
+        name: '23'
       }],
       thirdOptionsArr: [{
-        value: '1',
-        label: '31'
+        id: '1',
+        name: '31'
       }, {
-        value: '2',
-        label: '32'
+        id: '2',
+        name: '32'
       }, {
-        value: '3',
-        label: '33'
+        id: '3',
+        name: '33'
       }],
       pickerOptions: {
         shortcuts: [{
@@ -106,19 +109,45 @@ export default {
       }
     }
   },
-  created() {},
+  created() {
+    this.fetchOptions()
+  },
   methods: {
     search() {
       this.$emit('search', this.formInline)
     },
-    shangeSelect(codeIndex) {
+    // classify
+    fetchOptions(level = 1) {
+      console.log(level, 'levellevel')
+      const labelArr = ['', 'first', 'second', 'third']
+      let parent_id = ''
+      const params = {
+        level
+      }
+      if (level && level > 1) {
+        parent_id = this.formInline[`${labelArr[level - 1]}Group`]
+        params['parent_id'] = parent_id
+      }
+      classify(params).then((res = {}) => {
+        console.log(res, 'ressssclassify')
+        const { data: { list = [] }} = res
+        console.log(list, 'listressssclassify')
+        if (list && list instanceof Array) this.$data[`${labelArr[level]}OptionsArr`] = list
+        this.shangeSelect(level, true)
+      })
+    },
+    shangeSelect(codeIndex, isAuto) {
       console.log(codeIndex, 'codeIndex')
       const labelArr = ['', 'first', 'second', 'third']
-      for (let i = codeIndex + 1; i < labelArr.length; i++) {
-        console.log(i, 'iiiiiiiiiiii', labelArr[i])
-        this.formInline[`${labelArr[i]}Group`] = this.$data[`${labelArr[i]}OptionsArr`][0] && this.$data[`${labelArr[i]}OptionsArr`][0].value
+      const startIndex = isAuto ? codeIndex : codeIndex + 1
+      for (let i = startIndex; i < labelArr.length; i++) {
+        this.formInline[`${labelArr[i]}Group`] = (this.$data[`${labelArr[i]}OptionsArr`][0] && this.$data[`${labelArr[i]}OptionsArr`][0].id) || ''
       }
-      console.log(JSON.stringify(this.formInline), 'this.formInlinethis.formInline')
+      if (codeIndex < 3) {
+        this.fetchOptions(codeIndex + 1)
+      } else {
+        this.$emit('search', this.formInline)
+      }
     }
   }
 }
