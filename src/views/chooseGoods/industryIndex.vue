@@ -181,7 +181,7 @@ export default {
         keywords,
         type,
         showTime,
-         firstId, secondId, thirdId, title
+        firstId, secondId, thirdId, title
       }
       this.pageData['pageNum'] = 1
       this.fetchGodList()

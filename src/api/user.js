@@ -126,3 +126,12 @@ export function classify(data) {
     data
   })
 }
+
+// 厂家认证接口
+export function manufacturerCertification(data) {
+  return request({
+    url: '/user/manufacturerCertification',
+    method: 'post',
+    data
+  })
+}

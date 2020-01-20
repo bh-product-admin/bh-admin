@@ -29,6 +29,7 @@
         <el-table
           :data="tableData"
           border
+          align="center"
           style="width: 100%"
           @sort-change="sortChange"
         >
@@ -38,27 +39,52 @@
             :label="item.label"
             :prop="item.prop"
           >
-            <template slot-scope="scope">{{ scope.row[item.prop] }}
+            <template slot-scope="scope">
+              <span v-if="item.type === 'time'">
+                {{ scope.row[item.prop] | datetimeDot }}
+              </span>
+              <span v-else-if="item.type === 'status'">
+                {{ filterStatus(scope.row[item.prop]) }}
+              </span>
+              <span v-else>
+                {{ scope.row[item.prop] }}
+              </span>
             </template>
           </el-table-column>
           <el-table-column
             label="操作"
             width="200"
+            align="center"
           >
             <template slot-scope="scope">
-              <el-button
+              <!-- <el-button
                 size="mini"
                 @click="handleEdit(scope.$index, scope.row)"
               >拉黑</el-button>
               <el-button
                 size="mini"
                 @click="handleEdit(scope.$index, scope.row)"
-              >释放</el-button>
+              >释放</el-button> -->
+              <el-button
+                size="mini"
+                v-if="!scope.row.status == 0"
+                @click="handleLookDetail(scope.$index, scope.row)"
+              >查看</el-button>
+              <el-button
+                size="mini"
+                v-if="!scope.row.status == 1"
+                @click="handleLookDetail(scope.$index, scope.row)"
+              >查看资料</el-button>
+              <el-button
+                size="mini"
+                v-if="!scope.row.status == 2"
+                @click="handleLookDetail(scope.$index, scope.row)"
+              >拒绝理由</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination
+      <!-- <el-pagination
         :current-page="pagination.currentPage"
         :page-sizes="[10, 20, 30, 40]"
         :page-size="pagination.pageSize"
@@ -66,20 +92,26 @@
         :total="pagination.total"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-      />
+      /> -->
     </el-card>
+    <examineDialog ref="examineDialog" @handleSuccess="getManufacturerCertifiedIng" />
   </div>
 </template>
 
 <script>
 import { getManufacturerCertifiedIng } from '@/api/user'
+import examineDialog from './examineDialog'
 import moment from 'moment'
 export default {
+  components: {
+    examineDialog
+  },
   data() {
     return {
       sortColumns: ['price'],
       currentPage: 1,
       tableData: [],
+      rowData: {},
       columnData: [
         {
           label: '申请账号',
@@ -88,7 +120,7 @@ export default {
         },
         {
           label: '状态',
-          type: 'text',
+          type: 'status',
           prop: 'id'
         },
         {
@@ -130,18 +162,26 @@ export default {
   async created() {
     try {
       const res = await getManufacturerCertifiedIng()
-      const { data = {}} = res
-      this.tableData = data.list
-      this.pagination = {
-        total: (data && data.total) || 0,
-        pageSize: (data && data.pageSize) || 10,
-        currentPage: (data && data.pageNum) || 1
-      }
+      const { data = [] } = res
+      this.tableData = data
+      // this.pagination = {
+      //   total: (data && data.total) || 0,
+      //   pageSize: (data && data.pageSize) || 10,
+      //   currentPage: (data && data.pageNum) || 1
+      // }
     } catch (error) {
       console.log(error)
     }
   },
   methods: {
+    handleLookDetail(index, row) {
+      console.log(index, row, 'index, row')
+      this.$refs.examineDialog.showDialog(row, true)
+    },
+    filterStatus(code) {
+      const selectArr = this.selectArr.filter(item => item.type === code)
+      return selectArr && selectArr.length ? selectArr[0].label : '--'
+    },
     async updatePageData() {
       try {
         const res = await getUserList()
