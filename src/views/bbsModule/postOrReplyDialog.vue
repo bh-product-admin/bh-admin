@@ -42,7 +42,8 @@ export default {
       userId: getCookieByCode('id'),
       phone: getCookieByCode('phone'),
       blogId: undefined,
-      dialogTitle: '评论'
+      dialogTitle: '评论',
+      commentId: undefined
     }
   },
   methods: {
@@ -78,9 +79,10 @@ export default {
             content: this.formInline.cont
           }
           const newParams = {
-            id: this.blogId,
+            id: this.commentId,
             replyJson: JSON.stringify(replyJson)
           }
+          console.log(newParams, 'newParams')
           blogAddReply(newParams).then((res = {}) => { // 回复评论
             console.log(res, 'res')
             this.dialogVisible = false
@@ -107,11 +109,12 @@ export default {
         })
         .catch(_ => {})
     },
-    showDialog(isDialogVisible, replyOrComment, blogId) {
+    showDialog(isDialogVisible, replyOrComment, blogId, id) {
       this.dialogVisible = isDialogVisible
       this.replyOrComment = replyOrComment
       this.blogId = blogId
       this.dialogTitle = replyOrComment === 'comment' ? '评论' : '回复'
+      if (id >= 0) this.commentId = id
     }
   }
 }

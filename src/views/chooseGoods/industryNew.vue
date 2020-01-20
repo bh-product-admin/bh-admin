@@ -15,6 +15,7 @@
           <el-table-column
             v-for="(item, index) in columnData"
             :key="index"
+            :width="item.width"
             :label="item.label"
             :prop="item.prop"
             align="center"
@@ -28,7 +29,7 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="240" align="center">
+          <el-table-column label="操作" width="100" align="center">
             <template slot-scope="scope">
               <el-button
                 size="mini"
@@ -84,7 +85,8 @@ export default {
         {
           label: '商品图',
           type: 'img',
-          prop: 'src'
+          width: 120,
+          prop: 'img'
         },
         {
           label: '商品标题',
@@ -94,36 +96,43 @@ export default {
         {
           label: '上架时间',
           type: 'date',
+          width: 100,
           prop: 'showTime'
         },
         {
           label: '类目',
           type: 'text',
-          prop: 'colName'
+          width: 180,
+          prop: 'category'
         },
         {
           label: '价格',
           type: 'text',
+          width: 80,
           prop: 'price'
         },
         {
           label: '一日销量',
           type: 'text',
-          prop: 'daySendNum'
+          width: 80,
+          prop: 'yesterdaySale'
         },
         {
           label: '三日销量',
           type: 'text',
+          width: 80,
           prop: 'threeSale'
         },
         {
           label: '七日销量',
           type: 'text',
+          width: 80,
           prop: 'sevenSale'
         },
         {
           label: '总销量',
           type: 'text',
+          width: 120,
           prop: 'totalSale'
         }
       ]
@@ -153,7 +162,7 @@ export default {
     },
     fetchGodList() {
       const params = {
-        // ...this.searchValue,
+        ...this.searchValue,
         type: '1',
         pageSize: this.pageData.pageSize,
         pageNum: this.pageData.pageNum
@@ -169,19 +178,21 @@ export default {
     },
     search(val = {}) {
       console.log('search--', val)
-      const { time, keywords, type } = val
-      let startTime = ''
-      let endTime = ''
+      const { time, keywords, type, title, firstId, secondId, thirdId } = val
+      let startShowTime = ''
+      let endShowTime = ''
       if (time && time instanceof Array) {
-        startTime = this.$moment(new Date(time[0])).format('YYYY-MM-DD HH:mm:ss')
-        endTime = this.$moment(new Date(time[1])).format('YYYY-MM-DD HH:mm:ss')
-        console.log(startTime, endTime)
+        startShowTime = this.$moment(new Date(time[0])).format('YYYY-MM-DD HH:mm:ss')
+        endShowTime = this.$moment(new Date(time[1])).format('YYYY-MM-DD HH:mm:ss')
+        startShowTime = new Date(startShowTime).getTime()
+        endShowTime = new Date(endShowTime).getTime()
       }
       this.searchValue = {
         keywords,
         type,
-        startTime,
-        endTime
+        startShowTime,
+        endShowTime,
+        firstId, secondId, thirdId, title
       }
       this.pageData['pageNum'] = 1
       this.fetchGodList()

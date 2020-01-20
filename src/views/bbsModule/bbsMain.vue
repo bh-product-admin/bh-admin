@@ -71,10 +71,10 @@ export default {
   data() {
     return {
       searchValue: {
-        keywords: '',
-        type: '',
-        startTime: '',
-        endTime: ''
+        title: '',
+        typeId: '',
+        startShowTime: '',
+        endShowTime: ''
       },
       sortColumns: ['time', 'commentNums'],
       currentPage: 1,
@@ -88,23 +88,25 @@ export default {
         label: '帖子类型',
         type: 'text',
         prop: 'typeId',
+        width: 150,
         filters: 'blogType'
       },
       {
         label: '帖子标题',
-        width: 600,
         type: 'text',
         prop: 'title'
       },
       {
         label: '发布时间',
         type: 'text',
+        width: 200,
         prop: 'created',
         filters: 'date'
       },
       {
         label: '评论数',
         type: 'text',
+        width: 150,
         prop: 'commentNum'
       }]
     }
@@ -136,19 +138,21 @@ export default {
     },
     search(val = {}) {
       console.log('search--', val)
-      const { time, keywords, type } = val
+      const { time, title, typeId } = val
       let startTime = ''
       let endTime = ''
       if (time && time instanceof Array) {
         startTime = this.$moment(new Date(time[0])).format('YYYY-MM-DD HH:mm:ss')
         endTime = this.$moment(new Date(time[1])).format('YYYY-MM-DD HH:mm:ss')
         console.log(startTime, endTime)
+        startTime = new Date(startTime).getTime()
+        endTime = new Date(endTime).getTime()
       }
       this.searchValue = {
-        keywords,
-        type,
-        startTime,
-        endTime
+        title,
+        typeId,
+        startShowTime: startTime,
+        endShowTime: endTime
       }
       this.pageData['pageNum'] = 1
       this.fetchBlogList()
@@ -189,7 +193,7 @@ export default {
     },
     fetchBlogList() { // 获取帖子列表
       const params = {
-        // ...this.searchValue,
+        ...this.searchValue,
         sortField: 'created',
         orderBy: 'asc',
         pageSize: this.pageData.pageSize,

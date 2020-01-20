@@ -13,8 +13,10 @@
           <el-table-column
             v-for="(item, index) in columnData"
             :key="index"
+            :width="item.width"
             :label="item.label"
             :prop="item.prop"
+            align="center"
             :sortable="sortColumns.includes(item.prop) ? true : false"
           >
             <template slot-scope="scope">
@@ -130,16 +132,19 @@ export default {
         {
           label: '流水类型',
           type: 'text',
+          width: 100,
           prop: 'capitalFlow'
         },
         {
           label: '时间',
           type: 'text',
+          width: 100,
           prop: 'date'
         },
         {
           label: '商品图片',
           type: 'img',
+          width: 120,
           prop: 'src'
         },
         {
@@ -150,11 +155,13 @@ export default {
         {
           label: '商品数量',
           type: 'text',
+          width: 100,
           prop: 'totalNum'
         },
         {
           label: '金额',
           type: 'text',
+          width: 100,
           prop: 'totalMoney'
         }
       ]

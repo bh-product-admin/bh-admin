@@ -14,6 +14,7 @@
           <el-table-column
             v-for="(item, index) in columnData"
             :key="index"
+            :width="item.width"
             :label="item.label"
             :prop="item.prop"
             align="center"
@@ -81,11 +82,13 @@ export default {
         {
           label: '订单编号',
           type: 'text',
+          width: 100,
           prop: 'ids'
         },
         {
           label: '商品图',
           type: 'img',
+          width: 120,
           prop: 'src'
         },
         {
@@ -96,31 +99,37 @@ export default {
         {
           label: '采购单价',
           type: 'text',
+          width: 100,
           prop: 'price'
         },
         {
           label: '采购数量',
           type: 'text',
+          width: 100,
           prop: 'seleNum'
         },
         {
           label: '采购总价',
           type: 'text',
+          width: 100,
           prop: 'priceTotal'
         },
         {
           label: '状态',
           type: 'text',
+          width: 100,
           prop: 'status'
         },
         {
           label: '买家ID',
           type: 'text',
+          width: 100,
           prop: 'userId'
         },
         {
           label: '申请时间',
           type: 'text',
+          width: 100,
           prop: 'date'
         }
       ]

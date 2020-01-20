@@ -14,13 +14,14 @@
           <el-table-column
             v-for="(item, index) in columnData"
             :key="index"
+            :width="item.width"
             :label="item.label"
             :prop="item.prop"
             align="center"
             :sortable="sortColumns.includes(item.prop) ? true : false"
           >
             <template slot-scope="scope">
-              <img v-if="item.type=='img'" :src="scope.row.src" width="100" height="100">
+              <img v-if="item.type=='img'" :src="scope.row.img" width="100" height="100">
               <span v-else>
                 <font v-if="item.type=='date'">{{ scope.row[item.prop] | dateDot }}</font>
                 <font v-else>{{ scope.row[item.prop] }}</font>
@@ -90,7 +91,8 @@ export default {
         {
           label: '商品图',
           type: 'img',
-          prop: 'src'
+          width: 120,
+          prop: 'img'
         },
         {
           label: '商品标题',
@@ -100,41 +102,49 @@ export default {
         {
           label: '上架时间',
           type: 'date',
-          prop: 'showTime'
+          width: 100,
+          prop: 'startShowTime'
         },
         {
           label: '类目',
           type: 'text',
-          prop: 'skuType'
+          width: 100,
+          prop: 'category'
         },
         {
           label: '价格',
           type: 'text',
+          width: 100,
           prop: 'price'
         },
         {
           label: '库存',
           type: 'text',
+          width: 100,
           prop: 'stockNum'
         },
         {
           label: '昨日销量',
           type: 'text',
+          width: 100,
           prop: 'yesterdaySale'
         },
         {
           label: '三日销量',
           type: 'text',
+          width: 100,
           prop: 'threeSale'
         },
         {
           label: '七日销量',
           type: 'text',
+          width: 100,
           prop: 'sevenSale'
         },
         {
           label: '总销量',
           type: 'text',
+          width: 100,
           prop: 'totalSale'
         }
       ]
@@ -145,6 +155,20 @@ export default {
   },
   methods: {
     fetchGoodsList(formInline) {
+      const { time } = formInline
+      let startShowTime = ''
+      let endShowTime = ''
+      if (time && time instanceof Array) {
+        startShowTime = this.$moment(new Date(time[0])).format('YYYY-MM-DD HH:mm:ss')
+        endShowTime = this.$moment(new Date(time[1])).format('YYYY-MM-DD HH:mm:ss')
+        startShowTime = new Date(startShowTime).getTime()
+        endShowTime = new Date(endShowTime).getTime()
+      }
+      formInline = {
+        ...formInline,
+        endShowTime,
+        startShowTime
+      }
       this.fetchWaresList(formInline)
     },
     handleAddGoods() {
