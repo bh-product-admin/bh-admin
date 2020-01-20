@@ -1,10 +1,10 @@
 <template>
   <el-form :inline="true" :model="formInline" class="demo-form-inline">
     <el-form-item label="关键字">
-      <el-input v-model="formInline.keywords" size="small" placeholder="请输入关键字" />
+      <el-input v-model="formInline.title" size="small" placeholder="请输入关键字" />
     </el-form-item>
     <el-form-item label="帖子类型">
-      <el-select v-model="formInline.type" placeholder="请选择">
+      <el-select v-model="formInline.typeId" placeholder="请选择">
         <el-option
           v-for="item in options"
           :key="item.value"
@@ -17,7 +17,7 @@
       <el-date-picker
         v-model="formInline.time"
         size="small"
-        type="daterange"
+        type="datetimerange"
         format="yyyy-MM-dd HH-mm-ss"
         align="right"
         unlink-panels
@@ -43,9 +43,31 @@ export default {
   name: 'BbsHeader',
   data() {
     return {
+      pickerOptions: {
+        shortcuts: [{
+          text: '今天',
+          onClick(picker) {
+            picker.$emit('pick', new Date())
+          }
+        }, {
+          text: '昨天',
+          onClick(picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '一周前',
+          onClick(picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', date)
+          }
+        }]
+      },
       formInline: {
-        keywords: '',
-        type: '',
+        title: '',
+        typeId: '',
         time: ''
       },
       options: [{

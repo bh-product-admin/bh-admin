@@ -19,7 +19,7 @@
         <el-date-picker
           v-model="formInline.time"
           size="small"
-          type="datetime"
+          type="datetimerange"
           align="right"
           placeholder="选择上架时间"
         />

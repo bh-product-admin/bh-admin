@@ -14,6 +14,7 @@
           <el-table-column
             v-for="(item, index) in columnData"
             :key="index"
+            :width="item.width"
             :label="item.label"
             :prop="item.prop"
             align="center"
@@ -133,6 +134,7 @@ export default {
         {
           label: '商品图片',
           type: 'img',
+          width: 120,
           prop: 'src'
         },
         {
@@ -143,26 +145,31 @@ export default {
         {
           label: '物流状态',
           type: 'text',
+          width: 100,
           prop: 'logisticsStatus'
         },
         {
           label: '物流账户',
           type: 'text',
+          width: 100,
           prop: 'logisticsAccount'
         },
         {
           label: '商品数量',
           type: 'text',
+          width: 100,
           prop: 'goodsNum'
         },
         {
           label: '收件人信息',
           type: 'text',
+          width: 100,
           prop: 'personInfo'
         },
         {
           label: '寄送地址',
           type: 'text',
+          width: 200,
           prop: 'address'
         }
       ]

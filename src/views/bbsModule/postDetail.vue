@@ -36,7 +36,20 @@
             <div class="comment-item taj">
               {{ item.comments.content }}
             </div>
-            <span class="el-link" @click="postReply('reply')">回复</span>
+
+            <span v-if="!item.comments.replyJson" class="el-link" @click="postReply('reply', item.comments.id)">回复</span>
+            <div v-else>
+              <el-divider content-position="right">回复（{{ item.phone }}）</el-divider>
+              <div class="comment-item ">
+                <div class="flex aic">
+                  <img :src="item.headImg" class="head-img">
+                  <span class="m10">{{ createContent(item.comments.replyJson, 'phone') }}</span>
+                </div>
+                <div class="comment-item taj">
+                  <span class="mt10">{{ createContent(item.comments.replyJson, 'content') }}</span>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="divider" />
         </li>
@@ -91,6 +104,11 @@ export default {
     } else this.fetchBlogDetail()
   },
   methods: {
+    createContent(content, code) {
+      const obj = eval(`(${content})`)
+      console.log(obj, 'sdsadasda', code)
+      return obj[code]
+    },
     blogReplayAddSuccess() {
       this.fetchBlogDetail()
     },
@@ -128,8 +146,9 @@ export default {
         console.log(err, 'errsetAddReply')
       })
     },
-    postReply(replyOrComment) {
-      this.$refs.PostOrReplyDialog.showDialog(true, replyOrComment, this.blogId)
+    postReply(replyOrComment, id = -1) {
+      console.log(id, 'idididiid')
+      this.$refs.PostOrReplyDialog.showDialog(true, replyOrComment, this.blogId, id)
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`, this.pageData)
@@ -163,6 +182,9 @@ export default {
 }
 .ml10{
   margin-left: 10px
+}
+.mt10{
+  margin-top: 10px
 }
 .head-img{
   border-radius: 100%;
