@@ -25,7 +25,7 @@
             :sortable="sortColumns.includes(item.prop) ? true : false"
           >
             <template slot-scope="scope">
-              <img v-if="item.type=='img'" :src="scope.row.src" width="100" height="100">
+              <img v-if="item.type=='img'" :src="scope.row.img" width="100" height="100">
               <span v-else>
                 <font v-if="item.type=='date'">{{ scope.row[item.prop] | dateDot }}</font>
                 <font v-else>{{ scope.row[item.prop] }}</font>

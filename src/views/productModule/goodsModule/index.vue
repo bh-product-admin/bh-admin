@@ -1,38 +1,8 @@
 <template>
   <div class="index">
     <el-card>
-      <el-form :inline="true" :model="formInline" class="demo-form-inline">
-        <el-form-item label="商品名称">
-          <el-input v-model="formInline.goodsName" size="small" placeholder="请输入商品名称" style="width: 150px" />
-        </el-form-item>
-        <el-form-item label="类目">
-          <el-select v-model="formInline.firstGroup" placeholder="类目一" size="small" style="width: 100px" @change="shangeOneSelect(formInline.firstGroup)">
-            <el-option v-for="item in firstOptionsArr" :key="item.id" :label="item.name" :value="item.id" />
-          </el-select>
-          <el-select v-model="formInline.secondGroup" placeholder="类目二" size="small" style="width: 100px" @change="shangeTwoSelect(formInline.secondGroup)">
-            <el-option v-for="item in secondOptionsArr" :key="item.id" :label="item.name" :value="item.id" />
-          </el-select>
-          <el-select v-model="formInline.thirdGroup" placeholder="类目三" size="small" style="width: 100px">
-            <el-option v-for="item in thirdOptionsArr" :key="item.id" :label="item.name" :value="item.id" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="上架时间">
-          <el-date-picker
-            v-model="formInline.time"
-            size="small"
-            type="daterange"
-            align="right"
-            unlink-panels
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :picker-options="pickerOptions"
-          />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" size="small" @click="search">查询</el-button>
-        </el-form-item>
-      </el-form>
+      <Header @search="search" />
+      
     </el-card>
     <el-card>
       <div class="content">
@@ -82,7 +52,7 @@
   </div>
 </template>
 <script>
-// import Header from '@/components/chooseHeader/index'
+import Header from '@/components/chooseHeader/index'
 // import hasGoodsDialog from './hasGodsDialog'
 import {
   getGoodsList // 我的商品列表 userId=2&orderBy=desc&sortField=threeSale
@@ -92,6 +62,7 @@ export default {
   name: 'GoodsList',
   components: {
     //  hasGoodsDialog
+    Header
   },
   data() {
     return {
@@ -197,31 +168,8 @@ export default {
   },
   async created() {
     this.fetchGodList()
-    const res = await classify({ level: 1 })
-    if (res.success) {
-      this.firstOptionsArr = res.data.list
-    }
-    console.log(res)
   },
   methods: {
-    async shangeOneSelect(id) {
-      this.secondOptionsArr = []
-      this.thirdOptionsArr = []
-      this.formInline.secondGroup = ''
-      this.formInline.thirdGroup = ''
-      const res = await classify({ level: 2, parent_id: id })
-      if (res.success) {
-        this.secondOptionsArr = res.data.list
-      }
-    },
-    async shangeTwoSelect(id) {
-      this.thirdOptionsArr = []
-      this.formInline.thirdGroup = ''
-      const res = await classify({ level: 3, parent_id: id })
-      if (res.success) {
-        this.thirdOptionsArr = res.data.list
-      }
-    },
     fetchGoodsList() {
       this.fetchGodList()
     },
@@ -242,7 +190,7 @@ export default {
     },
     fetchGodList() {
       const params = {
-        // ...this.searchValue,
+        ...this.searchValue,
         type: '2',
         pageSize: this.pageData.pageSize,
         pageNum: this.pageData.pageNum
@@ -267,7 +215,24 @@ export default {
       this.pageData['pageNum'] = val
       this.fetchGodList()
     },
-    handleEdit() {}
+    handleEdit() {},
+    search(val = {}) {
+      console.log('search--', val)
+      const { time, keywords, type, title, firstId, secondId, thirdId } = val
+      let showTime = ''
+      if (time) {
+        showTime = new Date(time).getTime()
+        console.log(showTime)
+      }
+      this.searchValue = {
+        keywords,
+        type,
+        showTime,
+        firstId, secondId, thirdId, title
+      }
+      this.pageData['pageNum'] = 1
+      this.fetchGodList()
+    }
   }
 }
 </script>

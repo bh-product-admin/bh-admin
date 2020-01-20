@@ -63,7 +63,7 @@
             <el-col :span="6"><div class="grid-content bg-purple">法人代表身份证</div></el-col>
             <el-col :span="9">
               <div class="grid-content bg-purple">
-                <img :src="form.idNumIcon" />
+                <img :src="form.idNumIcon" width="150px" height="150px"/>
               </div>
               <div style="padding-left:30px">
                 <el-upload
@@ -136,7 +136,15 @@ export default {
     }
   },
   methods: {
-    handlelicenseSuccess() {},
+    handlelicenseSuccess(res, file) {
+      this.form.licenseIcon = URL.createObjectURL(file.raw)
+    },
+    handleidNumSuccess(res, file) {
+      this.form.idNumIcon = URL.createObjectURL(file.raw)
+    },
+    handleidNumReverseSuccess(res, file) {
+      this.form.idNumReverseIcon = URL.createObjectURL(file.raw)
+    },
     handlePreview() {},
     handleRemove() {},
     beforeRemove() {},
