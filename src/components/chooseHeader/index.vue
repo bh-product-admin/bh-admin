@@ -2,7 +2,7 @@
   <div class="index">
     <el-form :inline="true" :model="formInline" class="demo-form-inline">
       <el-form-item label="商品名称">
-        <el-input v-model="formInline.goodsName" size="small" placeholder="请输入商品名称" style="width: 150px" />
+        <el-input v-model="formInline.title" size="small" placeholder="请输入商品名称" style="width: 150px" />
       </el-form-item>
       <el-form-item label="类目">
         <el-select v-model="formInline.firstId" placeholder="类目一" size="small" style="width: 100px" @change="shangeSelect(1)">
@@ -19,13 +19,9 @@
         <el-date-picker
           v-model="formInline.time"
           size="small"
-          type="daterange"
+          type="datetime"
           align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :picker-options="pickerOptions"
+          placeholder="选择上架时间"
         />
       </el-form-item>
       <el-form-item>
@@ -44,7 +40,7 @@ export default {
   data() {
     return {
       formInline: {
-        goodsName: '',
+        title: '',
         firstId: '',
         secondId: '',
         thirdId: '',
@@ -52,34 +48,7 @@ export default {
       },
       firstOptionsArr: [],
       secondOptionsArr: [],
-      thirdOptionsArr: [],
-      pickerOptions: {
-        shortcuts: [{
-          text: '最近一周',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: '最近一个月',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: '最近三个月',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-            picker.$emit('pick', [start, end])
-          }
-        }]
-      }
+      thirdOptionsArr: []
     }
   },
   created() {

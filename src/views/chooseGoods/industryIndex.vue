@@ -171,19 +171,17 @@ export default {
     },
     search(val = {}) {
       console.log('search--', val)
-      const { time, keywords, type, firstId, secondId, thirdId } = val
-      let startTime = ''
-      let endTime = ''
-      if (time && time instanceof Array) {
-        startTime = this.$moment(new Date(time[0])).format('YYYY-MM-DD')
-        endTime = this.$moment(new Date(time[1])).format('YYYY-MM-DD')
-        console.log(startTime, endTime)
+      const { time, keywords, type, title, firstId, secondId, thirdId } = val
+      let showTime = ''
+      if (time) {
+        showTime = new Date(time).getTime()
+        console.log(showTime)
       }
       this.searchValue = {
         keywords,
         type,
-        startTime,
-        endTime, firstId, secondId, thirdId
+        showTime,
+         firstId, secondId, thirdId, title
       }
       this.pageData['pageNum'] = 1
       this.fetchGodList()
