@@ -30,7 +30,7 @@
   </div>
 </template>
 <script>
-import {  
+import {
   bbsOrderAdd
 } from '@/api/orderModule'
 export default {
