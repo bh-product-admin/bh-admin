@@ -2,36 +2,36 @@
   <div class="index">
     <el-card>
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
-      <el-form-item label="商品名称">
-        <el-input v-model="formInline.goodsName" size="small" placeholder="请输入商品名称" style="width: 150px" />
-      </el-form-item>
-      <el-form-item label="类目">
-        <el-select v-model="formInline.firstGroup" placeholder="类目一" size="small" style="width: 100px" @change="shangeOneSelect(formInline.firstGroup)">
-          <el-option v-for="item in firstOptionsArr" :key="item.id" :label="item.name" :value="item.id" />
-        </el-select>
-        <el-select v-model="formInline.secondGroup" placeholder="类目二" size="small" style="width: 100px" @change="shangeTwoSelect(formInline.secondGroup)">
-          <el-option v-for="item in secondOptionsArr" :key="item.id" :label="item.name" :value="item.id" />
-        </el-select>
-        <el-select v-model="formInline.thirdGroup" placeholder="类目三" size="small" style="width: 100px">
-          <el-option v-for="item in thirdOptionsArr" :key="item.id" :label="item.name" :value="item.id" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="上架时间">
-        <el-date-picker
-          v-model="formInline.time"
-          size="small"
-          type="daterange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :picker-options="pickerOptions"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" size="small" @click="search">查询</el-button>
-      </el-form-item>
+        <el-form-item label="商品名称">
+          <el-input v-model="formInline.goodsName" size="small" placeholder="请输入商品名称" style="width: 150px" />
+        </el-form-item>
+        <el-form-item label="类目">
+          <el-select v-model="formInline.firstGroup" placeholder="类目一" size="small" style="width: 100px" @change="shangeOneSelect(formInline.firstGroup)">
+            <el-option v-for="item in firstOptionsArr" :key="item.id" :label="item.name" :value="item.id" />
+          </el-select>
+          <el-select v-model="formInline.secondGroup" placeholder="类目二" size="small" style="width: 100px" @change="shangeTwoSelect(formInline.secondGroup)">
+            <el-option v-for="item in secondOptionsArr" :key="item.id" :label="item.name" :value="item.id" />
+          </el-select>
+          <el-select v-model="formInline.thirdGroup" placeholder="类目三" size="small" style="width: 100px">
+            <el-option v-for="item in thirdOptionsArr" :key="item.id" :label="item.name" :value="item.id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="上架时间">
+          <el-date-picker
+            v-model="formInline.time"
+            size="small"
+            type="daterange"
+            align="right"
+            unlink-panels
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :picker-options="pickerOptions"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" size="small" @click="search">查询</el-button>
+        </el-form-item>
       </el-form>
     </el-card>
     <el-card>
@@ -87,7 +87,7 @@
 import {
   getGoodsList // 我的商品列表 userId=2&orderBy=desc&sortField=threeSale
 } from '@/api/chooseGoods'
-import { classify,certification } from '@/api/user'
+import { classify, certification } from '@/api/user'
 export default {
   name: 'GoodsList',
   components: {
@@ -218,7 +218,7 @@ export default {
       this.thirdOptionsArr = []
       this.formInline.thirdGroup = ''
       const res = await classify({ level: 3, parent_id: id })
-      if (res.success) { 
+      if (res.success) {
         this.thirdOptionsArr = res.data.list
       }
     },
