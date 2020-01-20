@@ -69,7 +69,7 @@ export default {
   },
   data() {
     return {
-      sortColumns: ['date', 'seleNumThree', 'seleNumWeek', 'seleNumTotal', 'seleNum'],
+      sortColumns: ['showTime', 'yesterdaySale', 'threeSale', 'sevenSale', 'totalSale'],
       currentPage: 1,
       tableData: [],
       searchValue: {
@@ -98,7 +98,7 @@ export default {
         {
           label: '上架时间',
           type: 'date',
-          width: 100,
+          width: 110,
           prop: 'showTime'
         },
         {
@@ -110,25 +110,25 @@ export default {
         {
           label: '价格',
           type: 'text',
-          width: 80,
+          width: 110,
           prop: 'price'
         },
         {
           label: '一日销量',
           type: 'text',
-          width: 80,
+          width: 110,
           prop: 'yesterdaySale'
         },
         {
           label: '三日销量',
           type: 'text',
-          width: 80,
+          width: 110,
           prop: 'threeSale'
         },
         {
           label: '七日销量',
           type: 'text',
-          width: 80,
+          width: 110,
           prop: 'sevenSale'
         },
         {
