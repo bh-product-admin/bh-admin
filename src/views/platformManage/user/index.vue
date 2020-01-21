@@ -48,13 +48,13 @@
             :width="item.width"
             align="center"
           >
-          <template slot-scope="scope">
+            <template slot-scope="scope">
               <div v-if="item.type=='rodio'">
                 <el-radio-group v-model="scope.row[item.prop]" @change="handleChange($event,scope.row)">
                   <el-radio :label="1">认证成功</el-radio>
                   <el-radio :label="2">未认证</el-radio>
                 </el-radio-group>
-                </div>
+              </div>
               <span v-else>{{ scope.row[item.prop] }}</span>
             </template>
           </el-table-column>
@@ -150,7 +150,7 @@ export default {
       },
       selectArr: [
         {
-          type: "",
+          type: '',
           label: '全部'
         },
         {

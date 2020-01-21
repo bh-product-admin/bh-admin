@@ -76,33 +76,6 @@ export default {
       firstOptionsArr: [],
       secondOptionsArr: [],
       thirdOptionsArr: [],
-      pickerOptions: {
-        shortcuts: [{
-          text: '最近一周',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: '最近一个月',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: '最近三个月',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-            picker.$emit('pick', [start, end])
-          }
-        }]
-      },
       userId: '',
       sortColumns: ['showTime', 'yesterdaySale', 'threeSale', 'sevenSale', 'totalSale'],
       currentPage: 1,
@@ -214,15 +187,19 @@ export default {
     search(val = {}) {
       console.log('search--', val)
       const { time, keywords, type, title, firstId, secondId, thirdId } = val
-      let showTime = ''
-      if (time) {
-        showTime = new Date(time).getTime()
-        console.log(showTime)
+      let startShowTime = ''
+      let endShowTime = ''
+      if (time && time instanceof Array) {
+        startShowTime = this.$moment(new Date(time[0])).format('YYYY-MM-DD HH:mm:ss')
+        endShowTime = this.$moment(new Date(time[1])).format('YYYY-MM-DD HH:mm:ss')
+        startShowTime = new Date(startShowTime).getTime()
+        endShowTime = new Date(endShowTime).getTime()
       }
       this.searchValue = {
         keywords,
         type,
-        showTime,
+        startShowTime,
+        endShowTime,
         firstId, secondId, thirdId, title
       }
       this.pageData['pageNum'] = 1

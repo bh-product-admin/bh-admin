@@ -5,7 +5,8 @@
       <el-button v-show="auth!=='3'" @click="handleUpdate">{{ authStr }}</el-button>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <el-avatar :size="38" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" />
+
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -24,14 +25,14 @@ import Hamburger from '@/components/Hamburger'
 import { getAuth, setAuth } from '@/utils/auth' // get token from cookie
 
 export default {
+  components: {
+    Hamburger
+  },
   data() {
     return {
       auth: '',
       authStr: ''
     }
-  },
-  components: {
-    Hamburger
   },
   computed: {
     ...mapGetters([
