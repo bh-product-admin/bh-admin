@@ -25,7 +25,7 @@
             <template slot-scope="scope">
               <el-button
                 size="mini"
-                @click="handleEdit(scope.row.id,2)"
+                @click="handleEdit(scope.row.id,4)"
               >驳回</el-button>
               <el-button
                 size="mini"

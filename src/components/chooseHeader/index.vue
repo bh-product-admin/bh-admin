@@ -21,7 +21,9 @@
           size="small"
           type="datetimerange"
           align="right"
-          placeholder="选择上架时间"
+          range-separator="至"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
         />
       </el-form-item>
       <el-form-item>

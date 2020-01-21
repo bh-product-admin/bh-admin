@@ -67,8 +67,8 @@ export default {
       disabled: false,
       btntxt: '重新发送',
       loginForm: {
-        phone: '18667000223',
-        password: '111111'
+        phone: '',
+        password: ''
       },
       login_center_bg,
 
