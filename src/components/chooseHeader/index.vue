@@ -46,7 +46,13 @@ export default {
         firstId: '',
         secondId: '',
         thirdId: '',
-        time: ''
+        time: '',
+        showTime: '',
+        yesterdaySale: '',
+        threeSale: '',
+        sevenSale: '',
+        totalSale: ''
+
       },
       firstOptionsArr: [],
       secondOptionsArr: [],

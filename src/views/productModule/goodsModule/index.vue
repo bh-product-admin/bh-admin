@@ -186,7 +186,7 @@ export default {
     handleEdit() {},
     search(val = {}) {
       console.log('search--', val)
-      const { time, keywords, type, title, firstId, secondId, thirdId } = val
+      const { time, keywords, type, title, firstId, secondId, thirdId, yesterdaySale, threeSale, sevenSale, totalSale } = val
       let startShowTime = ''
       let endShowTime = ''
       if (time && time instanceof Array) {
@@ -200,7 +200,7 @@ export default {
         type,
         startShowTime,
         endShowTime,
-        firstId, secondId, thirdId, title
+        firstId, secondId, thirdId, title, yesterdaySale, threeSale, sevenSale, totalSale
       }
       this.pageData['pageNum'] = 1
       this.fetchGodList()

@@ -9,6 +9,7 @@
           :data="tableData"
           style="width: 100%"
           align="center"
+          border
           @sort-change="sortChange"
         >
           <el-table-column
