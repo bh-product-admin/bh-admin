@@ -5,51 +5,51 @@
     </el-card>
     <el-card>
       <div class="content">
-        <el-table
-          :data="tableData"
-          style="width: 100%"
-          border
-          :default-sort="{prop: 'date', order: 'descending'}"
-          @sort-change="sortChange"
-        >
-          <el-table-column
-            v-for="(item, index) in columnData"
-            :key="index"
-            :width="item.width"
-            :label="item.label"
-            :prop="item.prop"
-            align="center"
-            :sortable="sortColumns.includes(item.prop) ? true : false"
-          >
+        <el-table :data="tableData"
+                  style="width: 100%"
+                  border
+                  :default-sort="{prop: 'date', order: 'descending'}"
+                  @sort-change="sortChange">
+          <el-table-column v-for="(item, index) in columnData"
+                           :key="index"
+                           :width="item.width"
+                           :label="item.label"
+                           :prop="item.prop"
+                           align="center"
+                           :sortable="sortColumns.includes(item.prop) ? true : false">
             <template slot-scope="scope">
-              <img v-if="item.type=='img'" :src="scope.row.img" width="100" height="100">
+              <img v-if="item.type=='img'"
+                   :src="scope.row.img"
+                   width="100"
+                   height="100">
               <span v-else>
                 <font v-if="item.type=='date'">{{ scope.row[item.prop] | dateDot }}</font>
                 <font v-else>{{ scope.row[item.prop] }}</font>
               </span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="100" align="center">
+          <el-table-column label="操作"
+                           width="100"
+                           align="center">
             <template slot-scope="scope">
-              <el-button
-                size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
-              >我有货</el-button>
+              <el-button size="mini"
+                         @click="handleEdit(scope.$index, scope.row)">我有货</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination
-        :current-page="pageData.pageNum"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="pageData.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="pageData.total"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      />
+      <el-pagination :current-page="pageData.pageNum"
+                     :page-sizes="[10, 20, 30, 40]"
+                     :page-size="pageData.pageSize"
+                     layout="total, sizes, prev, pager, next, jumper"
+                     :total="pageData.total"
+                     @size-change="handleSizeChange"
+                     @current-change="handleCurrentChange" />
     </el-card>
-    <div><hasGoodsDialog ref="hasGodsDialog" @handleEdit="handleEdit" /></div>
+    <div>
+      <hasGoodsDialog ref="hasGodsDialog"
+                      @handleEdit="handleEdit" />
+    </div>
     <!-- 我有货 -->
   </div>
 </template>
@@ -76,7 +76,9 @@ export default {
         keywords: '',
         type: '',
         startShowTime: '',
-        endShowTime: ''
+        endShowTime: '',
+        orderBy: 'desc',
+        sortField: 'yesterdaySale'
       },
       pageData: {
         pageSize: 10,
@@ -170,7 +172,7 @@ export default {
         pageNum: this.pageData.pageNum
       }
       getGoodsList(params).then(res => {
-        const { data = {}, data: { list = [] }} = res
+        const { data = {}, data: { list = [] } } = res
         this.pageData = data
         this.tableData = list && list instanceof Array && list.length >= 0 ? list : []
         console.log(res, 'ressgetGoodsLists')
@@ -207,8 +209,7 @@ export default {
   padding-top: 10px;
   padding-bottom: 10px;
 }
-::v-deep .el-pagination{
+::v-deep .el-pagination {
   margin: 10px;
 }
-
 </style>

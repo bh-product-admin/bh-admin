@@ -36,3 +36,11 @@ export function bbsOrderAdd(data) {
   })
 }
 
+// order/useList?title=子&firstId=7&secondId=99&thirdId=2156&startCreatedTime=1559009011232&endCreatedTime=1579009011232&sortField=complete&orderBy=desc
+export function orderBuy(data) {
+  return request({
+    url: '/order/useList',
+    method: 'post',
+    data
+  })
+}

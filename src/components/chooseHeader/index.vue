@@ -51,7 +51,9 @@ export default {
         yesterdaySale: '',
         threeSale: '',
         sevenSale: '',
-        totalSale: ''
+        totalSale: '',
+        orderBy: "desc",
+        sortField:'yesterdaySale'
 
       },
       firstOptionsArr: [],

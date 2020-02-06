@@ -27,7 +27,7 @@
         >
           <div class="flex jfs aic f12">
             <div class="flex aic">
-              <img :src="item.headImg" class="head-img">
+              <img src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" class="head-img">
               <span class="m10">{{ item.phone }}</span>
             </div>
             <span class="ml10">{{ item.comments.created | datetimeDot }}</span>
@@ -37,17 +37,18 @@
               {{ item.comments.content }}
             </div>
 
-            <span v-if="!item.comments.replyJson" class="el-link" @click="postReply('reply', item.comments.id)">回复</span>
-            <div v-else>
+            <span class="el-link" @click="postReply('reply', item.comments.id)">回复</span>
+            <div v-if="item.comments.replyJson">
               <el-divider content-position="right">回复（{{ item.phone }}）</el-divider>
               <div class="comment-item ">
                 <div class="flex aic">
-                  <img :src="item.headImg" class="head-img">
+                  <img src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" class="head-img">
                   <span class="m10">{{ createContent(item.comments.replyJson, 'phone') }}</span>
                 </div>
                 <div class="comment-item taj">
                   <span class="mt10">{{ createContent(item.comments.replyJson, 'content') }}</span>
                 </div>
+                <span class="el-link" @click="postReply('reply', item.comments.id)">回复</span>
               </div>
             </div>
           </div>

@@ -131,7 +131,11 @@ export default {
           type: 'text',
           prop: 'totalSale'
         }
-      ]
+      ],
+      searchValue: {
+        orderBy: "desc",
+        sortField:'yesterdaySale'
+      }
     }
   },
   async created() {
@@ -186,7 +190,7 @@ export default {
     handleEdit() {},
     search(val = {}) {
       console.log('search--', val)
-      const { time, keywords, type, title, firstId, secondId, thirdId, yesterdaySale, threeSale, sevenSale, totalSale } = val
+      const { time, keywords, type, title, firstId, secondId, thirdId, yesterdaySale, threeSale, sevenSale, totalSale, orderBy,sortField } = val
       let startShowTime = ''
       let endShowTime = ''
       if (time && time instanceof Array) {
@@ -200,7 +204,7 @@ export default {
         type,
         startShowTime,
         endShowTime,
-        firstId, secondId, thirdId, title, yesterdaySale, threeSale, sevenSale, totalSale
+        firstId, secondId, thirdId, title, yesterdaySale, threeSale, sevenSale, totalSale, orderBy,sortField
       }
       this.pageData['pageNum'] = 1
       this.fetchGodList()

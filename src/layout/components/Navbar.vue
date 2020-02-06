@@ -2,7 +2,7 @@
   <div class="navbar">
     <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
     <div class="right-menu">
-      <el-button v-show="auth!=='3'" @click="handleUpdate">{{ authStr }}</el-button>
+      <el-button v-if="auth!='3'" type="primary" size="small" @click="handleUpdate">{{ authStr }}</el-button>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <el-avatar :size="38" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" />
@@ -41,6 +41,7 @@ export default {
     ])
   },
   created() {
+    this.auth = getAuth()
     switch (getAuth()) {
       case '4':
         this.authStr = '切换为买家'
@@ -59,7 +60,7 @@ export default {
           this.authStr = '切换为买家'
           setAuth('2')
           this.$router.replace({
-            path: '/'
+            path: '/bbsMain'
           })
           location.reload()
           break
@@ -68,7 +69,7 @@ export default {
           setAuth('4')
           // location.reload()
           this.$router.replace({
-            path: '/'
+            path: '/bbsMain'
           })
           location.reload()
           break
@@ -90,6 +91,9 @@ export default {
   height: 50px;
   overflow: hidden;
   position: relative;
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
   background: #fff;
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
@@ -111,10 +115,11 @@ export default {
   }
 
   .right-menu {
-    float: right;
-    height: 100%;
-    line-height: 50px;
-
+    display: flex;
+    align-items: center;
+    .el-button{
+      margin-right: 10px;
+    }
     &:focus {
       outline: none;
     }

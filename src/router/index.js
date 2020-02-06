@@ -32,7 +32,7 @@ import Layout from '@/layout'
  */
 /** 厂家router */
 export const asyncFactoryRoutes = [
-// 厂家版，选品策略模块
+  // 厂家版，选品策略模块
 
   {
     path: '/chooseGoods',
@@ -42,17 +42,17 @@ export const asyncFactoryRoutes = [
       title: '选品策略',
       icon: 'nested'
     },
-    children: [
-      {
-        path: 'industry',
-        component: () => import('@/views/chooseGoods/industryIndex'),
-        meta: { title: '行业策略' }
-      }, {
-        path: 'industryNew',
-        component: () => import('@/views/chooseGoods/industryNew'),
-        meta: { title: '平台上新' }
-      }
-    ]
+    children: [{
+      path: 'industry',
+      component: () =>
+        import('@/views/chooseGoods/industryIndex'),
+      meta: { title: '行业策略' }
+    }, {
+      path: 'industryNew',
+      component: () =>
+        import('@/views/chooseGoods/industryNew'),
+      meta: { title: '平台上新' }
+    }]
   },
   // 厂家版，订单模块
   {
@@ -63,17 +63,17 @@ export const asyncFactoryRoutes = [
       title: '订单模块',
       icon: 'nested'
     },
-    children: [
-      {
-        path: 'orderList',
-        component: () => import('@/views/orderModule/orderList'),
-        meta: { title: '订单页面' }
-      }, {
-        path: 'quitManage',
-        component: () => import('@/views/orderModule/quitManage'),
-        meta: { title: '退款单管理' }
-      }
-    ]
+    children: [{
+      path: 'orderList',
+      component: () =>
+        import('@/views/orderModule/orderList'),
+      meta: { title: '订单页面' }
+    }, {
+      path: 'quitManage',
+      component: () =>
+        import('@/views/orderModule/quitManage'),
+      meta: { title: '退款单管理' }
+    }]
   },
   // 厂家版，物流模块
   {
@@ -84,13 +84,12 @@ export const asyncFactoryRoutes = [
       title: '物流模块',
       icon: 'nested'
     },
-    children: [
-      {
-        path: 'logisticsList',
-        component: () => import('@/views/logisticsModule/logisticsList'),
-        meta: { title: '物流信息' }
-      }
-    ]
+    children: [{
+      path: 'logisticsList',
+      component: () =>
+        import('@/views/logisticsModule/logisticsList'),
+      meta: { title: '物流信息' }
+    }]
   },
   // 厂家版，商品管理
   {
@@ -101,13 +100,12 @@ export const asyncFactoryRoutes = [
       title: '商品管理',
       icon: 'nested'
     },
-    children: [
-      {
-        path: 'goodsList',
-        component: () => import('@/views/goodsModule/goodsList'),
-        meta: { title: '我的商品' }
-      }
-    ]
+    children: [{
+      path: 'goodsList',
+      component: () =>
+        import('@/views/goodsModule/goodsList'),
+      meta: { title: '我的商品' }
+    }]
   },
   // 厂家版，资产模块
   {
@@ -118,21 +116,22 @@ export const asyncFactoryRoutes = [
       title: '资产模块',
       icon: 'nested'
     },
-    children: [
-      {
-        path: 'propertyList',
-        component: () => import('@/views/propertyManage/propertyList'),
-        meta: { title: '资金流水' }
-      }, {
-        path: 'incomeManage',
-        component: () => import('@/views/propertyManage/incomeManage'),
-        meta: { title: '收益管理' }
-      }, {
-        path: 'myAccount',
-        component: () => import('@/views/propertyManage/myAccount'),
-        meta: { title: '我的账户' }
-      }
-    ]
+    children: [{
+      path: 'propertyList',
+      component: () =>
+        import('@/views/propertyManage/propertyList'),
+      meta: { title: '资金流水' }
+    }, {
+      path: 'incomeManage',
+      component: () =>
+        import('@/views/propertyManage/incomeManage'),
+      meta: { title: '收益管理' }
+    }, {
+      path: 'myAccount',
+      component: () =>
+        import('@/views/propertyManage/myAccount'),
+      meta: { title: '我的账户' }
+    }]
   }
   // 厂家版，论坛模块
 
@@ -148,26 +147,28 @@ export const asyncBuyRoutes = [
     redirect: '/productModule/table',
     name: 'Example',
     meta: { title: '选品策略', icon: 'example' },
-    children: [
-      {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/productModule/goodsModule/index'),
-        meta: { title: '行业策略', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/productModule/platformModule/index'),
-        meta: { title: '平台上新', icon: 'tree' }
-      },
-      {
-        path: 'supplier',
-        name: 'supplier',
-        component: () => import('@/views/productModule/SupplierModule/index'),
-        meta: { title: '平台上新', icon: 'tree' },
-        hidden: true
-      }
+    children: [{
+      path: 'table',
+      name: 'Table',
+      component: () =>
+        import('@/views/productModule/goodsModule/index'),
+      meta: { title: '行业策略', icon: 'table' }
+    },
+    {
+      path: 'tree',
+      name: 'Tree',
+      component: () =>
+        import('@/views/productModule/platformModule/index'),
+      meta: { title: '平台上新', icon: 'tree' }
+    },
+    {
+      path: 'supplier',
+      name: 'supplier',
+      component: () =>
+        import('@/views/productModule/SupplierModule/index'),
+      meta: { title: '平台上新', icon: 'tree' },
+      hidden: true
+    }
     ]
   },
 
@@ -176,25 +177,27 @@ export const asyncBuyRoutes = [
     component: Layout,
     name: 'Example',
     meta: { title: '我的订单', icon: 'example' },
-    children: [
-      {
-        path: 'purchase',
-        name: 'purchase',
-        component: () => import('@/views/form/index'),
-        meta: { title: '已采购订单', icon: 'form' }
-      },
-      {
-        path: 'wait',
-        name: 'wait',
-        component: () => import('@/views/form/index'),
-        meta: { title: '等待上架确认', icon: 'form' }
-      },
-      {
-        path: 'refund',
-        name: 'refund',
-        component: () => import('@/views/form/index'),
-        meta: { title: '退款订单管理', icon: 'form' }
-      }
+    children: [{
+      path: 'purchase',
+      name: 'purchase',
+      component: () =>
+        import('@/views/form/index'),
+      meta: { title: '已采购订单', icon: 'form' }
+    },
+    {
+      path: 'wait',
+      name: 'wait',
+      component: () =>
+        import('@/views/form/confirmOrder'),
+      meta: { title: '厂家确认订单', icon: 'form' }
+    },
+    {
+      path: 'refund',
+      name: 'refund',
+      component: () =>
+        import('@/views/form/index'),
+      meta: { title: '退款订单管理', icon: 'form' }
+    }
     ]
   },
   {
@@ -205,21 +208,22 @@ export const asyncBuyRoutes = [
       title: '资产模块',
       icon: 'nested'
     },
-    children: [
-      {
-        path: 'propertyList',
-        component: () => import('@/views/propertyManage/propertyList'),
-        meta: { title: '资金流水' }
-      }, {
-        path: 'incomeManage',
-        component: () => import('@/views/propertyManage/incomeManage'),
-        meta: { title: '收益管理' }
-      }, {
-        path: 'myAccount',
-        component: () => import('@/views/propertyManage/myAccount'),
-        meta: { title: '我的账户' }
-      }
-    ]
+    children: [{
+      path: 'propertyList',
+      component: () =>
+        import('@/views/propertyManage/propertyList'),
+      meta: { title: '资金流水' }
+    }, {
+      path: 'incomeManage',
+      component: () =>
+        import('@/views/propertyManage/incomeManage'),
+      meta: { title: '收益管理' }
+    }, {
+      path: 'myAccount',
+      component: () =>
+        import('@/views/propertyManage/myAccount'),
+      meta: { title: '我的账户' }
+    }]
   },
   {
     path: '/logistics-module',
@@ -229,13 +233,12 @@ export const asyncBuyRoutes = [
       title: '物流模块',
       icon: 'nested'
     },
-    children: [
-      {
-        path: 'logisticsList',
-        component: () => import('@/views/logisticsModule/logisticsList'),
-        meta: { title: '物流信息' }
-      }
-    ]
+    children: [{
+      path: 'logisticsList',
+      component: () =>
+        import('@/views/logisticsModule/logisticsList'),
+      meta: { title: '物流信息' }
+    }]
   }
 
 ]
@@ -247,26 +250,28 @@ export const asyncUserRoutes = [
     redirect: '/productModule/table',
     name: 'Example',
     meta: { title: '选品策略', icon: 'example' },
-    children: [
-      {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/productModule/goodsModule/index'),
-        meta: { title: '行业策略', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/productModule/platformModule/index'),
-        meta: { title: '平台上新', icon: 'tree' }
-      },
-      {
-        path: 'supplier',
-        name: 'supplier',
-        component: () => import('@/views/productModule/SupplierModule/index'),
-        meta: { title: '平台上新', icon: 'tree' },
-        hidden: true
-      }
+    children: [{
+      path: 'table',
+      name: 'Table',
+      component: () =>
+        import('@/views/productModule/goodsModule/index'),
+      meta: { title: '行业策略', icon: 'table' }
+    },
+    {
+      path: 'tree',
+      name: 'Tree',
+      component: () =>
+        import('@/views/productModule/platformModule/index'),
+      meta: { title: '平台上新', icon: 'tree' }
+    },
+    {
+      path: 'supplier',
+      name: 'supplier',
+      component: () =>
+        import('@/views/productModule/SupplierModule/index'),
+      meta: { title: '平台上新', icon: 'tree' },
+      hidden: true
+    }
     ]
   },
 
@@ -275,25 +280,27 @@ export const asyncUserRoutes = [
     component: Layout,
     name: 'form',
     meta: { title: '我的订单', icon: 'form' },
-    children: [
-      {
-        path: 'purchase',
-        name: 'purchase',
-        component: () => import('@/views/form/index'),
-        meta: { title: '已采购订单', icon: 'form' }
-      },
-      {
-        path: 'wait',
-        name: 'wait',
-        component: () => import('@/views/form/index'),
-        meta: { title: '等待上架确认', icon: 'form' }
-      },
-      {
-        path: 'refund',
-        name: 'refund',
-        component: () => import('@/views/form/index'),
-        meta: { title: '退款订单管理', icon: 'form' }
-      }
+    children: [{
+      path: 'purchase',
+      name: 'purchase',
+      component: () =>
+        import('@/views/form/index'),
+      meta: { title: '已采购订单', icon: 'form' }
+    },
+    {
+      path: 'wait',
+      name: 'wait',
+      component: () =>
+        import('@/views/form/index'),
+      meta: { title: '等待上架确认', icon: 'form' }
+    },
+    {
+      path: 'refund',
+      name: 'refund',
+      component: () =>
+        import('@/views/form/index'),
+      meta: { title: '退款订单管理', icon: 'form' }
+    }
     ]
   },
   {
@@ -304,21 +311,22 @@ export const asyncUserRoutes = [
       title: '资产模块',
       icon: 'nested'
     },
-    children: [
-      {
-        path: 'propertyList',
-        component: () => import('@/views/propertyManage/propertyList'),
-        meta: { title: '资金流水' }
-      }, {
-        path: 'incomeManage',
-        component: () => import('@/views/propertyManage/incomeManage'),
-        meta: { title: '收益管理' }
-      }, {
-        path: 'myAccount',
-        component: () => import('@/views/propertyManage/myAccount'),
-        meta: { title: '我的账户' }
-      }
-    ]
+    children: [{
+      path: 'propertyList',
+      component: () =>
+        import('@/views/propertyManage/propertyList'),
+      meta: { title: '资金流水' }
+    }, {
+      path: 'incomeManage',
+      component: () =>
+        import('@/views/propertyManage/incomeManage'),
+      meta: { title: '收益管理' }
+    }, {
+      path: 'myAccount',
+      component: () =>
+        import('@/views/propertyManage/myAccount'),
+      meta: { title: '我的账户' }
+    }]
   },
   {
     path: '/logistics-module',
@@ -328,13 +336,12 @@ export const asyncUserRoutes = [
       title: '物流模块',
       icon: 'nested'
     },
-    children: [
-      {
-        path: 'logisticsList',
-        component: () => import('@/views/logisticsModule/logisticsList'),
-        meta: { title: '物流信息' }
-      }
-    ]
+    children: [{
+      path: 'logisticsList',
+      component: () =>
+        import('@/views/logisticsModule/logisticsList'),
+      meta: { title: '物流信息' }
+    }]
   },
   {
     path: '/platformManage',
@@ -344,49 +351,55 @@ export const asyncUserRoutes = [
       icon: 'nested'
     },
     redirect: '/platformManage/user',
-    children: [
-      {
-        path: 'user',
-        name: 'user',
-        component: () => import('@/views/platformManage/user/index'),
-        meta: { title: '用户管理', icon: 'table' }
-      },
-      {
-        path: 'role',
-        name: 'role',
-        component: () => import('@/views/platformManage/role/index'),
-        meta: { title: '角色管理', icon: 'form' }
-      },
-      {
-        path: 'category',
-        name: 'category',
-        component: () => import('@/views/platformManage/category/index'),
-        meta: { title: '类目管理', icon: 'tree' }
-      },
-      {
-        path: 'authUser',
-        name: 'authUser',
-        component: () => import('@/views/platformManage/authUser/index'),
-        meta: { title: '认证用户管理', icon: 'table' }
-      },
-      {
-        path: 'withdraw',
-        name: 'withdraw',
-        component: () => import('@/views/platformManage/withdraw/index'),
-        meta: { title: '提现管理', icon: 'form' }
-      },
-      {
-        path: 'refund',
-        name: 'refund',
-        component: () => import('@/views/platformManage/refund/index'),
-        meta: { title: '退款管理', icon: 'form' }
-      },
-      {
-        path: 'examine',
-        name: 'examine',
-        component: () => import('@/views/platformManage/examine/index'),
-        meta: { title: '厂家审核', icon: 'form' }
-      }
+    children: [{
+      path: 'user',
+      name: 'user',
+      component: () =>
+        import('@/views/platformManage/user/index'),
+      meta: { title: '用户管理', icon: 'table' }
+    },
+    {
+      path: 'role',
+      name: 'role',
+      component: () =>
+        import('@/views/platformManage/role/index'),
+      meta: { title: '角色管理', icon: 'form' }
+    },
+    {
+      path: 'category',
+      name: 'category',
+      component: () =>
+        import('@/views/platformManage/category/index'),
+      meta: { title: '类目管理', icon: 'tree' }
+    },
+    {
+      path: 'authUser',
+      name: 'authUser',
+      component: () =>
+        import('@/views/platformManage/authUser/index'),
+      meta: { title: '认证用户管理', icon: 'table' }
+    },
+    {
+      path: 'withdraw',
+      name: 'withdraw',
+      component: () =>
+        import('@/views/platformManage/withdraw/index'),
+      meta: { title: '提现管理', icon: 'form' }
+    },
+    {
+      path: 'refund',
+      name: 'refund',
+      component: () =>
+        import('@/views/platformManage/refund/index'),
+      meta: { title: '退款管理', icon: 'form' }
+    },
+    {
+      path: 'examine',
+      name: 'examine',
+      component: () =>
+        import('@/views/platformManage/examine/index'),
+      meta: { title: '厂家审核', icon: 'form' }
+    }
     ]
   },
   {
@@ -397,17 +410,17 @@ export const asyncUserRoutes = [
       title: '选品策略',
       icon: 'nested'
     },
-    children: [
-      {
-        path: 'industry',
-        component: () => import('@/views/chooseGoods/industryIndex'),
-        meta: { title: '行业策略' }
-      }, {
-        path: 'industryNew',
-        component: () => import('@/views/chooseGoods/industryNew'),
-        meta: { title: '平台上新' }
-      }
-    ]
+    children: [{
+      path: 'industry',
+      component: () =>
+        import('@/views/chooseGoods/industryIndex'),
+      meta: { title: '行业策略' }
+    }, {
+      path: 'industryNew',
+      component: () =>
+        import('@/views/chooseGoods/industryNew'),
+      meta: { title: '平台上新' }
+    }]
   },
   // 厂家版，订单模块
   {
@@ -418,17 +431,17 @@ export const asyncUserRoutes = [
       title: '订单模块',
       icon: 'nested'
     },
-    children: [
-      {
-        path: 'orderList',
-        component: () => import('@/views/orderModule/orderList'),
-        meta: { title: '订单页面' }
-      }, {
-        path: 'quitManage',
-        component: () => import('@/views/orderModule/quitManage'),
-        meta: { title: '退款单管理' }
-      }
-    ]
+    children: [{
+      path: 'orderList',
+      component: () =>
+        import('@/views/orderModule/orderList'),
+      meta: { title: '订单页面' }
+    }, {
+      path: 'quitManage',
+      component: () =>
+        import('@/views/orderModule/quitManage'),
+      meta: { title: '退款单管理' }
+    }]
   },
   // 厂家版，物流模块
   {
@@ -439,13 +452,12 @@ export const asyncUserRoutes = [
       title: '物流模块',
       icon: 'nested'
     },
-    children: [
-      {
-        path: 'logisticsList',
-        component: () => import('@/views/logisticsModule/logisticsList'),
-        meta: { title: '物流信息' }
-      }
-    ]
+    children: [{
+      path: 'logisticsList',
+      component: () =>
+        import('@/views/logisticsModule/logisticsList'),
+      meta: { title: '物流信息' }
+    }]
   },
   // 厂家版，商品管理
   {
@@ -456,13 +468,12 @@ export const asyncUserRoutes = [
       title: '商品管理',
       icon: 'nested'
     },
-    children: [
-      {
-        path: 'goodsList',
-        component: () => import('@/views/goodsModule/goodsList'),
-        meta: { title: '我的商品' }
-      }
-    ]
+    children: [{
+      path: 'goodsList',
+      component: () =>
+        import('@/views/goodsModule/goodsList'),
+      meta: { title: '我的商品' }
+    }]
   },
   // 厂家版，资产模块
   {
@@ -473,65 +484,69 @@ export const asyncUserRoutes = [
       title: '资产模块',
       icon: 'nested'
     },
-    children: [
-      {
-        path: 'propertyList',
-        component: () => import('@/views/propertyManage/propertyList'),
-        meta: { title: '资金流水' }
-      }, {
-        path: 'incomeManage',
-        component: () => import('@/views/propertyManage/incomeManage'),
-        meta: { title: '收益管理' }
-      }, {
-        path: 'myAccount',
-        component: () => import('@/views/propertyManage/myAccount'),
-        meta: { title: '我的账户' }
-      }
-    ]
+    children: [{
+      path: 'propertyList',
+      component: () =>
+        import('@/views/propertyManage/propertyList'),
+      meta: { title: '资金流水' }
+    }, {
+      path: 'incomeManage',
+      component: () =>
+        import('@/views/propertyManage/incomeManage'),
+      meta: { title: '收益管理' }
+    }, {
+      path: 'myAccount',
+      component: () =>
+        import('@/views/propertyManage/myAccount'),
+      meta: { title: '我的账户' }
+    }]
   }
 
   // 404 page must be placed at the end !!!
 
 ]
-export const constantRoutes = [
-  {
-    path: '/login',
-    component: () => import('@/views/login/index'),
-    hidden: true
-  },
+export const constantRoutes = [{
+  path: '/login',
+  component: () =>
+    import('@/views/login/index'),
+  hidden: true
+},
 
-  {
-    path: '/404',
-    component: () => import('@/views/404'),
+{
+  path: '/404',
+  component: () =>
+    import('@/views/404'),
+  hidden: true
+},
+{
+  path: '/register',
+  component: () =>
+    import('@/views/register/index'),
+  hidden: true
+},
+{
+  path: '/',
+  component: Layout,
+  redirect: '/bbsMain',
+  meta: {
+    title: '论坛模块',
+    icon: 'nested'
+  },
+  children: [{
+    path: 'bbsMain',
+    component: () =>
+      import('@/views/bbsModule/bbsMain'),
+    meta: { title: '论坛主页' }
+  }, {
+    path: 'postDetail',
+    component: () =>
+      import('@/views/bbsModule/postDetail'),
+    meta: { title: '帖子详情' },
     hidden: true
-  },
-  {
-    path: '/register',
-    component: () => import('@/views/register/index'),
-    hidden: true
-  },
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/bbsMain',
-    meta: {
-      title: '论坛模块',
-      icon: 'nested'
-    },
-    children: [
-      {
-        path: 'bbsMain',
-        component: () => import('@/views/bbsModule/bbsMain'),
-        meta: { title: '论坛主页' }
-      }, {
-        path: 'postDetail',
-        component: () => import('@/views/bbsModule/postDetail'),
-        meta: { title: '帖子详情' }
-      }
-    ]
-  },
-  // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  }]
+},
+// 404 page must be placed at the end !!!
+{ path: '*', redirect: '/404', hidden: true }
 ]
 
 const createRouter = () => new Router({
