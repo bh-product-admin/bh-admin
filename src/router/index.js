@@ -77,9 +77,9 @@ export const asyncFactoryRoutes = [
   },
   // 厂家版，物流模块
   {
-    path: '/logistics-module',
+    path: '/logistics-module-market',
     component: Layout,
-    redirect: '/logistics-module/logisticsList',
+    redirect: '/logistics-module-market/logisticsList',
     meta: {
       title: '物流模块',
       icon: 'nested'
@@ -109,9 +109,9 @@ export const asyncFactoryRoutes = [
   },
   // 厂家版，资产模块
   {
-    path: '/property-manage',
+    path: '/property-manage-market',
     component: Layout,
-    redirect: '/property-manage/propertyList',
+    redirect: '/property-manage-market/propertyList',
     meta: {
       title: '资产模块',
       icon: 'nested'
@@ -171,7 +171,6 @@ export const asyncBuyRoutes = [
     }
     ]
   },
-
   {
     path: '/form',
     component: Layout,
@@ -201,9 +200,9 @@ export const asyncBuyRoutes = [
     ]
   },
   {
-    path: '/property-manage',
+    path: '/property-manage-buy',
     component: Layout,
-    redirect: '/property-manage/propertyList',
+    redirect: '/property-manage-buy/propertyList',
     meta: {
       title: '资产模块',
       icon: 'nested'
@@ -226,9 +225,9 @@ export const asyncBuyRoutes = [
     }]
   },
   {
-    path: '/logistics-module',
+    path: '/logistics-module-buy',
     component: Layout,
-    redirect: '/logistics-module/logisticsList',
+    redirect: '/logistics-module-buy/logisticsList',
     meta: {
       title: '物流模块',
       icon: 'nested'
@@ -291,8 +290,8 @@ export const asyncUserRoutes = [
       path: 'wait',
       name: 'wait',
       component: () =>
-        import('@/views/form/index'),
-      meta: { title: '等待上架确认', icon: 'form' }
+        import('@/views/form/confirmOrder'),
+      meta: { title: '厂家确认订单', icon: 'form' }
     },
     {
       path: 'refund',
@@ -304,9 +303,9 @@ export const asyncUserRoutes = [
     ]
   },
   {
-    path: '/property-manage',
+    path: '/property-manage-buy',
     component: Layout,
-    redirect: '/property-manage/propertyList',
+    redirect: '/property-manage-buy/propertyList',
     meta: {
       title: '资产模块',
       icon: 'nested'
@@ -329,9 +328,9 @@ export const asyncUserRoutes = [
     }]
   },
   {
-    path: '/logistics-module',
+    path: '/logistics-module-buy',
     component: Layout,
-    redirect: '/logistics-module/logisticsList',
+    redirect: '/logistics-module-buy/logisticsList',
     meta: {
       title: '物流模块',
       icon: 'nested'
@@ -445,19 +444,28 @@ export const asyncUserRoutes = [
   },
   // 厂家版，物流模块
   {
-    path: '/logistics-module',
+    path: '/logistics-module-market',
     component: Layout,
-    redirect: '/logistics-module/logisticsList',
+    redirect: '/logistics-module-market/logisticsList',
     meta: {
       title: '物流模块',
       icon: 'nested'
     },
-    children: [{
-      path: 'logisticsList',
-      component: () =>
-        import('@/views/logisticsModule/logisticsList'),
-      meta: { title: '物流信息' }
-    }]
+    children: [
+      {
+        path: 'logisticsList',
+        component: () =>
+          import('@/views/logisticsModule/logisticsList'),
+        meta: { title: '物流信息' }
+      },
+      {
+        path: 'logisticsDetail',
+        component: () =>
+          import('@/views/logisticsModule/logisticsDetail'),
+        meta: { title: '物流详情' },
+        hidden: true
+      }
+    ]
   },
   // 厂家版，商品管理
   {
@@ -477,9 +485,9 @@ export const asyncUserRoutes = [
   },
   // 厂家版，资产模块
   {
-    path: '/property-manage',
+    path: '/property-manage-market',
     component: Layout,
-    redirect: '/property-manage/propertyList',
+    redirect: '/property-manage-market/propertyList',
     meta: {
       title: '资产模块',
       icon: 'nested'

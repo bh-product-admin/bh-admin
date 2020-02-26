@@ -6,49 +6,61 @@
           <el-input />
         </el-form-item>
         <el-button type="primary">查询</el-button>
-        <el-button type="primary">看相似sku</el-button>
+        <el-button type="primary" @click="handleSku">看相似sku</el-button>
       </el-form>
     </el-card>
     <el-card>
       <div class="content">
-        <el-table :data="tableData"
-                  style="width: 100%"
-                  border
-                  @sort-change="sortChange">
-          <el-table-column v-for="(item, index) in columnData"
-                           :key="index"
-                           :label="item.label"
-                           :prop="item.prop"
-                           align="center"
-                           :sortable="sortColumns.includes(item.prop) ? true : false">
+        <el-table
+          :data="tableData"
+          style="width: 100%"
+          border
+          @sort-change="sortChange"
+        >
+          <el-table-column
+            v-for="(item, index) in columnData"
+            :key="index"
+            :label="item.label"
+            :prop="item.prop"
+            align="center"
+            :sortable="sortColumns.includes(item.prop) ? true : false"
+          >
             <template slot-scope="scope">
-              <img v-if="item.type=='img'"
-                   :src="scope.row.img"
-                   width="100"
-                   height="100">
+              <img
+                v-if="item.type=='img'"
+                :src="scope.row.img"
+                width="100"
+                height="100"
+              >
               <span v-else>
                 <font v-if="item.type=='date'">{{ scope.row[item.prop] | dateDot }}</font>
                 <font v-else>{{ scope.row[item.prop] }}</font>
               </span>
             </template>
           </el-table-column>
-          <el-table-column label="操作"
-                           width="240"
-                           align="center">
+          <el-table-column
+            label="操作"
+            width="240"
+            align="center"
+          >
             <template slot-scope="scope">
-              <el-button size="mini"
-                         @click="handleConfirm(index,scope.row)">发起采购</el-button>
+              <el-button
+                size="mini"
+                @click="handleConfirm(index,scope.row)"
+              >发起采购</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination :current-page="pageData.pageNum"
-                     :page-sizes="[10, 20, 30, 40]"
-                     :page-size="pageData.pageSize"
-                     layout="total, sizes, prev, pager, next, jumper"
-                     :total="pageData.total"
-                     @size-change="handleSizeChange"
-                     @current-change="handleCurrentChange" />
+      <el-pagination
+        :current-page="pageData.pageNum"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="pageData.pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="pageData.total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
     </el-card>
     <div><hasSupplieDialog ref="hasSupplieDialog" @handleEdit="handleEdit" /></div>
   </div>
@@ -90,7 +102,7 @@ export default {
         {
           label: '厂家备注',
           type: 'text',
-          prop: 'showTime'
+          prop: 'note'
         },
         {
           label: '采购单价',
@@ -137,6 +149,17 @@ export default {
     fetchGoodsList() {
       this.fetchWaresList()
     },
+    handleSku() {
+      waresList({ goodsId: this.$route.query.id, skuType: 1 }).then((res = {}) => {
+        const { data = {}} = res
+        const { list = [] } = data
+        if (list && list instanceof Array) {
+          this.tableData = list
+        } else {
+          this.tableData = []
+        }
+      })
+    },
     handleAddGoods() {
       console.log('新增')
       this.$refs.hasSupplieDialog.showDialog({}, true, 'add')
@@ -156,7 +179,7 @@ export default {
       //   // sortField: 'threeSale'
       // }
       waresList({ goodsId: this.$route.query.id }).then((res = {}) => {
-        const { data = {} } = res
+        const { data = {}} = res
         const { list = [] } = data
         if (list && list instanceof Array) {
           this.tableData = list

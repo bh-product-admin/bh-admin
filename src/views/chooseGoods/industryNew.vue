@@ -22,7 +22,7 @@
             :sortable="sortColumns.includes(item.prop) ? true : false"
           >
             <template slot-scope="scope">
-              <img v-if="item.type == 'img'" :src="scope.row.src" width="100" height="100">
+              <img v-if="item.type == 'img'" :src="scope.row.img" width="100" height="100">
               <span v-if="item.type === 'date'">{{ scope.row[item.prop] | datetimeDot }}</span>
               <span v-else>
                 {{ scope.row[item.prop] }}
@@ -74,7 +74,9 @@ export default {
         keywords: '',
         type: '',
         startTime: '',
-        endTime: ''
+        endTime: '',
+        orderBy: 'desc',
+        sortField: 'created'
       },
       pageData: {
         pageSize: 10,
@@ -86,7 +88,7 @@ export default {
           label: '商品图',
           type: 'img',
           width: 120,
-          prop: 'img'
+          prop: 'src'
         },
         {
           label: '商品标题',
@@ -96,43 +98,36 @@ export default {
         {
           label: '上架时间',
           type: 'date',
-          width: 110,
-          prop: 'showTime'
+          prop: 'created'
         },
         {
           label: '类目',
           type: 'text',
-          width: 180,
           prop: 'category'
         },
         {
           label: '价格',
           type: 'text',
-          width: 110,
           prop: 'price'
         },
         {
           label: '一日销量',
           type: 'text',
-          width: 110,
           prop: 'yesterdaySale'
         },
         {
           label: '三日销量',
           type: 'text',
-          width: 110,
           prop: 'threeSale'
         },
         {
           label: '七日销量',
           type: 'text',
-          width: 110,
           prop: 'sevenSale'
         },
         {
           label: '总销量',
           type: 'text',
-          width: 120,
           prop: 'totalSale'
         }
       ]
@@ -165,7 +160,8 @@ export default {
         ...this.searchValue,
         type: '1',
         pageSize: this.pageData.pageSize,
-        pageNum: this.pageData.pageNum
+        pageNum: this.pageData.pageNum,
+        orderBy: 'desc', sortField: 'yesterdaySale'
       }
       getGoodsList(params).then(res => {
         const { data = {}, data: { list = [] }} = res

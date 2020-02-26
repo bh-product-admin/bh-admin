@@ -22,28 +22,22 @@
           >
             <template slot-scope="scope">
               <img v-if="item.type=='img'" :src="scope.row.src" width="100" height="100">
-              <span v-else>
+              <div v-else>
+                <el-button v-if="item.type=='button'&&scope.row.logisticsStatus=='待发货'" @click="handleConfirm(scope.$index, scope.row, 'confirm')">单号录入</el-button>
+                <span v-else>
                 {{ scope.row[item.prop] }}
               </span>
+              </div>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="240" align="center">
             <template slot-scope="scope">
               <el-button
-                v-if="scope.row.status == 0"
-                size="mini"
-                @click="$router.push({path:'/logistics-module-market/logisticsDetail',query:{id:scope.row.ids}})"
-              >物流单录入</el-button>
-              <el-button
-                v-if="scope.row.status == 1|| scope.row.status == 0"
-                size="mini"
-                @click="handleConfirm(scope.$index, scope.row, 'cancel')"
-              >取消发货</el-button>
-              <el-button
-                v-if="scope.row.status == 2"
+                v-if="scope.row.logisticsStatus == '已拒签'"
                 size="mini"
                 @click="handleConfirm(scope.$index, scope.row, 'reason')"
-              >查看取消原因</el-button>
+              >查看拒签原因</el-button>
+              <span v-else>无</span>
             </template>
           </el-table-column>
         </el-table>
@@ -78,7 +72,7 @@ export default {
           src:
             'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
           title: 'xxxxxxxxx',
-          logisticsStatus: 0,
+          logisticsStatus: '待发货',
           logisticsAccount: 1,
           date: '2016-05-04',
           price: '¥34',
@@ -93,8 +87,8 @@ export default {
           src:
             'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
           title: 'xxxxxxxxx',
-          logisticsStatus: 0,
-          logisticsAccount: 1,
+          logisticsStatus: '代签收',
+          logisticsAccount: 12334556,
           date: '2016-05-07',
           price: '¥33',
           goodsNum: '2,000',
@@ -108,8 +102,8 @@ export default {
           src:
             'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
           title: 'xxxxxxxxx',
-          logisticsStatus: 0,
-          logisticsAccount: 1,
+          logisticsStatus: '代签收',
+          logisticsAccount: 13333332222,
           date: '2016-05-04',
           price: '¥31',
           goodsNum: '2,000',
@@ -123,8 +117,8 @@ export default {
           src:
             'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
           title: 'xxxxxxxxx',
-          logisticsStatus: 0,
-          logisticsAccount: 1,
+          logisticsStatus: '已拒签',
+          logisticsAccount: 12222111111,
           date: '2016-05-04',
           price: '¥1122',
           goodsNum: '2,000',
@@ -150,8 +144,8 @@ export default {
           prop: 'logisticsStatus'
         },
         {
-          label: '物流账户',
-          type: 'text',
+          label: '物流单号',
+          type: 'button',
           prop: 'logisticsAccount'
         },
         {
@@ -205,7 +199,7 @@ export default {
         }).then(({ value }) => {
           this.$message({
             type: 'success',
-            message: '你的邮箱是: ' + value
+            message: '物流单号录入成功'
           })
         }).catch(() => {
         })

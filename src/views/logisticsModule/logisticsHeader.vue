@@ -5,9 +5,10 @@
         <el-input v-model="formInline.user" size="small" placeholder="审批人" />
       </el-form-item>
       <el-form-item label="状态">
-        <el-select v-model="formInline.region" placeholder="活动区域" size="small">
-          <el-option label="区域一" value="shanghai" />
-          <el-option label="区域二" value="beijing" />
+        <el-select v-model="formInline.region" placeholder="状态" size="small">
+          <el-option label="代发货" value="shanghai" />
+          <el-option label="已取消" value="beijing" />
+          <el-option label="已发货" value="shanghai" />
         </el-select>
       </el-form-item>
       <el-form-item label="时间">

@@ -66,18 +66,18 @@
                 @click="handleEdit(scope.$index, scope.row)"
               >释放</el-button> -->
               <el-button
-                size="mini"
                 v-if="scope.row.manufacturerCertified == 2||scope.row.manufacturerCertified == 3"
+                size="mini"
                 @click="handleLookDetail(scope.$index, scope.row)"
               >查看资料</el-button>
               <el-button
-                size="mini"
                 v-if="scope.row.manufacturerCertified == 1"
+                size="mini"
                 @click="handleLookDetail(scope.$index, scope.row)"
               >查看资料</el-button>
               <el-button
-                size="mini"
                 v-if="scope.row.manufacturerCertified == 4"
+                size="mini"
                 @click="handleLookDetail(scope.$index, scope.row)"
               >拒绝理由</el-button>
             </template>
@@ -173,7 +173,7 @@ export default {
     }
   },
   methods: {
-    search(){
+    search() {
       this.updatePageData()
     },
     handleLookDetail(index, row) {
@@ -187,7 +187,7 @@ export default {
     async updatePageData() {
       try {
         const res = await getManufacturerCertifiedIng(this.form)
-        this.tableData = res.data.list
+        this.tableData = res.data
       } catch (error) {
         console.log(error)
       }

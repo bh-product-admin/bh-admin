@@ -23,9 +23,11 @@
           >
             <template slot-scope="scope">
               <img v-if="item.type == 'img'" :src="scope.row.img" width="100" height="100">
-              <span v-if="item.type === 'date'">{{ scope.row[item.prop] | datetimeDot }}</span>
               <span v-else>
-                {{ scope.row[item.prop] }}
+                <span v-if="item.type == 'date'">{{ scope.row[item.prop] | datetimeDot }}</span>
+                <span v-else>
+                  {{ scope.row[item.prop] }}
+                </span>
               </span>
             </template>
           </el-table-column>
@@ -34,7 +36,7 @@
               <el-button
                 size="mini"
                 @click="handleEdit(scope.row)"
-              >我有货</el-button>
+              >一件代发</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -92,12 +94,12 @@ export default {
         {
           label: '上架时间',
           type: 'date',
-          prop: 'showTime'
+          prop: 'created'
         },
         {
           label: '类目',
           type: 'text',
-          prop: 'colName'
+          prop: 'category'
         },
         {
           label: '价格',
@@ -107,7 +109,7 @@ export default {
         {
           label: '一日销量',
           type: 'text',
-          prop: 'daySendNum'
+          prop: 'yesterdaySale'
         },
         {
           label: '三日销量',
@@ -136,7 +138,7 @@ export default {
     },
     handleEdit(data) {
       this.$router.push({
-        path: '/example/supplier',
+        path: '/productModule/supplier',
         query: {
           id: data.id
         }

@@ -74,13 +74,15 @@ export default {
             console.log(err, 'err')
           })
         } else {
+          console.log(22)
           const replyJson = {
             phone: filterPhone(this.phone),
             content: this.formInline.cont
           }
+          this.replyJson.push(replyJson)
           const newParams = {
             id: this.commentId,
-            replyJson: JSON.stringify(replyJson)
+            replyJson: JSON.stringify(this.replyJson)
           }
           console.log(newParams, 'newParams')
           blogAddReply(newParams).then((res = {}) => { // 回复评论
@@ -109,10 +111,13 @@ export default {
         })
         .catch(_ => {})
     },
-    showDialog(isDialogVisible, replyOrComment, blogId, id) {
+    showDialog(isDialogVisible, replyOrComment, blogId, id, replyJson) {
       this.dialogVisible = isDialogVisible
       this.replyOrComment = replyOrComment
       this.blogId = blogId
+      this.replyJson = replyJson || []
+      console.log(this.replyJson)
+
       this.dialogTitle = replyOrComment === 'comment' ? '评论' : '回复'
       if (id >= 0) this.commentId = id
     }

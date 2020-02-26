@@ -21,15 +21,15 @@
             :sortable="sortColumns.includes(item.prop) ? true : false"
           >
             <template slot-scope="scope">
-              <img v-if="item.type=='img'" :src="scope.row.src" width="100" height="100">
-              <span v-else>
-                {{ scope.row[item.prop] }}
-              </span>
+              <img v-if="item.type=='img'" :src="scope.row.img" width="100" height="100">
+              <span v-if="!item.filters&&item.type!=='img'">{{ scope.row[item.prop] }}</span>
+              <span v-if="item.filters === 'date'">{{ scope.row[item.prop] | datetimeDot }}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="200" align="center">
             <template slot-scope="scope">
               <el-button
+                v-if="scope.row.status == '1'"
                 size="mini"
                 @click="handleConfirm(scope.$index, scope.row, 'Confirm')"
               >确认订单</el-button>
@@ -38,6 +38,7 @@
                 @click="handleConfirm(scope.$index, scope.row, 'Cancel')"
               >取消订单</el-button>
               <el-button
+                v-if="scope.row.status == '2'"
                 size="mini"
                 @click="handleConfirm(scope.$index, scope.row, 'Remind')"
               >催付款</el-button>
@@ -60,7 +61,7 @@
 <script>
 import {
   orderMerchantList, // 商家订单列表
-  bbsOrderList
+  handleOrderConfirm
 } from '@/api/orderModule'
 import Header from '@/views/orderModule/chooseHeader'
 export default {
@@ -83,13 +84,13 @@ export default {
           label: '订单编号',
           type: 'text',
           width: 100,
-          prop: 'ids'
+          prop: 'id'
         },
         {
           label: '商品图',
           type: 'img',
           width: 120,
-          prop: 'src'
+          prop: 'img'
         },
         {
           label: '商品标题',
@@ -99,38 +100,33 @@ export default {
         {
           label: '采购单价',
           type: 'text',
-          width: 100,
           prop: 'price'
         },
         {
           label: '采购数量',
           type: 'text',
-          width: 100,
-          prop: 'seleNum'
+          prop: 'number'
         },
         {
           label: '采购总价',
           type: 'text',
-          width: 100,
-          prop: 'priceTotal'
+          prop: 'amount'
         },
         {
           label: '状态',
           type: 'text',
-          width: 100,
           prop: 'status'
         },
         {
           label: '买家ID',
           type: 'text',
-          width: 100,
           prop: 'userId'
         },
         {
           label: '申请时间',
           type: 'text',
-          width: 100,
-          prop: 'date'
+          prop: 'created',
+          filters: 'date'
         }
       ]
     }
@@ -141,7 +137,7 @@ export default {
   methods: {
     fetchOrderList() {
       // orderMerchantList().then(res => {
-      bbsOrderList().then(res => {
+      orderMerchantList({ orderBy: 'desc', sortField: 'created' }).then(res => {
         const { data = {}, data: { list = [] }} = res
         this.pageData = data
         this.tableData = list && list instanceof Array && list.length >= 0 ? list : []
@@ -175,6 +171,14 @@ export default {
         type: `${handleItem.type}`
       }).then(() => {
         console.log('queding')
+        handleOrderConfirm({ id: row.id }).then(res => {
+          if (res.success) {
+            this.$message.success(res.msg)
+            this.fetchOrderList()
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
       }).catch(() => {
         console.log('quxiao')
       })

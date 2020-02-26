@@ -38,17 +38,17 @@
             </div>
 
             <span class="el-link" @click="postReply('reply', item.comments.id)">回复</span>
-            <div v-if="item.comments.replyJson">
-              <el-divider content-position="right">回复（{{ item.phone }}）</el-divider>
+            <div v-show="item.comments.replyJson" v-for="data in item.comments.replyJson">
+              <el-divider content-position="right">回复（{{ data.phone }}）</el-divider>
               <div class="comment-item ">
                 <div class="flex aic">
                   <img src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" class="head-img">
-                  <span class="m10">{{ createContent(item.comments.replyJson, 'phone') }}</span>
+                  <span class="m10">{{ data.phone }}</span>
                 </div>
                 <div class="comment-item taj">
-                  <span class="mt10">{{ createContent(item.comments.replyJson, 'content') }}</span>
+                  <span class="mt10">{{ data.content }}</span>
                 </div>
-                <span class="el-link" @click="postReply('reply', item.comments.id)">回复</span>
+                <span class="el-link" @click="postReply('reply', item.comments.id,item.comments.replyJson)">回复</span>
               </div>
             </div>
           </div>
@@ -107,7 +107,6 @@ export default {
   methods: {
     createContent(content, code) {
       const obj = eval(`(${content})`)
-      console.log(obj, 'sdsadasda', code)
       return obj[code]
     },
     blogReplayAddSuccess() {
@@ -140,19 +139,22 @@ export default {
         pageNum: this.pageData.pageNum
       }
       getByBlogIdById(params).then((res) => {
-        console.log(res, 'ressetAddReply')
         const { data = [] } = res
+        data.forEach(e=>{
+          if (e.comments.replyJson) {
+            e.comments.replyJson = eval(`(${e.comments.replyJson})`)
+          }
+        })
+        console.log(data)
         this.comments = data
       }).catch((err) => {
         console.log(err, 'errsetAddReply')
       })
     },
-    postReply(replyOrComment, id = -1) {
-      console.log(id, 'idididiid')
-      this.$refs.PostOrReplyDialog.showDialog(true, replyOrComment, this.blogId, id)
+    postReply(replyOrComment, id = -1,replyJson) {
+      this.$refs.PostOrReplyDialog.showDialog(true, replyOrComment, this.blogId, id, replyJson)
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`, this.pageData)
       this.pageData['pageNum'] = 1
       this.pageData['pageSize'] = val
       this.fetchBlogDetail()

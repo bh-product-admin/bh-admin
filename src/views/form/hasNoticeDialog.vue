@@ -1,43 +1,46 @@
 <template>
   <div class="index">
     <el-dialog
+      title="通知厂家发货"
       :visible.sync="dialogFormVisible"
       :before-close="handleClose"
+      width="30%"
+      center
     >
       <el-form
         ref="ruleForm"
         :model="form"
-        label-width="120px"
+        label-width="100px"
       >
-        <el-form-item label="商品标题：">
-          <span>{{ title }}</span>
+        <el-form-item label="发货数量：">
+          <el-input v-model="form.number" />
         </el-form-item>
-        <el-form-item label="商品图：">
-          <img
-            :src="img"
-            width="100"
-            height="100"
-            alt=""
-          >
+        <el-form-item label="物流渠道：">
+          <el-input v-model="form.number" />
         </el-form-item>
         <el-form-item
-          label="采购单价："
+          label="销售价格："
           prop="price"
         >
-          <span>{{ price }}</span>
+          <el-input v-model="form.price" />
         </el-form-item>
         <el-form-item
-          label="采购数量："
+          label="渠道成本："
           prop="price"
         >
-          <el-input v-model="form.number" /></br>
-          <span>最大采购数量：{{ inventory }} </span>
+          <el-input v-model="form.number" />
         </el-form-item>
         <el-form-item
-          label="采购金额："
+          label="物流面单："
           prop="price"
         >
-          <span>{{ form.number*price }} </span>
+          <el-button>上传</el-button>
+        </el-form-item>
+        <el-form-item label="给商家留言：">
+          <el-input
+            v-model="form.note"
+            type="textarea"
+          />
         </el-form-item>
       </el-form>
       <div

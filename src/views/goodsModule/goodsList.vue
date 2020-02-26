@@ -38,7 +38,7 @@
               <el-button
                 size="mini"
                 @click="handleConfirm(scope.$index, scope.row, 'showStatus')"
-              >{{ scope.row['showStatus'] === 1 ? '上架' : '下架' }}</el-button>
+              >{{ scope.row['showStatus'] === 1 ? '下架' : '上架' }}</el-button>
               <el-button
                 size="mini"
                 @click="handleConfirm(scope.$index, scope.row, 'delete')"
@@ -104,7 +104,7 @@ export default {
           label: '上架时间',
           type: 'date',
           width: 110,
-          prop: 'startShowTime'
+          prop: 'created'
         },
         {
           label: '类目',
@@ -187,7 +187,7 @@ export default {
           isEditText: true
         },
         showStatus: {
-          text: `是否${row.showStatus === 1 ? '上架' : '下架'}？`,
+          text: `是否${row.showStatus === 1 ? '下架' : '上架'}？`,
           type: 'warning'
         },
         delete: {
@@ -254,12 +254,12 @@ export default {
       console.log(`每页 ${val} 条`, this.pageData)
       this.pageData['pageNum'] = 1
       this.pageData['pageSize'] = val
-      this.fetchBlogList()
+      this.fetchWaresList()
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
       this.pageData['pageNum'] = val
-      this.fetchBlogList()
+      this.fetchWaresList()
     },
     handleEdit() {}
   }

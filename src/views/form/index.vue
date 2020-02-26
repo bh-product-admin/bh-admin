@@ -5,43 +5,53 @@
     </el-card>
     <el-card>
       <div class="content">
-        <el-table :data="tableData"
-                  style="width: 100%"
-                  @sort-change="sortChange">
-          <el-table-column v-for="(item, index) in columnData"
-                           :key="index"
-                           :label="item.label"
-                           :prop="item.prop"
-                           :sortable="sortColumns.includes(item.prop) ? true : false">
+        <el-table
+          :data="tableData"
+          style="width: 100%"
+          border
+          @sort-change="sortChange"
+        >
+          <el-table-column
+            v-for="(item, index) in columnData"
+            :key="index"
+            :label="item.label"
+            :prop="item.prop"
+            align="center"
+            :sortable="sortColumns.includes(item.prop) ? true : false"
+          >
             <template slot-scope="scope">
-              <img v-if="item.type=='img'"
-                   :src="scope.row.src"
-                   width="100"
-                   height="100">
-              <span v-else>
-                {{ scope.row[item.prop] }}
-              </span>
+              <img v-if="item.type=='img'" :src="scope.row.img" width="100" height="100">
+              <span v-if="!item.filters&&item.type!=='img'">{{ scope.row[item.prop] }}</span>
+              <span v-if="item.filters === 'date'">{{ scope.row[item.prop] | datetimeDot }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作"
-                           width="200">
+          <el-table-column
+            label="操作"
+            width="200"
+          >
             <template slot-scope="scope">
-              <el-button size="mini"
-                         @click="handleConfirm(scope.$index, scope.row, 'Confirm')">通知厂家发货</el-button>
-              <el-button size="mini">退款</el-button>
+              <el-button
+                size="mini"
+                @click="handleNoticeDialog(scope.row)"
+              >通知厂家发货</el-button>
+              <el-button size="mini" @click="handleAlipayTradeReturn(scope.row)">退款</el-button>
 
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination :current-page="pageData.pageNum"
-                     :page-sizes="[10, 20, 30, 40]"
-                     :page-size="pageData.pageSize"
-                     layout="total, sizes, prev, pager, next, jumper"
-                     :total="pageData.total"
-                     @size-change="handleSizeChange"
-                     @current-change="handleCurrentChange" />
+      <el-pagination
+        :current-page="pageData.pageNum"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="pageData.pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="pageData.total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
     </el-card>
+    <div><hasNoticeDialog ref="hasNoticeDialog" @handleEdit="handleEdit" /></div>
+
   </div>
 </template>
 <script>
@@ -49,10 +59,11 @@ import {
   orderBuy // 商家订单列表
 } from '@/api/orderModule'
 import Header from '@/views/orderModule/chooseHeader'
+import hasNoticeDialog from './hasNoticeDialog'
 export default {
   name: 'OrderList',
   components: {
-    Header
+    Header, hasNoticeDialog
   },
   data() {
     return {
@@ -63,70 +74,17 @@ export default {
         total: 0,
         pageNum: 1
       },
-      tableData: [
-        {
-          userId: '211',
-          ids: '111',
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          date: '2016-05-04',
-          price: '¥34',
-          seleNum: '2,000',
-          priceTotal: '5,424',
-          status: 0,
-          seleNumTotal: 4444
-        },
-        {
-          userId: '212',
-          ids: '222',
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          date: '2016-05-07',
-          price: '¥33',
-          seleNum: '2,000',
-          priceTotal: 111,
-          status: 1,
-          seleNumTotal: 3333
-        },
-        {
-          userId: '213',
-          ids: '333',
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          date: '2016-05-04',
-          price: '¥31',
-          seleNum: '2,000',
-          priceTotal: '5,424',
-          status: 2,
-          seleNumTotal: 1111
-        },
-        {
-          userId: '214',
-          ids: '444',
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          date: '2016-05-04',
-          price: '¥1122',
-          seleNum: '2,000',
-          priceTotal: '5,424',
-          status: 2,
-          seleNumTotal: 5555
-        }
-      ],
+      tableData: [],
       columnData: [
         {
           label: '订单编号',
           type: 'text',
-          prop: 'ids'
+          prop: 'id'
         },
         {
           label: '商品图片',
           type: 'img',
-          prop: 'src'
+          prop: 'img'
         },
         {
           label: '商品标题',
@@ -141,22 +99,23 @@ export default {
         {
           label: '采购数量',
           type: 'text',
-          prop: 'seleNum'
+          prop: 'number'
         },
         {
           label: '采购总价',
           type: 'text',
-          prop: 'priceTotal'
+          prop: 'amount'
         },
         {
           label: '厂家ID',
           type: 'text',
-          prop: 'status'
+          prop: 'userId'
         },
         {
           label: '采购时间',
           type: 'text',
-          prop: 'userId'
+          prop: 'confirmTime',
+          filters: 'date'
         },
         {
           label: '剩余库存',
@@ -176,8 +135,8 @@ export default {
   },
   methods: {
     fetchOrderList() {
-      orderBuy().then(res => {
-        const { data = {}, data: { list = [] } } = res
+      orderBuy({ orderBy: 'desc', sortField: 'confirmTime' }).then(res => {
+        const { data = {}, data: { list = [] }} = res
         this.pageData = data
         this.tableData = list && list instanceof Array && list.length >= 0 ? list : []
         console.log(res, 'ressgetGoodsLists')
@@ -188,32 +147,39 @@ export default {
     sortChange(column, prop, order) { // 排序
       console.log('sortChange--', column, prop, order)
     },
-    handleConfirm(index, row, codeIndex) { // 操作
-      const handleObj = {
-        Confirm: {
-          text: '确认订单',
-          type: 'warning'
-        },
-        Cancel: {
-          text: '取消订单',
-          type: 'error'
-        },
-        Remind: {
-          text: '催一下',
-          type: 'info'
-        }
-      }
-      const handleItem = handleObj[codeIndex]
-      this.$confirm(`是否${handleItem.text}？`, `${handleItem.text}`, {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: `${handleItem.type}`
-      }).then(() => {
-        console.log('queding')
-      }).catch(() => {
-        console.log('quxiao')
-      })
-      console.log(index, row)
+    handleNoticeDialog(row) {
+      this.$refs.hasNoticeDialog.showDialog(row, true)
+    },
+    handleEdit() {},
+    // handleConfirm(index, row, codeIndex) { // 操作
+    //   const handleObj = {
+    //     Confirm: {
+    //       text: '确认订单',
+    //       type: 'warning'
+    //     },
+    //     Cancel: {
+    //       text: '取消订单',
+    //       type: 'error'
+    //     },
+    //     Remind: {
+    //       text: '催一下',
+    //       type: 'info'
+    //     }
+    //   }
+    //   const handleItem = handleObj[codeIndex]
+    //   this.$confirm(`是否${handleItem.text}？`, `${handleItem.text}`, {
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消',
+    //     type: `${handleItem.type}`
+    //   }).then(() => {
+    //     console.log('queding')
+    //   }).catch(() => {
+    //     console.log('quxiao')
+    //   })
+    //   console.log(index, row)
+    // },
+    handleAlipayTradeReturn() {
+
     },
     handleSizeChange(val) { // 每页条数改变
       console.log(`每页 ${val} 条`)

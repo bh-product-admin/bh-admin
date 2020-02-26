@@ -7,13 +7,14 @@
     >
       <el-form ref="ruleForm" :model="form" label-width="120px" :rules="rules">
         <el-form-item label="商品标题：" prop="title">
-          <!-- <el-input v-model="form.title" placeholder="商品标题" /> -->
-          <span>{{ title }}</span>
+          <el-input v-if="isAdd" v-model="form.title" placeholder="商品标题" />
+          <span v-else>{{ title }}</span>
         </el-form-item>
         <el-form-item label="商品图：">
-          <!-- <el-upload
+          <el-upload
+            v-if="isAdd"
             class="avatar-uploader"
-            action="/dev-api/oss/upload"
+            :action="action"
             :headers="{ token }"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
@@ -21,8 +22,19 @@
           >
             <img v-if="form.img" :src="form.img" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon" />
-          </el-upload> -->
-          <img :src="img" class="avatar">
+          </el-upload>
+          <img v-if="!isAdd" :src="img" class="avatar">
+        </el-form-item>
+        <el-form-item label="类目">
+          <el-select v-model="form.firstId" placeholder="类目一" size="small" style="width: 100px" @change="shangeSelect(1)">
+            <el-option v-for="item in firstOptionsArr" :key="item.id" :label="item.name" :value="item.id" />
+          </el-select>
+          <el-select v-model="form.secondId" placeholder="类目二" size="small" style="width: 100px" @change="shangeSelect(2)">
+            <el-option v-for="item in secondOptionsArr" :key="item.id" :label="item.name" :value="item.id" />
+          </el-select>
+          <el-select v-model="form.thirdId" placeholder="类目三" size="small" style="width: 100px" @change="shangeSelect(3)">
+            <el-option v-for="item in thirdOptionsArr" :key="item.id" :label="item.name" :value="item.id" />
+          </el-select>
         </el-form-item>
         <el-form-item label="采购单价：" prop="price">
           <el-input v-model="form.price" placeholder="元/件" />
@@ -56,7 +68,7 @@
         </el-form-item>
         <el-form-item label="备注：">
           <el-input v-model="form.note" type="textarea" />
-          <p class="cred p0">您还不是认证厂家，点击前往认证，买家购买更放心！</p>
+          <p v-if="showNoAuth" class="cred p0" @click="toRegist">您还不是认证厂家，点击前往认证，买家购买更放心！</p>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -69,9 +81,17 @@
 <script>
 import { getCookieByCode } from '@/utils/index'
 import {
-  waresGoodsEdit, // 修改我的商品 id=1&inventory=190&dayProductionNum=123&returnNum=456
-  waresGoodsAdd // 添加我的商品（非平台商品） goodsId=1&skuType=1&price=99&inventory=1000&dayProductionNum=189&daySendNum=169&returnNum=20&maxSaleCycle=60
+  classify
+} from '@/api/user'
+import {
+  waresGoodsEdit // 修改我的商品 id=1&inventory=190&dayProductionNum=123&returnNum=456
 } from '@/api/goodsModule'
+import {
+  handleGoodsAdd
+} from '@/api/chooseGoods'
+import {
+  getManufacturerCertifiedIng
+} from '@/api/user'
 export default {
   name: 'HasGoodsDialog',
   props: [],
@@ -80,7 +100,7 @@ export default {
       form: {
         // skuType: '1',
         // title: '',
-        // img: '',
+        img: '',
         price: '',
         inventory: '',
         dayProductionNum: '',
@@ -90,10 +110,16 @@ export default {
         note: '',
         id: '',
         skuType: 1,
-        goodsId: ''
+        goodsId: '',
+        firstId: '',
+        secondId: '',
+        thirdId: ''
       },
       title: '',
       img: '',
+      action: process.env.VUE_APP_BASE_API + '/oss/upload',
+      showNoAuth: false,
+      phone: getCookieByCode('phone'),
       rules: {
         // title: [
         //   { required: true, message: '请输入商品标题', trigger: 'blur' }
@@ -122,7 +148,10 @@ export default {
       },
       formLabelWidth: '120px',
       dialogFormVisible: false,
-      isAdd: false
+      isAdd: false,
+      firstOptionsArr: [],
+      secondOptionsArr: [],
+      thirdOptionsArr: []
     }
   },
   computed: {
@@ -137,8 +166,29 @@ export default {
       }
     }
   },
+  created() {
+    this.fetchOptions()
+    this.fetchManufacturerCertifiedIng()
+  },
   methods: {
+    toRegist() {
+      this.$router.push({
+        path: '/register'
+      })
+    },
     // 重置表单
+    fetchManufacturerCertifiedIng() {
+      getManufacturerCertifiedIng({ phone: this.phone }).then((res = {}) => {
+        console.log(res, 'ressssfetchManufacturerCertifiedIng')
+        const { data = [] } = res
+        // if ((!data || !data.length) || (data && data[0] && data[0].manufacturerCertified != 1)) {
+        if (data && data[0] && data[0].manufacturerCertified === 1) {
+          this.showNoAuth = false
+        } else {
+          this.showNoAuth = true
+        }
+      })
+    },
     resetForm() {
       this.$refs['ruleForm'].resetFields()
     },
@@ -182,7 +232,8 @@ export default {
       })
     },
     goodsAdd(params) {
-      waresGoodsAdd(params).then((res = {}) => {
+      delete this.form.goodsId
+      handleGoodsAdd(params).then((res = {}) => {
         const { data = false, msg = '操作成功' } = res
         if (data) {
           this.$message.success(msg)
@@ -222,7 +273,9 @@ export default {
     },
     // 上传图片
     handleAvatarSuccess(res, file) {
+      console.log(this.$imgBase)
       this.form.img = `${this.$imgBase}${res.data}`
+      debugger
       // console.log('this.form.img---', res, this.form.img)
     },
     beforeAvatarUpload(file) {
@@ -254,6 +307,38 @@ export default {
     handleClose() {
       this.initForm()
       this.dialogFormVisible = false
+    },
+    fetchOptions(level = 1) {
+      console.log(level, 'levellevel')
+      const labelArr = ['', 'first', 'second', 'third']
+      let parent_id = ''
+      const params = {
+        level
+      }
+      if (level && level > 1) {
+        parent_id = this.form[`${labelArr[level - 1]}Id`]
+        params['parent_id'] = parent_id
+      }
+      classify(params).then((res = {}) => {
+        console.log(res, 'ressssclassify')
+        const { data: { list = [] }} = res
+        console.log(list, 'listressssclassify')
+        if (list && list instanceof Array) this.$data[`${labelArr[level]}OptionsArr`] = list
+        // this.shangeSelect(level, true)
+      })
+    },
+    shangeSelect(codeIndex, isAuto) {
+      console.log(codeIndex, 'codeIndex')
+      const labelArr = ['', 'first', 'second', 'third']
+      const startIndex = isAuto ? codeIndex : codeIndex + 1
+      for (let i = startIndex; i < labelArr.length; i++) {
+        this.form[`${labelArr[i]}Id`] = (this.$data[`${labelArr[i]}OptionsArr`][0] && this.$data[`${labelArr[i]}OptionsArr`][0].id) || ''
+      }
+      if (codeIndex < 3) {
+        this.fetchOptions(codeIndex + 1)
+      } else {
+        this.$emit('search', this.form)
+      }
     }
   }
 }

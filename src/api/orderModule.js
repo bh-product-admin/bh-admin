@@ -44,3 +44,30 @@ export function orderBuy(data) {
     data
   })
 }
+
+// 支付 /pay/alipayOrder?orderId=2&successUrl=http://api.2lei.cn/pay/alipayReturn
+export function alipay(data) {
+  return request({
+    url: '/pay/alipayOrder',
+    method: 'post',
+    data
+  })
+}
+
+// 订单催付款 /order/pushPay?id=2
+export function pushPay(data) {
+  return request({
+    url: '/order/pushPay',
+    method: 'post',
+    data
+  })
+}
+
+// 买家订单催确认 /order/rushOrderAffirm?id=2
+export function rushOrderAffirm(data) {
+  return request({
+    url: '/order/rushOrderAffirm',
+    method: 'post',
+    data
+  })
+}
