@@ -25,8 +25,8 @@
               <div v-else>
                 <el-button v-if="item.type=='button'&&scope.row.logisticsStatus=='待发货'" @click="handleConfirm(scope.$index, scope.row, 'confirm')">单号录入</el-button>
                 <span v-else>
-                {{ scope.row[item.prop] }}
-              </span>
+                  {{ scope.row[item.prop] }}
+                </span>
               </div>
             </template>
           </el-table-column>
@@ -55,6 +55,9 @@
   </div>
 </template>
 <script>
+import {
+  logisticsAddExpressNo
+} from '@/api/logisticsModule'
 import Header from '@/views/logisticsModule/logisticsHeader'
 export default {
   name: 'LogisticsList',
@@ -197,9 +200,20 @@ export default {
           cancelButtonText: '取消',
           inputErrorMessage: handleItem.text
         }).then(({ value }) => {
-          this.$message({
-            type: 'success',
-            message: '物流单号录入成功'
+          const params = {
+            id: row.id,
+            expressNo: value
+          }
+          logisticsAddExpressNo(params).then(() => {
+            this.$message({
+              type: 'success',
+              message: '物流单号录入成功'
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'error',
+              message: '请稍后再试'
+            })
           })
         }).catch(() => {
         })

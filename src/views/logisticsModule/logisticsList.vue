@@ -1,7 +1,7 @@
 <template>
   <div class="index">
     <el-card>
-      <Header />
+      <Header @search="searchList" />
     </el-card>
     <el-card>
       <div class="content">
@@ -49,11 +49,11 @@
         </el-table>
       </div>
       <el-pagination
-        :current-page="currentPage"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :current-page="pageData.pageNum"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="pageData.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        :total="pageData.total"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
@@ -61,6 +61,10 @@
   </div>
 </template>
 <script>
+import {
+  logisticsManufacturersList, // 卖家物流列表
+  logisticsManufacturersCancel // 卖家取消发货单
+} from '@/api/logisticsModule'
 import Header from '@/views/logisticsModule/logisticsHeader'
 export default {
   name: 'LogisticsList',
@@ -71,6 +75,11 @@ export default {
     return {
       sortColumns: ['price'],
       currentPage: 1,
+      pageData: {
+        pageSize: 10,
+        total: 0,
+        pageNum: 1
+      },
       tableData: [
         {
           userId: '211',
@@ -172,8 +181,32 @@ export default {
       ]
     }
   },
-  created() {},
+  created() {
+    this.getlogisticsList()
+  },
   methods: {
+    getlogisticsList(formLine) {
+      logisticsManufacturersList(formLine).then((res = {}) => {
+        console.log(res, 'ressss--getlogisticsList')
+        const { data = [] } = res
+        if (data && data instanceof Array && data.length) {
+          this.tableData = data
+        } else {
+          this.tableData = []
+        }
+      }).catch((err = {}) => {
+        this.tableData = []
+        console.log(err, 'errr--getlogisticsList')
+      })
+    },
+    searchList(formLine) {
+      console.log(formLine, 'formLineformLineformLine')
+      formLine = {
+        ...formLine,
+        ...this.pageData
+      }
+      this.getlogisticsList(formLine)
+    },
     sortChange(column, prop, order) {
       console.log('sortChange--', column, prop, order)
     },
@@ -203,9 +236,20 @@ export default {
           cancelButtonText: '取消',
           inputErrorMessage: handleItem.text
         }).then(({ value }) => {
-          this.$message({
-            type: 'success',
-            message: '你的邮箱是: ' + value
+          const params = {
+            id: row.id,
+            content: value
+          }
+          logisticsManufacturersCancel(params).then(() => {
+            this.$message({
+              type: 'success',
+              message: '操作成功'
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'error',
+              message: '操作失败，请重试'
+            })
           })
         }).catch(() => {
         })

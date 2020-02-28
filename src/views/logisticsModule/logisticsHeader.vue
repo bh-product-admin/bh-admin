@@ -73,7 +73,7 @@ export default {
   created() {},
   methods: {
     onSubmit() {
-      alert('submit!')
+      this.$emit('search', this.formInline)
     }
   }
 }
