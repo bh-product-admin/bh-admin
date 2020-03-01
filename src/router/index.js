@@ -194,7 +194,7 @@ export const asyncBuyRoutes = [
       path: 'refund',
       name: 'refund',
       component: () =>
-        import('@/views/form/index'),
+        import('@/views/form/buyerList'),
       meta: { title: '退款订单管理', icon: 'form' }
     }
     ]
@@ -297,7 +297,7 @@ export const asyncUserRoutes = [
       path: 'refund',
       name: 'refund',
       component: () =>
-        import('@/views/form/index'),
+        import('@/views/form/buyerList'),
       meta: { title: '退款订单管理', icon: 'form' }
     }
     ]

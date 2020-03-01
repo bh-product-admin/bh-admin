@@ -21,71 +21,62 @@
           >
             <template slot-scope="scope">
               <img v-if="item.type=='img'" :src="scope.row.img" width="100" height="100">
-              <span v-if="!item.filters&&item.type!=='img'">{{ scope.row[item.prop] }}</span>
-              <span v-if="item.filters === 'date'">{{ scope.row[item.prop] | datetimeDot }}</span>
+              <span v-else>
+                {{ scope.row[item.prop] }}
+              </span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="操作"
-            width="200"
-          >
+          <el-table-column label="操作" width="200" align="center">
             <template slot-scope="scope">
               <el-button
+                v-if="scope.row.orderReturnStatus == 1"
                 size="mini"
-                @click="handleNoticeDialog(scope.row)"
-              >通知厂家发货</el-button>
-              <el-button size="mini" @click="handleAlipayTradeReturn(scope.row)">退款</el-button>
-
+                @click="handleConfirm(scope.$index, scope.row, 'agree')"
+              >取消退款</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
       <el-pagination
-        :current-page="pageData.pageNum"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="pageData.pageSize"
+        :current-page="currentPage"
+        :page-sizes="[100, 200, 300, 400]"
+        :page-size="100"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="pageData.total"
+        :total="400"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
     </el-card>
-    <div><hasNoticeDialog ref="hasNoticeDialog" @handleEdit="handleEdit" /></div>
-
   </div>
 </template>
 <script>
-import {
-  orderBuy // 商家订单列表
-} from '@/api/orderModule'
-import {
-  payCancel // 商家订单列表
-} from '@/api/property'
 import Header from '@/views/orderModule/chooseHeader'
-import hasNoticeDialog from './hasNoticeDialog'
+import {
+  buyerList
+} from '@/api/orderModule'
 export default {
   name: 'OrderList',
   components: {
-    Header, hasNoticeDialog
+    Header
   },
   data() {
     return {
       sortColumns: ['price'],
       currentPage: 1,
-      pageData: {
-        pageSize: 10,
-        total: 0,
-        pageNum: 1
-      },
       tableData: [],
       columnData: [
         {
           label: '订单编号',
           type: 'text',
-          prop: 'id'
+          prop: 'orderId'
         },
         {
-          label: '商品图片',
+          label: '退款单编号',
+          type: 'text',
+          prop: 'orderReturnId'
+        },
+        {
+          label: '商品图',
           type: 'img',
           prop: 'img'
         },
@@ -112,13 +103,12 @@ export default {
         {
           label: '厂家ID',
           type: 'text',
-          prop: 'userId'
+          prop: 'merchantId'
         },
         {
           label: '采购时间',
-          type: 'text',
-          prop: 'confirmTime',
-          filters: 'date'
+          type: 'date',
+          prop: 'startCreatedTime'
         },
         {
           label: '剩余库存',
@@ -126,9 +116,9 @@ export default {
           prop: 'date'
         },
         {
-          label: '签收率',
+          label: '退款状态',
           type: 'text',
-          prop: 'date'
+          prop: 'orderReturnStatus'
         }
       ]
     }
@@ -138,7 +128,7 @@ export default {
   },
   methods: {
     fetchOrderList() {
-      orderBuy({ orderBy: 'desc', sortField: 'confirmTime' }).then(res => {
+      buyerList({ orderBy: 'desc', sortField: 'created' }).then(res => {
         const { data = {}, data: { list = [] }} = res
         this.pageData = data
         this.tableData = list && list instanceof Array && list.length >= 0 ? list : []
@@ -147,50 +137,64 @@ export default {
         console.log(err, 'errrrgetGoodsList')
       })
     },
-    sortChange(column, prop, order) { // 排序
+    sortChange(column, prop, order) {
       console.log('sortChange--', column, prop, order)
     },
-    handleNoticeDialog(row) {
-      this.$refs.hasNoticeDialog.showDialog(row, true)
+    handleConfirm(index, row, codeKey) { // 操作
+      const handleObj = {
+        agree: {
+          text: '是否取消退款？',
+          type: 'warning'
+        },
+        refuse: {
+          text: '拒绝退款',
+          type: 'error',
+          isEditText: true
+        },
+        remark: {
+          text: '查看留言',
+          type: ''
+        },
+        cause: {
+          text: '拒绝原因',
+          type: ''
+        }
+      }
+      const handleItem = handleObj[codeKey]
+      if (handleItem && handleItem.isEditText) {
+        this.$prompt('拒绝退款', '请输入拒绝原因', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputErrorMessage: '请输入拒绝原因'
+        }).then(({ value }) => {
+          this.$message({
+            type: 'success',
+            message: '你的邮箱是: ' + value
+          })
+        }).catch(() => {
+        })
+      } else {
+        this.$confirm(`${handleItem.text}`, `${handleItem.text}`, {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          center: true,
+          showCancelButton: false,
+          type: `${handleItem.type}`
+        }).then(() => {
+          
+        }).catch(() => {
+          console.log('quxiao')
+        })
+      }
+      console.log(index, row)
     },
-    handleEdit() {},
-    // handleConfirm(index, row, codeIndex) { // 操作
-    //   const handleObj = {
-    //     Confirm: {
-    //       text: '确认订单',
-    //       type: 'warning'
-    //     },
-    //     Cancel: {
-    //       text: '取消订单',
-    //       type: 'error'
-    //     },
-    //     Remind: {
-    //       text: '催一下',
-    //       type: 'info'
-    //     }
-    //   }
-    //   const handleItem = handleObj[codeIndex]
-    //   this.$confirm(`是否${handleItem.text}？`, `${handleItem.text}`, {
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: `${handleItem.type}`
-    //   }).then(() => {
-    //     console.log('queding')
-    //   }).catch(() => {
-    //     console.log('quxiao')
-    //   })
-    //   console.log(index, row)
-    // },
-    handleAlipayTradeReturn(data) {
-      console.log(data)
-      payCancel({ id: data.id, content: '买错哦了' }).then(res => {
-        console.log(res)
-      })
+    handleDelete(index, row) {
+      console.log(index, row)
     },
-    handleSizeChange(val) { // 每页条数改变
+    handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
     },
-    handleCurrentChange(val) { // 页码改变
+    handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
     }
   }
@@ -201,7 +205,7 @@ export default {
   padding-top: 10px;
   padding-bottom: 10px;
 }
-::v-deep .el-pagination {
+::v-deep .el-pagination{
   margin: 10px;
 }
 </style>

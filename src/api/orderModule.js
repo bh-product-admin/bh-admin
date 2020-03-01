@@ -71,3 +71,12 @@ export function rushOrderAffirm(data) {
     data
   })
 }
+
+// 买家退款列表 orderReturn/buyerList?title=成功&orderReturnStatus=2&merchantId=3&startCreatedTime=1581823428622&endCreatedTime=1581823429622
+export function buyerList(data) {
+  return request({
+    url: '/orderReturn/buyerList',
+    method: 'post',
+    data
+  })
+}

@@ -8,3 +8,13 @@ export function moneyDetailBuyerList(data) {
     data
   })
 }
+
+// 已支付订单退款 order/payCancel?id=22&content=买错了
+export function payCancel(data) {
+  return request({
+    url: '/order/payCancel',
+    method: 'post',
+    data
+  })
+}
+

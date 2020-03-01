@@ -176,7 +176,7 @@ export default {
     }
   },
   created() {
-    this.fetchMoneyList({type:1,startCreatedTime:1599877776665,endCreatedTime:1599877776667})
+    this.fetchMoneyList()
   },
   methods: {
     fetchMoneyList(params = {}) {
