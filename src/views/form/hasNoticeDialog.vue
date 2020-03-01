@@ -16,25 +16,33 @@
           <el-input v-model="form.number" />
         </el-form-item>
         <el-form-item label="物流渠道：">
-          <el-input v-model="form.number" />
+          <el-input v-model="form.expressType" />
         </el-form-item>
         <el-form-item
           label="销售价格："
           prop="price"
         >
-          <el-input v-model="form.price" />
+          <el-input v-model="form.salePrice" />
         </el-form-item>
         <el-form-item
           label="渠道成本："
           prop="price"
         >
-          <el-input v-model="form.number" />
+          <el-input v-model="form.channelCost" />
         </el-form-item>
         <el-form-item
           label="物流面单："
           prop="price"
         >
-          <el-button>上传</el-button>
+          <el-upload
+            class="upload-demo"
+            :action="action"
+            :on-success="handleSuccess"
+            :before-upload="beforeAvatarUpload"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+          </el-upload>
         </el-form-item>
         <el-form-item label="给商家留言：">
           <el-input
@@ -58,11 +66,8 @@
 </template>
 <script>
 import {
-  bbsOrderAdd
-} from '@/api/orderModule'
-import {
-  getManufacturerCertifiedIng
-} from '@/api/user'
+  logisticsAddOrderSend
+} from '@/api/logisticsModule'
 import {
   getCookieByCode
 } from '@/utils/index'
@@ -74,7 +79,7 @@ export default {
       imageUrl: '',
       action: process.env.VUE_APP_BASE_API + '/oss/upload',
       form: {
-        waresId: '',
+        orderId: '',
         number: 0,
         note: ''
       },
@@ -112,28 +117,41 @@ export default {
     }
   },
   created() {
-    this.fetchManufacturerCertifiedIng()
+    // this.fetchManufacturerCertifiedIng()
   },
   methods: {
+    handleSuccess(response, file) {
+      console.log(response)
+      this.form.fileName = response.data
+    },
+    beforeAvatarUpload(file) {
+      console.log(file)
+      const isXLSX = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      console.log(isXLSX)
+      if (!isXLSX) {
+        this.$message.error('上传文件只能是 xlsx 格式!')
+      }
+      return isXLSX
+    },
     toRegist() {
       this.$router.push({
         path: '/register'
       })
     },
-    fetchManufacturerCertifiedIng() {
-      getManufacturerCertifiedIng({ phone: this.phone }).then((res = {}) => {
-        console.log(res, 'ressssfetchManufacturerCertifiedIng')
-        const { data = [] } = res
-        // if ((!data || !data.length) || (data && data[0] && data[0].manufacturerCertified != 1)) {
-        if (!data || !data.length) {
-          this.showNoAuth = true
-        } else {
-          this.showNoAuth = false
-        }
-      })
-    },
+    // fetchManufacturerCertifiedIng() {
+    //   getManufacturerCertifiedIng({ phone: this.phone }).then((res = {}) => {
+    //     console.log(res, 'ressssfetchManufacturerCertifiedIng')
+    //     const { data = [] } = res
+    //     // if ((!data || !data.length) || (data && data[0] && data[0].manufacturerCertified != 1)) {
+    //     if (!data || !data.length) {
+    //       this.showNoAuth = true
+    //     } else {
+    //       this.showNoAuth = false
+    //     }
+    //   })
+    // },
     onSubmit() {
-      bbsOrderAdd(this.form).then(res => {
+      logisticsAddOrderSend(this.form).then(res => {
         console.log(res, 'resdsdsd-has')
         const { data = false, msg = '操作成功' } = res
         if (data) {
@@ -149,18 +167,20 @@ export default {
     },
     showDialog(item = {}, isDialogFormVisible) {
       console.log(item, 'indedsds')
-      const { title = '', img = '', price = '', inventory = '' } = item
+      const { title = '', img = '', price = 0, inventory = '', number = 0, id = '' } = item
       this.title = title
       this.img = img
-      this.price = price
+      this.form.orderId = id
+      this.form.number = number
+      this.form.channelCost = price
+      this.form.fileName = '%E4%BA%AC%E4%B8%9C%E6%A8%A1%E6%9D%BF-%E6%9C%89%E6%95%B0%E6%8D%AE.xls'
       this.inventory = inventory
       this.dialogFormVisible = isDialogFormVisible
-      this.form.waresId = item && item.id
     },
     initForm() {
       this.form = {
         note: '',
-        waresId: ''
+        prderId: ''
       }
       this.title = ''
       this.img = ''
