@@ -1,7 +1,7 @@
 <template>
   <div class="index">
     <el-card>
-      <Header />
+      <Header @search="" />
     </el-card>
     <el-card>
       <div class="content">
@@ -20,27 +20,31 @@
             :sortable="sortColumns.includes(item.prop) ? true : false"
           >
             <template slot-scope="scope">
-              <img v-if="item.type=='img'" :src="scope.row.src" width="100" height="100">
-              <span v-else>
-                {{ scope.row[item.prop] }}
-              </span>
+              <img v-if="item.type=='img'" :src="scope.row.img" width="100" height="100">
+              <span v-if="!item.filters&&item.type!=='img'">{{ scope.row[item.prop] }}</span>
+              <span v-if="item.filters === 'date'">{{ scope.row[item.prop] | datetimeDot }}</span>
+              <span v-if="item.filters === 'arrayStatus'">{{ orderReturnStatusOptions[scope.row[item.prop]] }}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="200" align="center">
             <template slot-scope="scope">
               <el-button
+                v-if="scope.row.orderReturnStatus == 1"
                 size="mini"
                 @click="handleConfirm(scope.$index, scope.row, 'agree')"
               >同意退款</el-button>
               <el-button
+                v-if="scope.row.orderReturnStatus == 1"
                 size="mini"
                 @click="handleConfirm(scope.$index, scope.row, 'refuse')"
               >拒绝退款</el-button>
               <el-button
+                v-if="scope.row.content"
                 size="mini"
                 @click="handleConfirm(scope.$index, scope.row, 'remark')"
               >查看留言</el-button>
               <el-button
+                v-if="scope.row.refuseNote"
                 size="mini"
                 @click="handleConfirm(scope.$index, scope.row, 'cause')"
               >拒绝原因</el-button>
@@ -49,11 +53,11 @@
         </el-table>
       </div>
       <el-pagination
-        :current-page="currentPage"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :current-page="pageData.pageNum"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="pageData.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        :total="pageData.total"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
@@ -61,6 +65,13 @@
   </div>
 </template>
 <script>
+import {
+  orderReturnBuyerList, // 资金明细列表
+  orderConfirmPayCancel // 厂家同意退款
+} from '@/api/property.js'
+import {
+  orderRefusedPayCancel // 厂家拒绝退款
+} from '@/api/orderModule.js'
 import Header from '@/views/orderModule/chooseHeader'
 export default {
   name: 'OrderList',
@@ -69,8 +80,15 @@ export default {
   },
   data() {
     return {
+      orderReturnStatusOptions: ['', '待确认', '已确认', '无需确认', '已取消', '已拒绝'],
+      // 1.待确认，2.已确认，3.无需确认，5.已取消,6.已拒绝
       sortColumns: ['price'],
       currentPage: 1,
+      pageData: {
+        pageSize: 10,
+        total: 0,
+        pageNum: 1
+      },
       tableData: [
         {
           userId: '211',
@@ -133,12 +151,12 @@ export default {
         {
           label: '订单编号',
           type: 'text',
-          prop: 'ids'
+          prop: 'orderId'
         },
         {
           label: '退款单编号',
           type: 'text',
-          prop: 'quitIds'
+          prop: 'orderReturnId'
         },
         {
           label: '商品图',
@@ -158,17 +176,18 @@ export default {
         {
           label: '采购数量',
           type: 'text',
-          prop: 'seleNum'
+          prop: 'number'
         },
         {
           label: '采购总价',
           type: 'text',
-          prop: 'priceTotal'
+          prop: 'amount'
         },
         {
           label: '退款状态',
-          type: 'text',
-          prop: 'status'
+          type: 'array',
+          prop: 'orderReturnStatus',
+          filters: 'arrayStatus'
         },
         {
           label: '买家ID',
@@ -178,13 +197,28 @@ export default {
         {
           label: '申请时间',
           type: 'text',
-          prop: 'date'
+          prop: 'created',
+          filters: 'date'
         }
       ]
     }
   },
-  created() {},
+  created() {
+    this.fetList()
+  },
   methods: {
+    fetList(formLine = {}) {
+      formLine['pageSize'] = this.pageData.pageSize
+      formLine['pageNum'] = this.pageData.pageNum
+      orderReturnBuyerList(formLine).then((res = {}) => {
+        console.log(res, 'resss')
+        const { data = {}, data: { list = [] }} = res
+        this.pageData = data
+        this.tableData = list && list instanceof Array && list.length >= 0 ? list : []
+      }).catch((err = {}) => {
+        console.log(err, 'errr')
+      })
+    },
     sortChange(column, prop, order) {
       console.log('sortChange--', column, prop, order)
     },
@@ -192,7 +226,8 @@ export default {
       const handleObj = {
         agree: {
           text: '是否同意退款？',
-          type: 'warning'
+          type: 'warning',
+          isLook: false
         },
         refuse: {
           text: '拒绝退款',
@@ -201,35 +236,72 @@ export default {
         },
         remark: {
           text: '查看留言',
-          type: ''
+          type: '',
+          isLook: true
         },
         cause: {
           text: '拒绝原因',
-          type: ''
+          type: '',
+          isLook: true
         }
       }
       const handleItem = handleObj[codeKey]
-      if (handleItem && handleItem.isEditText) {
+      if (handleItem && handleItem.isEditText) { // 拒绝
         this.$prompt('拒绝退款', '请输入拒绝原因', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           inputErrorMessage: '请输入拒绝原因'
         }).then(({ value }) => {
-          this.$message({
-            type: 'success',
-            message: '你的邮箱是: ' + value
+          // 拒绝退款
+          const params = {
+            orderReturnId: row.orderReturnId,
+            content: value
+          }
+          console.log(params, 'jujeueudue')
+          orderRefusedPayCancel(params).then((res = {}) => {
+            this.$message({
+              type: 'success',
+              message: '操作成功'
+            })
+            this.fetList()
+          }).catch((err = {}) => {
+            this.$message({
+              type: 'error',
+              message: '操作失败'
+            })
           })
         }).catch(() => {
         })
-      } else {
-        this.$confirm(`${handleItem.text}`, `${handleItem.text}`, {
+      } else { // 同意
+        console.log(111, row)
+        let handleItemText = handleItem.text
+        if (codeKey == 'remark') handleItemText = row.content
+        if (codeKey == 'cause') handleItemText = row.refuseNote
+        this.$confirm(`${handleItemText}`, `${handleItem.text}`, {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           center: true,
           showCancelButton: false,
           type: `${handleItem.type}`
         }).then(() => {
-          console.log('queding')
+          if (handleItem && handleItem.isLook === false) {
+            const params = {
+              orderReturnId: row.orderReturnId
+            }
+            orderConfirmPayCancel(params).then((res = {}) => {
+              this.$message({
+                type: 'success',
+                message: '操作成功'
+              })
+              this.fetList()
+            }).catch((err = {}) => {
+              this.$message({
+                type: 'error',
+                message: '操作失败'
+              })
+            })
+            console.log('queding')
+          }
         }).catch(() => {
           console.log('quxiao')
         })

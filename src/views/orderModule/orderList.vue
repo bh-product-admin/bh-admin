@@ -125,7 +125,7 @@ export default {
         {
           label: '申请时间',
           type: 'text',
-          prop: 'created',
+          prop: 'startCreatedTime',
           filters: 'date'
         }
       ]

@@ -71,3 +71,12 @@ export function rushOrderAffirm(data) {
     data
   })
 }
+
+// 已支付订单-厂家拒绝退款 orderReturnId=3&content=不支持退款"
+export function orderRefusedPayCancel(data) {
+  return request({
+    url: '/order/refusedPayCancel',
+    method: 'post',
+    data
+  })
+}

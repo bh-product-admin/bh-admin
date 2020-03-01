@@ -8,3 +8,22 @@ export function moneyDetailBuyerList(data) {
     data
   })
 }
+
+// 买家退款列表 title=成功&orderReturnStatus=2&merchantId=3
+// &startCreatedTime=1581823428622&endCreatedTime=1581823429622
+export function orderReturnBuyerList(data) {
+  return request({
+    url: '/orderReturn/manufacturersList',
+    method: 'post',
+    data
+  })
+}
+
+// order/confirmPayCancel
+export function orderConfirmPayCancel(data) {
+  return request({
+    url: '/order/confirmPayCancel',
+    method: 'post',
+    data
+  })
+}
