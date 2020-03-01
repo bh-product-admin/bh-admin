@@ -41,7 +41,7 @@
             :before-upload="beforeAvatarUpload"
           >
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+            <div slot="tip" class="el-upload__tip">只能上传xlsx文件</div>
           </el-upload>
         </el-form-item>
         <el-form-item label="给商家留言：">
@@ -77,7 +77,7 @@ export default {
   data() {
     return {
       imageUrl: '',
-      action: process.env.VUE_APP_BASE_API + '/oss/upload',
+      action: process.env.VUE_APP_BASE_API + '/oss/uploadFile',
       form: {
         orderId: '',
         number: 0,
@@ -126,7 +126,7 @@ export default {
     },
     beforeAvatarUpload(file) {
       console.log(file)
-      const isXLSX = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      const isXLSX = file.type === 'application/vnd.ms-excel'
       console.log(isXLSX)
       if (!isXLSX) {
         this.$message.error('上传文件只能是 xlsx 格式!')
