@@ -33,7 +33,7 @@
               <el-button
                 size="mini"
                 @click="handleNoticeDialog(scope.row)"
-              >通知厂家发货</el-button>
+              >通知厂家发货121</el-button>
               <el-button size="mini" @click="handleAlipayTradeReturn(scope.row)">退款</el-button>
 
             </template>

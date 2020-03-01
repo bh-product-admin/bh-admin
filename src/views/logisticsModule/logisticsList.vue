@@ -21,10 +21,20 @@
             :sortable="sortColumns.includes(item.prop) ? true : false"
           >
             <template slot-scope="scope">
-              <img v-if="item.type=='img'" :src="scope.row.src" width="100" height="100">
+              <img v-if="item.type=='img'" :src="scope.row.img" width="100" height="100">
+              <span v-else-if="item.filters === 'arrayStatus'">{{ scope.row[item.prop] === true ? '已签收' : '待签收' }}</span>
+              <span v-else-if="item.filters === 'expressOpts'">{{ expressOptions[scope.row[item.prop]] || '--' }}</span>
               <span v-else>
                 {{ scope.row[item.prop] }}
               </span>
+            </template>
+          </el-table-column>
+          <el-table-column label="寄送地址" width="120" align="center">
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                @click="downLoadAddress(scope.row)"
+              >下载</el-button>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="240" align="center">
@@ -74,6 +84,10 @@ export default {
   data() {
     return {
       sortColumns: ['price'],
+      orderReturnStatusOptions: ['待签收', '已签收'],
+      expressOptions: {
+        'jd': '京东'
+      },
       currentPage: 1,
       pageData: {
         pageSize: 10,
@@ -146,7 +160,7 @@ export default {
         {
           label: '商品图片',
           type: 'img',
-          prop: 'src'
+          prop: 'img'
         },
         {
           label: '商品标题',
@@ -156,27 +170,24 @@ export default {
         {
           label: '物流状态',
           type: 'text',
-          prop: 'logisticsStatus'
+          filters: 'arrayStatus',
+          prop: 'clientConfirmStatus'
         },
         {
-          label: '物流账户',
+          label: '物流单号',
           type: 'text',
           prop: 'logisticsAccount'
         },
         {
+          label: '物流账户',
+          type: 'text',
+          prop: 'expressType',
+          filters: 'expressOpts'
+        },
+        {
           label: '商品数量',
           type: 'text',
-          prop: 'goodsNum'
-        },
-        {
-          label: '收件人信息',
-          type: 'text',
-          prop: 'personInfo'
-        },
-        {
-          label: '寄送地址',
-          type: 'text',
-          prop: 'address'
+          prop: 'number'
         }
       ]
     }
@@ -185,7 +196,9 @@ export default {
     this.getlogisticsList()
   },
   methods: {
-    getlogisticsList(formLine) {
+    getlogisticsList(formLine = {}) {
+      formLine['pageSize'] = this.pageData.pageSize
+      formLine['pageNum'] = this.pageData.pageNum
       logisticsManufacturersList(formLine).then((res = {}) => {
         console.log(res, 'ressss--getlogisticsList')
         const { data = [] } = res
@@ -198,6 +211,9 @@ export default {
         this.tableData = []
         console.log(err, 'errr--getlogisticsList')
       })
+    },
+    downLoadAddress(row) {
+      console.log(row, 'rowww')
     },
     searchList(formLine) {
       console.log(formLine, 'formLineformLineformLine')
