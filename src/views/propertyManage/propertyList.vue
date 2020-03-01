@@ -1,7 +1,7 @@
 <template>
   <div class="index">
     <el-card>
-      <Header />
+      <Header @search="searchList" @outPut="outPut" />
     </el-card>
     <el-card>
       <div class="content">
@@ -37,11 +37,11 @@
         </el-table>
       </div>
       <el-pagination
-        :current-page="currentPage"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :current-page="pageData.pageNum"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="pageData.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        :total="pageData.total"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
@@ -50,6 +50,9 @@
   </div>
 </template>
 <script>
+import {
+  moneyDetailBuyerList // 资金明细列表
+} from '@/api/property.js'
 import Header from '@/views/propertyManage/propertyHeader'
 import hasGoodsDialog from './hasGodsDialog'
 export default {
@@ -62,6 +65,11 @@ export default {
     return {
       sortColumns: ['totalNum', 'totalMoney'],
       currentPage: 1,
+      pageData: {
+        pageSize: 10,
+        total: 0,
+        pageNum: 1
+      },
       tableData: [
         {
           capitalFlow: 1,
@@ -167,8 +175,32 @@ export default {
       ]
     }
   },
-  created() {},
+  created() {
+    this.fetchMoneyList()
+  },
   methods: {
+    fetchMoneyList(params = {}) {
+      moneyDetailBuyerList(params).then((res = {}) => {
+        console.log(res, 'res')
+        const { data = [] } = res
+        if (data && data instanceof Array && data.length) {
+          this.tableData = data
+        } else {
+          this.tableData = []
+        }
+      }).catch((err = {}) => {
+        this.tableData = []
+        console.log(err, 'errr')
+      })
+    },
+    outPut() {
+      alert('outPut')
+    },
+    searchList(formLine, value2) {
+      console.log(formLine, 'formLineformLineformLine', value2)
+      const params = formLine
+      this.fetchMoneyList(params)
+    },
     sortChange(column, prop, order) {
       console.log('sortChange--', column, prop, order)
     },

@@ -2,12 +2,13 @@
   <div class="index">
     <el-form :inline="true" :model="formInline" class="demo-form-inline">
       <el-form-item label="商品名称">
-        <el-input v-model="formInline.user" size="small" placeholder="审批人" />
+        <el-input v-model="formInline.name" size="small" placeholder="商品名称" />
       </el-form-item>
       <el-form-item label="类型">
-        <el-select v-model="formInline.region" placeholder="活动区域" size="small">
-          <el-option label="区域一" value="shanghai" />
-          <el-option label="区域二" value="beijing" />
+        <el-select v-model="formInline.type" placeholder="请选择类型" size="small">
+          <el-option label="全部" value="" />
+          <el-option label="收入" value="1" />
+          <el-option label="支出" value="2" />
         </el-select>
       </el-form-item>
       <el-form-item label="时间">
@@ -27,7 +28,7 @@
         <el-button type="primary" size="small" @click="onSubmit">查询</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" size="small" @click="onSubmit">导出</el-button>
+        <el-button type="primary" size="small" @click="onOutPut">导出</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -39,8 +40,8 @@ export default {
   data() {
     return {
       formInline: {
-        user: '',
-        region: ''
+        name: '',
+        type: ''
       },
       value2: '',
       pickerOptions: {
@@ -75,7 +76,10 @@ export default {
   created() {},
   methods: {
     onSubmit() {
-      alert('submit!')
+      this.$emit('search', this.formInline, this.value2)
+    },
+    onOutPut() {
+      this.$emit('outPut')
     }
   }
 }
