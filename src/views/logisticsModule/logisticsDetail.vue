@@ -1,7 +1,7 @@
 <template>
   <div class="index">
     <el-card>
-      <Header />
+      <Header @search="searchList" />
     </el-card>
     <el-card>
       <div class="content">
@@ -21,9 +21,17 @@
             :sortable="sortColumns.includes(item.prop) ? true : false"
           >
             <template slot-scope="scope">
-              <img v-if="item.type=='img'" :src="scope.row.src" width="100" height="100">
+              <img v-if="item.type=='img'" :src="scope.row.img" width="100" height="100">
               <div v-else>
-                <el-button v-if="item.type=='button'&&scope.row.logisticsStatus=='待发货'" @click="handleConfirm(scope.$index, scope.row, 'confirm')">单号录入</el-button>
+                <span v-if="item.type=='button'">
+                  <el-button v-if="item.type=='button'&&(!scope.row.expressNo || scope.row.expressNo === '0')" @click="handleConfirm(scope.$index, scope.row, 'confirm')">单号录入</el-button>
+                  <font v-else>{{ scope.row['expressNo'] }}</font>
+                </span>
+
+                <span v-else-if="item.type=='personInfo'">
+                  {{ scope.row['name'] }}  {{ scope.row['phone'] }}
+                </span>
+                <span v-else-if="item.filters === 'expressOpts'">{{ expressOptions[scope.row[item.prop]] }}</span>
                 <span v-else>
                   {{ scope.row[item.prop] }}
                 </span>
@@ -33,7 +41,7 @@
           <el-table-column label="操作" width="240" align="center">
             <template slot-scope="scope">
               <el-button
-                v-if="scope.row.logisticsStatus == '已拒签'"
+                v-if="scope.row.clientConfirmStatus"
                 size="mini"
                 @click="handleConfirm(scope.$index, scope.row, 'reason')"
               >查看拒签原因</el-button>
@@ -43,11 +51,11 @@
         </el-table>
       </div>
       <el-pagination
-        :current-page="currentPage"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :current-page="pageData.pageNum"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="pageData.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        :total="pageData.total"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
@@ -56,7 +64,8 @@
 </template>
 <script>
 import {
-  logisticsAddExpressNo
+  logisticsAddExpressNo, // id=2&expressNo=JD0011136488416&expressName=jd
+  logisticsOrderSendDetailList
 } from '@/api/logisticsModule'
 import Header from '@/views/logisticsModule/logisticsHeader'
 export default {
@@ -68,68 +77,16 @@ export default {
     return {
       sortColumns: ['price'],
       currentPage: 1,
-      tableData: [
-        {
-          userId: '211',
-          ids: '111',
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          logisticsStatus: '待发货',
-          logisticsAccount: 1,
-          date: '2016-05-04',
-          price: '¥34',
-          goodsNum: '2,000',
-          personInfo: '5,424',
-          status: 0,
-          address: 4444
-        },
-        {
-          userId: '212',
-          ids: '222',
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          logisticsStatus: '代签收',
-          logisticsAccount: 12334556,
-          date: '2016-05-07',
-          price: '¥33',
-          goodsNum: '2,000',
-          personInfo: 111,
-          status: 1,
-          address: 3333
-        },
-        {
-          userId: '213',
-          ids: '333',
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          logisticsStatus: '代签收',
-          logisticsAccount: 13333332222,
-          date: '2016-05-04',
-          price: '¥31',
-          goodsNum: '2,000',
-          personInfo: '5,424',
-          status: 2,
-          address: 1111
-        },
-        {
-          userId: '214',
-          ids: '444',
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          logisticsStatus: '已拒签',
-          logisticsAccount: 12222111111,
-          date: '2016-05-04',
-          price: '¥1122',
-          goodsNum: '2,000',
-          personInfo: '5,424',
-          status: 2,
-          address: 5555
-        }
-      ],
+      tableData: [],
+      expressOptions: {
+        'jd': '京东'
+      },
+      formLine: {},
+      pageData: {
+        pageSize: 10,
+        total: 0,
+        pageNum: 1
+      },
       columnData: [
         {
           label: '商品图片',
@@ -149,16 +106,22 @@ export default {
         {
           label: '物流单号',
           type: 'button',
-          prop: 'logisticsAccount'
+          prop: 'expressNo'
+        },
+        {
+          label: '物流账户',
+          type: 'text',
+          prop: 'expressName',
+          filters: 'expressOpts'
         },
         {
           label: '商品数量',
           type: 'text',
-          prop: 'goodsNum'
+          prop: 'orderNumber'
         },
         {
           label: '收件人信息',
-          type: 'text',
+          type: 'personInfo',
           prop: 'personInfo'
         },
         {
@@ -169,8 +132,46 @@ export default {
       ]
     }
   },
-  created() {},
+  created() {
+    this.getDataList()
+  },
   methods: {
+    getDataList(formLine = {}) {
+      formLine['pageSize'] = this.pageData.pageSize
+      formLine['pageNum'] = this.pageData.pageNum
+      logisticsOrderSendDetailList(formLine).then((res = {}) => {
+        // console.log(res, 'resss')
+        // const { data } = res
+        // this.tableData = data
+        const { data: {
+          list = [],
+          total = 0,
+          pageSize = 10,
+          pageNum = 1
+        }} = res
+        if (list && list instanceof Array && list.length) {
+          this.tableData = list
+          this.pageData = {
+            pageSize,
+            total,
+            pageNum
+          }
+        } else {
+          this.tableData = []
+        }
+      }).catch((err = {}) => {
+        this.tableData = []
+      })
+    },
+    searchList(formLine) {
+      console.log(formLine, 'formLineformLineformLine')
+      formLine = {
+        ...formLine,
+        ...this.pageData
+      }
+      this.formLine = formLine
+      this.getlogisticsList(formLine)
+    },
     sortChange(column, prop, order) {
       console.log('sortChange--', column, prop, order)
     },
@@ -202,13 +203,16 @@ export default {
         }).then(({ value }) => {
           const params = {
             id: row.id,
-            expressNo: value
+            expressNo: value,
+            expressName: row.expressName
           }
+          // id=2&expressNo=JD0011136488416&expressName=jd
           logisticsAddExpressNo(params).then(() => {
             this.$message({
               type: 'success',
               message: '物流单号录入成功'
             })
+            this.getDataList()
           }).catch(() => {
             this.$message({
               type: 'error',

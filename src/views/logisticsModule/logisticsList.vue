@@ -40,7 +40,7 @@
           <el-table-column label="操作" width="240" align="center">
             <template slot-scope="scope">
               <el-button
-                v-if="scope.row.status == 0"
+                v-if="scope.row.status == 1"
                 size="mini"
                 @click="$router.push({path:'/logistics-module-market/logisticsDetail',query:{id:scope.row.ids}})"
               >物流单录入</el-button>
@@ -94,68 +94,8 @@ export default {
         total: 0,
         pageNum: 1
       },
-      tableData: [
-        {
-          userId: '211',
-          ids: '111',
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          logisticsStatus: 0,
-          logisticsAccount: 1,
-          date: '2016-05-04',
-          price: '¥34',
-          goodsNum: '2,000',
-          personInfo: '5,424',
-          status: 0,
-          address: 4444
-        },
-        {
-          userId: '212',
-          ids: '222',
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          logisticsStatus: 0,
-          logisticsAccount: 1,
-          date: '2016-05-07',
-          price: '¥33',
-          goodsNum: '2,000',
-          personInfo: 111,
-          status: 1,
-          address: 3333
-        },
-        {
-          userId: '213',
-          ids: '333',
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          logisticsStatus: 0,
-          logisticsAccount: 1,
-          date: '2016-05-04',
-          price: '¥31',
-          goodsNum: '2,000',
-          personInfo: '5,424',
-          status: 2,
-          address: 1111
-        },
-        {
-          userId: '214',
-          ids: '444',
-          src:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1577718746219&di=86de817649061d34f4fe193d290e1c11&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F46%2F79%2F01300000921826131812790368314.jpg',
-          title: 'xxxxxxxxx',
-          logisticsStatus: 0,
-          logisticsAccount: 1,
-          date: '2016-05-04',
-          price: '¥1122',
-          goodsNum: '2,000',
-          personInfo: '5,424',
-          status: 2,
-          address: 5555
-        }
-      ],
+      formLine: {},
+      tableData: [],
       columnData: [
         {
           label: '商品图片',
@@ -201,9 +141,19 @@ export default {
       formLine['pageNum'] = this.pageData.pageNum
       logisticsManufacturersList(formLine).then((res = {}) => {
         console.log(res, 'ressss--getlogisticsList')
-        const { data = [] } = res
-        if (data && data instanceof Array && data.length) {
-          this.tableData = data
+        const { data: {
+          list = [],
+          total = 0,
+          pageSize = 10,
+          pageNum = 1
+        }} = res
+        if (list && list instanceof Array && list.length) {
+          this.tableData = list
+          this.pageData = {
+            pageSize,
+            total,
+            pageNum
+          }
         } else {
           this.tableData = []
         }
@@ -221,6 +171,7 @@ export default {
         ...formLine,
         ...this.pageData
       }
+      this.formLine = formLine
       this.getlogisticsList(formLine)
     },
     sortChange(column, prop, order) {
@@ -289,8 +240,12 @@ export default {
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
+      this.pageData.pageSize = val
+      this.getlogisticsList(this.formLine)
     },
     handleCurrentChange(val) {
+      this.pageData.pageNum = val
+      this.getlogisticsList(this.formLine)
       console.log(`当前页: ${val}`)
     }
   }

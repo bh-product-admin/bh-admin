@@ -54,3 +54,12 @@ export function logisticsManufacturersCancel(data) {
     data
   })
 }
+
+// 发货单详情列表-商家
+export function logisticsOrderSendDetailList(data) {
+  return request({
+    url: '/orderSendDetail/manufacturersList',
+    method: 'post',
+    data
+  })
+}
