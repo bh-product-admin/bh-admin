@@ -20,7 +20,9 @@
             :sortable="sortColumns.includes(item.prop) ? true : false"
           >
             <template slot-scope="scope">
-              <img v-if="item.type=='img'" :src="scope.row.src" width="100" height="100">
+              <img v-if="item.type=='img'" :src="scope.row.img" width="100" height="100">
+              <span v-else-if="item.filters == 'money'">{{ monetType[scope.row[item.prop]] }}</span>
+              <font v-else-if="item.type=='date'">{{ scope.row[item.prop] | dateDot }}</font>
               <span v-else>
                 {{ scope.row[item.prop] }}
               </span>
@@ -63,6 +65,7 @@ export default {
   },
   data() {
     return {
+      monetType: ['', '采购', '收入', '支出', '退款', '提现'],
       sortColumns: ['totalNum', 'totalMoney'],
       currentPage: 1,
       pageData: {
@@ -76,13 +79,14 @@ export default {
           label: '流水类型',
           type: 'text',
           width: 100,
-          prop: 'capitalFlow'
+          prop: 'type',
+          filters: 'money'
         },
         {
           label: '时间',
-          type: 'text',
+          type: 'date',
           width: 100,
-          prop: 'date'
+          prop: 'created'
         },
         {
           label: '商品图片',
@@ -99,13 +103,13 @@ export default {
           label: '商品数量',
           type: 'text',
           width: 100,
-          prop: 'totalNum'
+          prop: 'number'
         },
         {
           label: '金额',
           type: 'text',
           width: 100,
-          prop: 'totalMoney'
+          prop: 'amount'
         }
       ]
     }
@@ -116,10 +120,19 @@ export default {
   methods: {
     fetchMoneyList(params = {}) {
       moneyDetailBuyerList(params).then((res = {}) => {
-        console.log(res, 'res')
-        const { data = [] } = res
-        if (data && data instanceof Array && data.length) {
-          this.tableData = data
+        const { data: {
+          list = [],
+          total = 0,
+          pageSize = 10,
+          pageNum = 1
+        }} = res
+        if (list && list instanceof Array && list.length) {
+          this.tableData = list
+          this.pageData = {
+            pageSize,
+            total,
+            pageNum
+          }
         } else {
           this.tableData = []
         }
