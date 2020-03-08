@@ -115,6 +115,10 @@ export function getCookieByCode(cookieCode) {
   return Cookies.get(cookieCode)
 }
 
+export function setCookieByCode(cookieCode, value) {
+  return Cookies.set(cookieCode, value)
+}
+
 /**
  * @param {string} phone
  * @returns {string}

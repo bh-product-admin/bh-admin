@@ -4,12 +4,12 @@
       <el-form :model="form" label-width="140px">
         <el-form-item label="输入新银行账户：">
           <div width="300px">
-            <el-input v-model="form.account" />
+            <el-input v-model="form.account" type="number" />
           </div>
         </el-form-item>
         <el-form-item label="再次输入：">
           <div width="300px">
-            <el-input v-model="form.account1" />
+            <el-input v-model="form.account1" type="number" />
           </div>
         </el-form-item>
       </el-form>
@@ -56,7 +56,8 @@ export default {
         const id = getCookieByCode('id')
         const params = {
           id,
-          account
+          account,
+          int: 1
         }
         bankMoneyEdit(params).then((res = {}) => {
           this.$message.success('操作成功')

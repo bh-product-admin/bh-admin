@@ -2,18 +2,18 @@
   <div class="index">
     <el-card>
       <el-row :gutter="20">
-        <el-col :span="6">
+        <el-col :span="8">
           <div class="total-frame">
             <div class="total-title">
               绑定手机
             </div>
             <div class="total-value">
-              13665880424
+              {{ countPhone }}
               <span class="handle-span" @click="handleEditPhone">换绑</span>
             </div>
           </div>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="16" style="min-width: 300px">
           <div class="total-frame">
             <div class="total-title">提现账户</div>
             <div class="total-value">
@@ -46,7 +46,7 @@ export default {
   props: [],
   data() {
     return {
-
+      countPhone: getCookieByCode('phone')
     }
   },
   created() {
@@ -65,7 +65,8 @@ export default {
     fetchData() {
       const id = getCookieByCode('id')
       const params = {
-        id
+        id,
+        userType: 1
       }
       moneyById(params).then((res = {}) => {
         console.log(res, 'resss')

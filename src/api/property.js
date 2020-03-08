@@ -72,3 +72,13 @@ export function moneyById(data) {
     data
   })
 }
+
+// 申请提现 moneyOut/add?amount=100&code=123
+export function moneyOutAdd(data) {
+  return request({
+    url: '/moneyOut/add',
+    method: 'post',
+    data
+  })
+}
+// sms/sendCode?phone=18668051021&type=5

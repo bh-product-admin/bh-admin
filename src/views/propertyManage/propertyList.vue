@@ -22,18 +22,10 @@
             <template slot-scope="scope">
               <img v-if="item.type=='img'" :src="scope.row.img" width="100" height="100">
               <span v-else-if="item.filters == 'money'">{{ monetType[scope.row[item.prop]] }}</span>
-              <font v-else-if="item.type=='date'">{{ scope.row[item.prop] | dateDot }}</font>
+              <font v-else-if="item.type=='date'">{{ scope.row[item.prop] | datetimeDot }}</font>
               <span v-else>
                 {{ scope.row[item.prop] }}
               </span>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="200">
-            <template slot-scope="scope">
-              <el-button
-                size="mini"
-                @click="handleConfirm(scope.$index, scope.row)"
-              >查看物流单详情</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -65,6 +57,7 @@ export default {
   },
   data() {
     return {
+      // monetType: ['', '采购', '收入', '拒签物流成本', '退款', '提现'],
       monetType: ['', '采购', '收入', '支出', '退款', '提现'],
       sortColumns: ['totalNum', 'totalMoney'],
       currentPage: 1,
@@ -85,25 +78,19 @@ export default {
         {
           label: '时间',
           type: 'date',
-          width: 100,
+          width: 200,
           prop: 'created'
         },
         {
-          label: '商品图片',
-          type: 'img',
-          width: 120,
-          prop: 'src'
+          label: '订单编号',
+          type: 'text',
+          prop: 'orderId'
         },
         {
-          label: '商品标题',
+          label: '物流单号',
           type: 'text',
-          prop: 'title'
-        },
-        {
-          label: '商品数量',
-          type: 'text',
-          width: 100,
-          prop: 'number'
+          width: 200,
+          prop: 'expressNo'
         },
         {
           label: '金额',
@@ -118,6 +105,9 @@ export default {
     this.fetchMoneyList()
   },
   methods: {
+    handleEdit() {
+
+    },
     fetchMoneyList(params = {}) {
       moneyDetailBuyerList(params).then((res = {}) => {
         const { data: {

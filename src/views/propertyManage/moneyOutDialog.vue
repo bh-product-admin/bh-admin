@@ -1,10 +1,10 @@
 <template>
   <div class="index">
-    <el-dialog :visible.sync="dialogEditPhoneVisible" width="550px">
+    <el-dialog :visible.sync="dialogMoneyOutVisible" width="550px">
       <el-form :model="form" label-width="140px">
-        <el-form-item label="输入新手机号码：">
+        <el-form-item label="提现金额：">
           <div width="300px">
-            <el-input v-model="form.phone" type="number" />
+            <el-input v-model="form.amount" type="number" />
           </div>
         </el-form-item>
         <el-form-item label="验证码：">
@@ -13,9 +13,12 @@
             <el-button class="ml10" type="primary" :loading="loading" :disabled="disabled" @click="setCode">{{ buttonText }}</el-button>
           </div>
         </el-form-item>
+        <el-form-item label="本次最多可提：">
+          ￥{{ totalMoney }}
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogEditPhoneVisible = false">取 消</el-button>
+        <el-button @click="dialogMoneyOutVisible = false">取 消</el-button>
         <el-button type="primary" @click="handleChangePhone">确 定</el-button>
       </div>
     </el-dialog>
@@ -23,26 +26,27 @@
 </template>
 <script>
 import {
-  userEditPhone, // 换绑手机号码
-  smsSendCode // 用户换绑手机号码，发送验证码
+  smsSendCode, // 用户换绑手机号码，发送验证码
+  moneyOutAdd
 } from '@/api/property'
 import {
-  setCookieByCode
+  getCookieByCode
 } from '@/utils/index'
 export default {
-  name: 'EditPhone',
+  name: 'MoneyOutDialog',
   props: [],
   data() {
     return {
       form: {
-        phone: '',
+        amount: '',
         code: ''
       },
       formLabelWidth: '120px',
-      dialogEditPhoneVisible: false,
+      dialogMoneyOutVisible: false,
       buttonText: '发送验证码',
       disabled: false,
-      loading: false
+      loading: false,
+      totalMoney: 0
     }
   },
   created() {},
@@ -50,20 +54,19 @@ export default {
     onSubmit() {
       alert('submit!')
     },
-    showDialog(isdialogEditPhoneVisible) {
-      this.dialogEditPhoneVisible = isdialogEditPhoneVisible
+    showDialog(isdialogMoneyOutVisible, totalMoney) {
+      this.dialogMoneyOutVisible = isdialogMoneyOutVisible
+      this.totalMoney = totalMoney
     },
     isPhone(str) {
       return /^1[3456789]\d{9}$/.test(str)
     },
     setCode() {
-      const {
-        phone
-      } = this.form
+      const phone = getCookieByCode('phone')
       if (this.isPhone(phone)) {
         const params = {
           phone,
-          type: 2
+          type: 5
         }
         this.disabled = true
         this.loading = false
@@ -77,7 +80,8 @@ export default {
           // this.$message.error('发送失败，请重试')
         })
       } else {
-        this.$message.error('请输入正确的手机号')
+        this.$message.error('账号信息有误请重新登陆')
+        this.$router.push({ path: '/login' })
       }
     },
     changeText() {
@@ -95,29 +99,26 @@ export default {
     handleChangePhone() {
       const {
         code,
-        phone
+        amount = 0
       } = this.form
-      if (!this.isPhone(phone)) {
-        this.$message.error('请输入正确的手机号')
+      const {
+        totalMoney = 0
+      } = this.$data
+      if (!amount) {
+        this.$message.error('请输入提现金额')
+      } else if (Number(amount) > Number(totalMoney)) {
+        this.$message.error('提现金额大于可提现金额')
       } else if (!code) {
         this.$message.error('请输入验证码')
       } else {
         const params = {
-          phone,
+          amount,
           code
         }
-        userEditPhone(params).then((res = {}) => {
-          this.$message.success('操作成功')
-          this.dialogEditPhoneVisible = false
-          setTimeout(() => {
-            const clearCatch = [
-              'phone', 'bh_template_token', 'id'
-            ]
-            clearCatch.forEach((ele, index) => {
-              setCookieByCode(ele, '')
-            })
-            this.$router.push({ path: '/login' })
-          }, 3000)
+        moneyOutAdd(params).then((res = {}) => {
+          this.$message.success('提现成功')
+          this.dialogMoneyOutVisible = false
+          this.$emit('handleSuccess')
         }).catch((err = {}) => {
         // this.$message.error('操作失败，请重试')
         })
