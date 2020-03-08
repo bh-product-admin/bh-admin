@@ -36,3 +36,39 @@ export function orderConfirmPayCancel(data) {
     data
   })
 }
+
+//  换绑手机号码 phone=18668415200&code=4471
+export function userEditPhone(data) {
+  return request({
+    url: '/user/editPhone',
+    method: 'post',
+    data
+  })
+}
+
+// 用户换绑手机号码，发送验证码? phone=18668415200&type=2
+export function smsSendCode(data) {
+  return request({
+    url: '/sms/sendCode',
+    method: 'post',
+    data
+  })
+}
+
+// 修改账户信息 ?id=15&account=1233333&openBank=滨江支行
+export function bankMoneyEdit(data) {
+  return request({
+    url: '/money/edit',
+    method: 'post',
+    data
+  })
+}
+
+// 根据用户ID查询账户信息 money/getById?id=15
+export function moneyById(data) {
+  return request({
+    url: '/money/getById',
+    method: 'post',
+    data
+  })
+}

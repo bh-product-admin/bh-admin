@@ -31,10 +31,17 @@
           </el-table-column>
           <el-table-column label="寄送地址" width="120" align="center">
             <template slot-scope="scope">
-              <el-button
+              <!-- <el-button
                 size="mini"
                 @click="downLoadAddress(scope.row)"
-              >下载</el-button>
+              >下载</el-button> -->
+              <a
+                :href="`http://116.62.202.2:8080/${scope.row.fileName}`"
+                target="_blank"
+                :download="scope.row.title"
+              >
+                下载
+              </a>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="240" align="center">
@@ -88,6 +95,7 @@ export default {
       expressOptions: {
         'jd': '京东'
       },
+      baseUrl: process.env.VUE_APP_BASE_API,
       currentPage: 1,
       pageData: {
         pageSize: 10,

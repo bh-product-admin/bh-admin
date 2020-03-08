@@ -54,6 +54,7 @@ export default {
     },
     showDialog(item, isDialogFormVisible) {
       this.dialogFormVisible = isDialogFormVisible
+      this.form = item
     }
   }
 }

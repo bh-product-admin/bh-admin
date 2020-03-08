@@ -9,7 +9,7 @@
             </div>
             <div class="total-value">
               13665880424
-              <span class="handle-span">换绑</span>
+              <span class="handle-span" @click="handleEditPhone">换绑</span>
             </div>
           </div>
         </el-col>
@@ -18,25 +18,61 @@
             <div class="total-title">提现账户</div>
             <div class="total-value">
               1233 31232 31231 3123
-              <span class="handle-span">更换</span>
+              <span class="handle-span" @click="handleEditBank">更换</span>
             </div>
           </div>
         </el-col>
       </el-row>
     </el-card>
+    <editPhone ref="editPhoneDialog" @handleSuccess="handleSuccess" />
+    <editBankNumber ref="editBankDialog" @handleSuccess="handleSuccess" />
   </div>
 </template>
 <script>
+import {
+  moneyById // 根据用户ID查询账户信息
+} from '@/api/property'
+import {
+  getCookieByCode
+} from '@/utils/index'
+import editPhone from './editPhone'
+import editBankNumber from './editBankNumber'
 export default {
   name: 'MyAccount',
+  components: {
+    editPhone,
+    editBankNumber
+  },
   props: [],
   data() {
     return {
 
     }
   },
-  created() {},
+  created() {
+    this.fetchData()
+  },
   methods: {
+    handleEditPhone() {
+      this.$refs.editPhoneDialog.showDialog(true)
+    },
+    handleEditBank() {
+      this.$refs.editBankDialog.showDialog(true)
+    },
+    handleSuccess() {
+      this.fetchData()
+    },
+    fetchData() {
+      const id = getCookieByCode('id')
+      const params = {
+        id
+      }
+      moneyById(params).then((res = {}) => {
+        console.log(res, 'resss')
+      }).catch((err = {}) => {
+        console.log(err, 'eeee')
+      })
+    }
   }
 }
 </script>
