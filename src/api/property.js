@@ -82,3 +82,12 @@ export function moneyOutAdd(data) {
   })
 }
 // sms/sendCode?phone=18668051021&type=5
+
+// 获取提现账户 userId = 1
+export function userGetById(data) {
+  return request({
+    url: '/user/getById',
+    method: 'post',
+    data
+  })
+}

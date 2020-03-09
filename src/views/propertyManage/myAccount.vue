@@ -17,7 +17,7 @@
           <div class="total-frame">
             <div class="total-title">提现账户</div>
             <div class="total-value">
-              1233 31232 31231 3123
+              {{ idNumReverseIcon || '--' }}
               <span class="handle-span" @click="handleEditBank">更换</span>
             </div>
           </div>
@@ -30,7 +30,7 @@
 </template>
 <script>
 import {
-  moneyById // 根据用户ID查询账户信息
+  userGetById // 根据用户ID查询账户信息
 } from '@/api/property'
 import {
   getCookieByCode
@@ -65,11 +65,19 @@ export default {
     fetchData() {
       const id = getCookieByCode('id')
       const params = {
-        id,
+        userId: id,
         userType: 1
       }
-      moneyById(params).then((res = {}) => {
+      userGetById(params).then((res = {}) => {
         console.log(res, 'resss')
+        const {
+          data: {
+            phone = '',
+            idNumReverseIcon = ''
+          }
+        } = res
+        this.countPhone = phone
+        this.idNumReverseIcon = idNumReverseIcon
       }).catch((err = {}) => {
         console.log(err, 'eeee')
       })
